@@ -232,8 +232,10 @@ fi
 section "Installing Node.js dependencies"
 # ─────────────────────────────────────────────
 
-info "Running npm ci …"
-npm ci --prefer-offline 2>&1 | tail -3
+info "Running npm install …"
+# Always use npm install (not npm ci) — regenerates lock file from package.json
+rm -f package-lock.json
+npm install 2>&1 | tail -5
 success "Dependencies installed"
 
 # ─────────────────────────────────────────────

@@ -36,8 +36,8 @@ fi
 section "Installing dependencies"
 # ─────────────────────────────────────────────
 
-info "Running npm ci …"
-npm ci --prefer-offline 2>&1 | tail -3
+info "Running npm install …"
+npm install 2>&1 | tail -5
 success "Dependencies up to date"
 
 # ─────────────────────────────────────────────

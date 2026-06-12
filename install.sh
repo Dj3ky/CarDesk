@@ -232,14 +232,8 @@ fi
 section "Installing Node.js dependencies"
 # ─────────────────────────────────────────────
 
-if [[ -f package-lock.json ]]; then
-  info "Running npm ci …"
-  npm ci 2>&1 | tail -5
-else
-  info "No lock file found — running npm install to generate one …"
-  npm install 2>&1 | tail -5
-  warn "Lock file generated. Commit package-lock.json to git for reproducible installs."
-fi
+info "Running npm install …"
+npm install 2>&1 | tail -5
 success "Dependencies installed"
 
 # ─────────────────────────────────────────────

@@ -16,7 +16,13 @@
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; $env:NODE_ENV=\"production\"; npx next build 2>&1 | Select-Object -Last 35)",
       "Bash(xargs grep -l \"revalidateTag\")",
       "Bash(xargs grep -l \"after\\\\b\")",
-      "Bash(xargs grep -l \"after\\(\")"
+      "Bash(xargs grep -l \"after\\(\")",
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/offers/[offerId]/pdf\")",
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/new\")",
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/[id]/edit\")"
+    ],
+    "additionalDirectories": [
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"
     ]
   }
 }

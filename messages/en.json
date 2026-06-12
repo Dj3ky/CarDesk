@@ -15,6 +15,7 @@
     "customers": "Customers",
     "products": "Products",
     "pricelist": "Pricelist",
+    "offers": "Offers",
     "settings": "Settings",
     "profile": "Profile"
   },
@@ -285,6 +286,61 @@
     "languages": {
       "en": "English",
       "sl": "Slovenian"
+    }
+  },
+  "offers": {
+    "title": "Offers",
+    "subtitle": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+    "addNew": "New Offer",
+    "newTitle": "New Offer",
+    "newSubtitle": "Create a new service offer",
+    "editTitle": "Edit Offer",
+    "deleteTitle": "Delete Offer",
+    "deleteConfirm": "Are you sure you want to permanently delete {name}? This action cannot be undone.",
+    "statuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "COMPLETED": "Completed"
+    },
+    "fields": {
+      "offerNumber": "Offer No.",
+      "customer": "Customer",
+      "vehicle": "Vehicle",
+      "validUntil": "Valid Until",
+      "notes": "Notes",
+      "currency": "Currency",
+      "status": "Status",
+      "date": "Date",
+      "total": "Total"
+    },
+    "items": {
+      "title": "Items",
+      "description": "Description",
+      "productNumber": "Product No.",
+      "quantity": "Qty",
+      "unit": "Unit",
+      "pricePerUnit": "Price (ex VAT)",
+      "vatRate": "VAT %",
+      "discount": "Disc %",
+      "lineTotal": "Total",
+      "addItem": "Add Item",
+      "searchProduct": "Search Product",
+      "noItems": "No items yet. Click \"Add Item\" to start."
+    },
+    "totals": {
+      "subtotal": "Subtotal (ex VAT)",
+      "vat": "VAT {rate}%",
+      "grandTotal": "Total"
+    },
+    "actions": {
+      "markAsSent": "Mark as Sent",
+      "approve": "Approve",
+      "reject": "Reject",
+      "complete": "Mark as Completed",
+      "revertToDraft": "Revert to Draft",
+      "downloadPdf": "Download PDF"
     }
   },
   "errors": {

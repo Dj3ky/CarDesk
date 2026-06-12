@@ -5,7 +5,7 @@ import { routing } from "@/i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-const protectedPaths = ["/dashboard", "/customers", "/products", "/pricelist", "/settings", "/profile"];
+const protectedPaths = ["/dashboard", "/customers", "/products", "/pricelist", "/offers", "/settings", "/profile"];
 const authPaths = ["/login"];
 
 function isProtectedPath(pathname: string): boolean {

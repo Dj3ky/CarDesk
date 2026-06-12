@@ -38,6 +38,7 @@ model User {
   vehicles   Vehicle[]
   products   Product[]
   importJobs ImportJob[]
+  offers     Offer[]
 
   @@index([email])
   @@index([role])
@@ -64,6 +65,7 @@ model Customer {
 
   createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
   vehicles  Vehicle[]
+  offers    Offer[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -90,8 +92,9 @@ model Vehicle {
   updatedAt         DateTime @updatedAt
   createdById       String?
 
-  customer  Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdBy User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  offers    Offer[]
 
   @@index([customerId])
   @@index([vin])
@@ -118,7 +121,8 @@ model Product {
   updatedAt     DateTime @updatedAt
   createdById   String?
 
-  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy  User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  offerItems OfferItem[]
 
   @@index([productNumber])
   @@index([barcode])
@@ -129,6 +133,57 @@ model Product {
   @@index([description(ops: raw("gin_trgm_ops"))], type: Gin, map: "product_description_gin_idx")
   @@index([brand(ops: raw("gin_trgm_ops"))],       type: Gin, map: "product_brand_gin_idx")
   @@index([supplier(ops: raw("gin_trgm_ops"))],    type: Gin, map: "product_supplier_gin_idx")
+}
+
+enum OfferStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+model Offer {
+  id          String      @id @default(cuid())
+  offerNumber String      @unique
+  status      OfferStatus @default(DRAFT)
+  customerId  String
+  vehicleId   String?
+  currency    String      @default("EUR")
+  notes       String?     @db.Text
+  validUntil  DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  createdById String?
+
+  customer  Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle   Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  createdBy User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  items     OfferItem[]
+
+  @@index([customerId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OfferItem {
+  id            String  @id @default(cuid())
+  offerId       String
+  position      Int
+  productId     String?
+  productNumber String?
+  description   String
+  quantity      Decimal @db.Decimal(10, 3)
+  unit          String  @default("pcs")
+  pricePerUnit  Decimal @db.Decimal(10, 2)
+  vatRate       Decimal @db.Decimal(5, 2)
+  discount      Decimal @db.Decimal(5, 2) @default(0)
+
+  offer   Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([offerId])
 }
 
 model Account {

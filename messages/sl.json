@@ -15,6 +15,7 @@
     "customers": "Stranke",
     "products": "Izdelki",
     "pricelist": "Cenik",
+    "offers": "Ponudbe",
     "settings": "Nastavitve",
     "profile": "Profil"
   },
@@ -285,6 +286,61 @@
     "languages": {
       "en": "Angleščina",
       "sl": "Slovenščina"
+    }
+  },
+  "offers": {
+    "title": "Ponudbe",
+    "subtitle": "{count, plural, =0 {Ni ponudb} one {# ponudba} two {# ponudbi} few {# ponudbe} other {# ponudb}}",
+    "addNew": "Nova ponudba",
+    "newTitle": "Nova ponudba",
+    "newSubtitle": "Ustvari novo servisno ponudbo",
+    "editTitle": "Uredi ponudbo",
+    "deleteTitle": "Izbriši ponudbo",
+    "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
+    "statuses": {
+      "DRAFT": "Osnutek",
+      "SENT": "Poslano",
+      "APPROVED": "Potrjeno",
+      "REJECTED": "Zavrnjeno",
+      "COMPLETED": "Zaključeno"
+    },
+    "fields": {
+      "offerNumber": "Št. ponudbe",
+      "customer": "Stranka",
+      "vehicle": "Vozilo",
+      "validUntil": "Veljavno do",
+      "notes": "Opombe",
+      "currency": "Valuta",
+      "status": "Status",
+      "date": "Datum",
+      "total": "Skupaj"
+    },
+    "items": {
+      "title": "Postavke",
+      "description": "Opis",
+      "productNumber": "Šifra",
+      "quantity": "Kol.",
+      "unit": "Enota",
+      "pricePerUnit": "Cena (brez DDV)",
+      "vatRate": "DDV %",
+      "discount": "Pop. %",
+      "lineTotal": "Skupaj",
+      "addItem": "Dodaj postavko",
+      "searchProduct": "Iskanje izdelka",
+      "noItems": "Ni postavk. Kliknite »Dodaj postavko« za začetek."
+    },
+    "totals": {
+      "subtotal": "Skupaj (brez DDV)",
+      "vat": "DDV {rate}%",
+      "grandTotal": "Skupaj z DDV"
+    },
+    "actions": {
+      "markAsSent": "Označi kot poslano",
+      "approve": "Potrdi",
+      "reject": "Zavrni",
+      "complete": "Označi kot zaključeno",
+      "revertToDraft": "Vrni v osnutek",
+      "downloadPdf": "Prenesi PDF"
     }
   },
   "errors": {

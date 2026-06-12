@@ -24,7 +24,9 @@ export async function GET(
   const { OfferPDF } = await import("@/modules/offers/pdf/offer-pdf");
 
   const element = React.createElement(OfferPDF, { offer, settings });
-  const buffer = await renderToBuffer(element);
+  // renderToBuffer expects ReactElement<DocumentProps> but accepts any component that renders <Document>
+  const render = renderToBuffer as (el: React.ReactElement) => Promise<Buffer>;
+  const buffer = await render(element);
 
   return new Response(buffer, {
     headers: {

@@ -202,6 +202,9 @@ if [[ "$SKIP_ENV" == false ]]; then
   sudo -u postgres psql -c \
     "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};"
 
+  info "Enabling pg_trgm extension (fast text search) …"
+  sudo -u postgres psql -d "${DB_NAME}" -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;" 2>/dev/null
+
   success "Database '${DB_NAME}' and user '${DB_USER}' ready"
 else
   info "Skipping DB creation (.env.local already exists)"

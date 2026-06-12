@@ -44,6 +44,15 @@ success "Dependencies up to date"
 section "Database"
 # ─────────────────────────────────────────────
 
+if [[ -f .env.local ]]; then
+  DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
+  DB_NAME_FROM_URL=$(echo "$DB_URL" | sed -E 's|.*\/([^?]+).*|\1|')
+  if [[ -n "$DB_NAME_FROM_URL" ]]; then
+    info "Ensuring pg_trgm extension …"
+    sudo -u postgres psql -d "$DB_NAME_FROM_URL" -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;" 2>/dev/null || true
+  fi
+fi
+
 info "Generating Prisma client …"
 npm run db:generate
 

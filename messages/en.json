@@ -13,6 +13,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "customers": "Customers",
+    "products": "Products",
+    "pricelist": "Pricelist",
     "settings": "Settings",
     "profile": "Profile"
   },
@@ -22,6 +24,53 @@
     "role": "Role",
     "totalCustomers": "Total Customers",
     "activeCustomers": "Active Customers"
+  },
+  "products": {
+    "title": "Products",
+    "pricelistTitle": "Pricelist",
+    "subtitle": "{count, plural, =0 {No products} one {# product} other {# products}}",
+    "addNew": "Add Product",
+    "newTitle": "New Product",
+    "newSubtitle": "Add a product to the catalog",
+    "editTitle": "Edit Product",
+    "noResults": "No products found. Try adjusting your search or filters.",
+    "create": "Create Product",
+    "deleteTitle": "Delete Product",
+    "deleteConfirm": "Are you sure you want to permanently delete {name}? This action cannot be undone.",
+    "sections": {
+      "identification": "Identification",
+      "pricing": "Pricing",
+      "stock": "Stock",
+      "notes": "Notes & Status"
+    },
+    "fields": {
+      "productNumber": "Product No.",
+      "barcode": "Barcode",
+      "description": "Description",
+      "brand": "Brand",
+      "supplier": "Supplier",
+      "priceExVat": "Price (ex. VAT)",
+      "priceIncVat": "Price (incl. VAT)",
+      "priceIncVatHint": "Calculated automatically",
+      "vatRate": "VAT %",
+      "stock": "Stock",
+      "unit": "Unit",
+      "notes": "Notes",
+      "isActive": "Active product",
+      "isActiveHint": "Inactive products are hidden from the pricelist"
+    },
+    "filters": {
+      "minPrice": "Min price (€)",
+      "maxPrice": "Max price (€)"
+    },
+    "units": {
+      "pcs": "Pieces",
+      "m": "Metres",
+      "kg": "Kilograms",
+      "l": "Litres",
+      "set": "Set",
+      "pair": "Pair"
+    }
   },
   "vehicles": {
     "title": "Vehicles",
@@ -117,6 +166,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "view": "View",
+    "all": "All",
+    "clearFilters": "Clear filters",
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",

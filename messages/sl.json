@@ -13,6 +13,8 @@
   "nav": {
     "dashboard": "Nadzorna plošča",
     "customers": "Stranke",
+    "products": "Izdelki",
+    "pricelist": "Cenik",
     "settings": "Nastavitve",
     "profile": "Profil"
   },
@@ -22,6 +24,53 @@
     "role": "Vloga",
     "totalCustomers": "Skupaj strank",
     "activeCustomers": "Aktivne stranke"
+  },
+  "products": {
+    "title": "Izdelki",
+    "pricelistTitle": "Cenik",
+    "subtitle": "{count, plural, =0 {Ni izdelkov} one {# izdelek} two {# izdelka} few {# izdelki} other {# izdelkov}}",
+    "addNew": "Dodaj izdelek",
+    "newTitle": "Nov izdelek",
+    "newSubtitle": "Dodajte izdelek v katalog",
+    "editTitle": "Uredi izdelek",
+    "noResults": "Ni najdenih izdelkov. Poskusite z drugačnim iskanjem ali filtri.",
+    "create": "Ustvari izdelek",
+    "deleteTitle": "Izbriši izdelek",
+    "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
+    "sections": {
+      "identification": "Identifikacija",
+      "pricing": "Cene",
+      "stock": "Zaloga",
+      "notes": "Opombe in status"
+    },
+    "fields": {
+      "productNumber": "Šifra",
+      "barcode": "Črtna koda",
+      "description": "Opis",
+      "brand": "Znamka",
+      "supplier": "Dobavitelj",
+      "priceExVat": "Cena (brez DDV)",
+      "priceIncVat": "Cena (z DDV)",
+      "priceIncVatHint": "Izračunano samodejno",
+      "vatRate": "DDV %",
+      "stock": "Zaloga",
+      "unit": "Enota",
+      "notes": "Opombe",
+      "isActive": "Aktiven izdelek",
+      "isActiveHint": "Neaktivni izdelki so skriti v ceniku"
+    },
+    "filters": {
+      "minPrice": "Min cena (€)",
+      "maxPrice": "Max cena (€)"
+    },
+    "units": {
+      "pcs": "Kosi",
+      "m": "Metri",
+      "kg": "Kilogrami",
+      "l": "Litri",
+      "set": "Komplet",
+      "pair": "Par"
+    }
   },
   "vehicles": {
     "title": "Vozila",
@@ -117,6 +166,8 @@
     "delete": "Izbriši",
     "edit": "Uredi",
     "view": "Ogled",
+    "all": "Vse",
+    "clearFilters": "Počisti filtre",
     "confirm": "Potrdi",
     "yes": "Da",
     "no": "Ne",

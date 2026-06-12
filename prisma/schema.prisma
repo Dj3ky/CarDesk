@@ -36,6 +36,7 @@ model User {
   sessions  Session[]
   customers Customer[]
   vehicles  Vehicle[]
+  products  Product[]
 
   @@index([email])
   @@index([role])
@@ -97,6 +98,36 @@ model Vehicle {
   @@index([make, model])
   @@index([year])
   @@index([isActive])
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  productNumber String   @unique
+  barcode       String?  @unique
+  description   String
+  brand         String?
+  supplier      String?
+  price         Decimal  @db.Decimal(10, 2)
+  vatRate       Decimal  @db.Decimal(5, 2) @default(22.00)
+  stock         Int      @default(0)
+  unit          String   @default("pcs")
+  isActive      Boolean  @default(true)
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdById   String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([productNumber])
+  @@index([barcode])
+  @@index([brand],    map: "product_brand_btree_idx")
+  @@index([supplier], map: "product_supplier_btree_idx")
+  @@index([price])
+  @@index([isActive])
+  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin, map: "product_description_gin_idx")
+  @@index([brand(ops: raw("gin_trgm_ops"))],       type: Gin, map: "product_brand_gin_idx")
+  @@index([supplier(ops: raw("gin_trgm_ops"))],    type: Gin, map: "product_supplier_gin_idx")
 }
 
 model Account {

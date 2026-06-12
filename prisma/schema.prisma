@@ -23,11 +23,54 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
+  accounts  Account[]
+  sessions  Session[]
+  customers Customer[]
 
   @@index([email])
   @@index([role])
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String?  @unique
+  phone       String?
+  mobile      String?
+  companyName String?
+  taxNumber   String?
+  address     String?
+  city        String?
+  postalCode  String?
+  country     String   @default("SI")
+  notes       String?  @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  vehicles  Vehicle[]
+
+  @@index([email])
+  @@index([lastName, firstName])
+  @@index([phone])
+  @@index([companyName])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// Phase 3 — Vehicle model (placeholder)
+model Vehicle {
+  id         String   @id @default(cuid())
+  customerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
 }
 
 model Account {

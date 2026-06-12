@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Settings, User } from "lucide-react";
+import { LayoutDashboard, Users, Settings, User } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/customers", labelKey: "customers", icon: Users },
   { href: "/profile", labelKey: "profile", icon: User },
   { href: "/settings", labelKey: "settings", icon: Settings },
 ] as const;

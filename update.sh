@@ -47,8 +47,13 @@ section "Database"
 info "Generating Prisma client …"
 npm run db:generate
 
-info "Applying migrations …"
-npm run db:migrate:deploy
+if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
+  info "Applying migrations …"
+  npm run db:migrate:deploy
+else
+  info "No migrations found — pushing schema to database …"
+  npx prisma db push --accept-data-loss
+fi
 success "Database up to date"
 
 # ─────────────────────────────────────────────

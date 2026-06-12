@@ -10,7 +10,8 @@
       "Bash(npm install *)",
       "Bash(npx prisma *)",
       "Bash(ls \"C:/Users/Dejan/.claude/projects/d--GitHub-CarDesk/memory/\")",
-      "Read(//c/Users/Dejan/.claude/projects/d--GitHub-CarDesk/memory/**)"
+      "Read(//c/Users/Dejan/.claude/projects/d--GitHub-CarDesk/memory/**)",
+      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; $env:NODE_ENV=\"production\"; npx next build 2>&1 | Select-Object -Last 40)"
     ]
   }
 }

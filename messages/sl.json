@@ -12,13 +12,62 @@
   },
   "nav": {
     "dashboard": "Nadzorna plošča",
+    "customers": "Stranke",
     "settings": "Nastavitve",
     "profile": "Profil"
   },
   "dashboard": {
     "title": "Nadzorna plošča",
     "welcome": "Dobrodošli, {name}",
-    "role": "Vloga"
+    "role": "Vloga",
+    "totalCustomers": "Skupaj strank",
+    "activeCustomers": "Aktivne stranke"
+  },
+  "customers": {
+    "title": "Stranke",
+    "subtitle": "{count, plural, =0 {Ni strank} one {# stranka} two {# stranki} few {# stranke} other {# strank}}",
+    "addNew": "Dodaj stranko",
+    "newTitle": "Nova stranka",
+    "newSubtitle": "Ustvari nov zapis stranke",
+    "editTitle": "Uredi stranko",
+    "noResults": "Nobene stranke ni bilo najdeno. Poskusite z drugačnim iskanjem.",
+    "create": "Ustvari stranko",
+    "deleteTitle": "Izbriši stranko",
+    "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
+    "vehicles": "Vozila",
+    "vehiclesComingSoon": "Upravljanje vozil kmalu",
+    "vehiclesPhase3": "Vozila bodo na voljo v 3. fazi",
+    "sections": {
+      "personal": "Osebni podatki",
+      "contact": "Kontakt",
+      "company": "Podjetje",
+      "address": "Naslov",
+      "notes": "Opombe in status",
+      "meta": "Podatki o zapisu"
+    },
+    "fields": {
+      "name": "Ime",
+      "contact": "Kontakt",
+      "company": "Podjetje",
+      "firstName": "Ime",
+      "lastName": "Priimek",
+      "email": "E-pošta",
+      "phone": "Telefon",
+      "mobile": "Mobilni",
+      "companyName": "Naziv podjetja",
+      "taxNumber": "Davčna številka (DDV)",
+      "address": "Ulica in hišna številka",
+      "city": "Kraj",
+      "postalCode": "Poštna številka",
+      "country": "Država",
+      "notes": "Opombe",
+      "notesHint": "Interne opombe — stranka jih ne vidi",
+      "isActive": "Aktivna stranka",
+      "isActiveHint": "Neaktivne stranke so skrite v privzetih seznamih",
+      "createdAt": "Ustvarjeno",
+      "updatedAt": "Nazadnje posodobljeno",
+      "createdBy": "Ustvaril"
+    }
   },
   "common": {
     "appName": "CarDesk",

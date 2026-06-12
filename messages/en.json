@@ -12,13 +12,62 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "customers": "Customers",
     "settings": "Settings",
     "profile": "Profile"
   },
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back, {name}",
-    "role": "Role"
+    "role": "Role",
+    "totalCustomers": "Total Customers",
+    "activeCustomers": "Active Customers"
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "{count, plural, =0 {No customers} one {# customer} other {# customers}}",
+    "addNew": "Add Customer",
+    "newTitle": "New Customer",
+    "newSubtitle": "Create a new customer record",
+    "editTitle": "Edit Customer",
+    "noResults": "No customers found. Try a different search.",
+    "create": "Create Customer",
+    "deleteTitle": "Delete Customer",
+    "deleteConfirm": "Are you sure you want to permanently delete {name}? This action cannot be undone.",
+    "vehicles": "Vehicles",
+    "vehiclesComingSoon": "Vehicle management coming soon",
+    "vehiclesPhase3": "Vehicles will be available in Phase 3",
+    "sections": {
+      "personal": "Personal Information",
+      "contact": "Contact",
+      "company": "Company",
+      "address": "Address",
+      "notes": "Notes & Status",
+      "meta": "Record Info"
+    },
+    "fields": {
+      "name": "Name",
+      "contact": "Contact",
+      "company": "Company",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "companyName": "Company Name",
+      "taxNumber": "Tax Number (VAT)",
+      "address": "Street Address",
+      "city": "City",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "notes": "Notes",
+      "notesHint": "Internal notes — not visible to the customer",
+      "isActive": "Active customer",
+      "isActiveHint": "Inactive customers are hidden from default lists",
+      "createdAt": "Created",
+      "updatedAt": "Last updated",
+      "createdBy": "Created by"
+    }
   },
   "common": {
     "appName": "CarDesk",

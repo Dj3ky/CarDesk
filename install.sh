@@ -84,10 +84,21 @@ else
     info "Generated DB password: ${BOLD}${DB_PASS}${RESET}"
   fi
 
+  # Auto-detect server IP as a hint
+  DETECTED_IP=$(hostname -I | awk '{print $1}')
+
   echo ""
-  echo -e "  ${BOLD}App URL${RESET} (e.g. https://cardesk.example.com or http://YOUR-SERVER-IP:3000):"
+  echo -e "  ${BOLD}App URL${RESET} — use your server's real IP or domain, NOT localhost"
+  echo -e "  Detected IP: ${BOLD}http://${DETECTED_IP}:3000${RESET}"
+  echo -e "  Examples: http://${DETECTED_IP}:3000  |  https://cardesk.yourdomain.com"
   read -rp "  > " APP_URL
-  APP_URL="${APP_URL:-http://localhost:3000}"
+  APP_URL="${APP_URL:-http://${DETECTED_IP}:3000}"
+
+  # Warn if they entered localhost anyway
+  if [[ "$APP_URL" == *"localhost"* ]]; then
+    warn "You entered localhost — the app will only be reachable from the server itself."
+    warn "Re-run install.sh and enter your server IP or domain to fix this."
+  fi
 
   echo ""
   echo -e "  ${BOLD}App port${RESET} [3000]:"

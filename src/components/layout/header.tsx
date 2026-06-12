@@ -1,0 +1,79 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, User } from "lucide-react";
+import { useLocale } from "next-intl";
+import Link from "next/link";
+
+export function Header() {
+  const { data: session } = useSession();
+  const t = useTranslations();
+  const locale = useLocale();
+
+  const initials = session?.user?.name
+    ? session.user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
+
+  return (
+    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background px-6">
+      <div />
+      <div className="flex items-center gap-4">
+        {session?.user?.role && (
+          <Badge variant="secondary" className="capitalize">
+            {t(`common.${session.user.role.toLowerCase() as "admin" | "employee"}`)}
+          </Badge>
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src={session?.user?.image ?? ""} alt={session?.user?.name ?? ""} />
+                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{session?.user?.name}</p>
+                <p className="text-xs leading-none text-muted-foreground">{session?.user?.email}</p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href={`/${locale}/profile`} className="flex items-center gap-2 cursor-pointer">
+                <User className="h-4 w-4" />
+                {t("nav.profile")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
+              onClick={() => signOut({ callbackUrl: `/${locale}/login` })}
+            >
+              <LogOut className="h-4 w-4" />
+              {t("auth.logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  );
+}

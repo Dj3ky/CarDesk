@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "login": "Prijava",
+    "logout": "Odjava",
+    "email": "E-pošta",
+    "password": "Geslo",
+    "loginTitle": "Prijavite se v CarDesk",
+    "loginSubtitle": "Vnesite svoje podatke za dostop do nadzorne plošče",
+    "loginButton": "Prijava",
+    "loginError": "Napačen e-naslov ali geslo",
+    "loginLoading": "Prijavljam..."
+  },
+  "nav": {
+    "dashboard": "Nadzorna plošča",
+    "settings": "Nastavitve",
+    "profile": "Profil"
+  },
+  "dashboard": {
+    "title": "Nadzorna plošča",
+    "welcome": "Dobrodošli, {name}",
+    "role": "Vloga"
+  },
+  "common": {
+    "appName": "CarDesk",
+    "loading": "Nalagam...",
+    "save": "Shrani",
+    "cancel": "Prekliči",
+    "delete": "Izbriši",
+    "edit": "Uredi",
+    "confirm": "Potrdi",
+    "yes": "Da",
+    "no": "Ne",
+    "search": "Iskanje",
+    "filter": "Filter",
+    "export": "Izvozi",
+    "import": "Uvozi",
+    "actions": "Dejanja",
+    "status": "Status",
+    "active": "Aktiven",
+    "inactive": "Neaktiven",
+    "admin": "Administrator",
+    "employee": "Uslužbenec"
+  },
+  "errors": {
+    "unauthorized": "Nepooblaščen dostop",
+    "forbidden": "Dostop prepovedan",
+    "notFound": "Ni najdeno",
+    "serverError": "Napaka strežnika"
+  }
+}

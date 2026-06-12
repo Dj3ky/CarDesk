@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Read(//d/GitHub/**)",
+      "Bash(npx create-next-app@latest cardesk-temp --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(cp -r d:/GitHub/cardesk-temp/. d:/GitHub/CarDesk/)",
+      "Bash(rm -rf d:/GitHub/cardesk-temp)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(ls \"C:/Users/Dejan/.claude/projects/d--GitHub-CarDesk/memory/\")",
+      "Read(//c/Users/Dejan/.claude/projects/d--GitHub-CarDesk/memory/**)"
+    ]
+  }
+}

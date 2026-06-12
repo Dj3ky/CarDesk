@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "loginTitle": "Sign in to CarDesk",
+    "loginSubtitle": "Enter your credentials to access the dashboard",
+    "loginButton": "Sign in",
+    "loginError": "Invalid email or password",
+    "loginLoading": "Signing in..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}",
+    "role": "Role"
+  },
+  "common": {
+    "appName": "CarDesk",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "actions": "Actions",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "admin": "Admin",
+    "employee": "Employee"
+  },
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not found",
+    "serverError": "Server error"
+  }
+}

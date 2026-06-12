@@ -18,6 +18,7 @@ import { LogOut, Menu, User } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { LocaleSwitcher } from "./locale-switcher";
+import { ThemeToggle } from "./theme-toggle";
 import { useSidebar } from "./sidebar-context";
 
 export function Header() {
@@ -49,6 +50,7 @@ export function Header() {
       <div className="hidden md:block" />
 
       <div className="flex items-center gap-2">
+        <ThemeToggle />
         <LocaleSwitcher />
 
         {session?.user?.role && (

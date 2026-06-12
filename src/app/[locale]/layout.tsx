@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -21,10 +22,12 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const session = await auth();
 
   return (
-    <SessionProvider session={session}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        {children}
-      </NextIntlClientProvider>
-    </SessionProvider>
+    <ThemeProvider>
+      <SessionProvider session={session}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </SessionProvider>
+    </ThemeProvider>
   );
 }

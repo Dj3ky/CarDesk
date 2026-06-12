@@ -28,7 +28,7 @@ export async function GET(
   const render = renderToBuffer as (el: React.ReactElement) => Promise<Buffer>;
   const buffer = await render(element);
 
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${offer.offerNumber}.pdf"`,

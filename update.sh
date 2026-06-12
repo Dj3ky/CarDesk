@@ -57,6 +57,8 @@ section "Building"
 
 info "Building Next.js app …"
 NODE_ENV=production npm run build
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public
 success "Build complete"
 
 # ─────────────────────────────────────────────

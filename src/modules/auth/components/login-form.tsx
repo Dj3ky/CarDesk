@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import { Loader2 } from "lucide-react";
 export function LoginForm() {
   const t = useTranslations("auth");
   const locale = useLocale();
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,22 +20,21 @@ export function LoginForm() {
     setError(null);
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
     const result = await signIn("credentials", {
-      email,
-      password,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
       redirect: false,
     });
 
-    if (result?.error) {
+    if (!result || result.error) {
       setError(t("loginError"));
       setLoading(false);
-    } else {
-      router.push(`/${locale}/dashboard`);
-      router.refresh();
+      return;
     }
+
+    // Redirect manually so the locale is preserved
+    window.location.href = `/${locale}/dashboard`;
   }
 
   return (
@@ -56,6 +53,7 @@ export function LoginForm() {
           placeholder="admin@cardesk.com"
           required
           autoComplete="email"
+          disabled={loading}
         />
       </div>
       <div className="space-y-2">
@@ -66,6 +64,7 @@ export function LoginForm() {
           type="password"
           required
           autoComplete="current-password"
+          disabled={loading}
         />
       </div>
       <Button type="submit" className="w-full" disabled={loading}>

@@ -276,6 +276,11 @@ section "Building application"
 
 info "Building Next.js app (may take 1–2 minutes) …"
 NODE_ENV=production npm run build
+
+# Standalone mode requires static assets to be copied manually
+info "Copying static assets to standalone output …"
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public
 success "Build complete"
 
 # ─────────────────────────────────────────────

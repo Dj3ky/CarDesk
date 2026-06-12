@@ -232,10 +232,14 @@ fi
 section "Installing Node.js dependencies"
 # ─────────────────────────────────────────────
 
-info "Running npm install …"
-# Always use npm install (not npm ci) — regenerates lock file from package.json
-rm -f package-lock.json
-npm install 2>&1 | tail -5
+if [[ -f package-lock.json ]]; then
+  info "Running npm ci …"
+  npm ci 2>&1 | tail -5
+else
+  info "No lock file found — running npm install to generate one …"
+  npm install 2>&1 | tail -5
+  warn "Lock file generated. Commit package-lock.json to git for reproducible installs."
+fi
 success "Dependencies installed"
 
 # ─────────────────────────────────────────────

@@ -57,6 +57,7 @@ section "Building"
 
 info "Building Next.js app …"
 NODE_ENV=production npm run build
+rm -rf .next/standalone/.next/static
 cp -r .next/static .next/standalone/.next/static
 cp -r public .next/standalone/public
 success "Build complete"

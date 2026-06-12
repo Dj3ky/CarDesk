@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,14 +14,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
+import { LocaleSwitcher } from "./locale-switcher";
+import { useSidebar } from "./sidebar-context";
 
 export function Header() {
   const { data: session } = useSession();
   const t = useTranslations();
   const locale = useLocale();
+  const { setMobileOpen } = useSidebar();
 
   const initials = session?.user?.name
     ? session.user.name
@@ -32,14 +36,27 @@ export function Header() {
     : "?";
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background px-6">
-      <div />
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
+      {/* Hamburger — mobile only */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="md:hidden"
+        onClick={() => setMobileOpen(true)}
+      >
+        <Menu className="h-5 w-5" />
+      </Button>
+      <div className="hidden md:block" />
+
+      <div className="flex items-center gap-2">
+        <LocaleSwitcher />
+
         {session?.user?.role && (
-          <Badge variant="secondary" className="capitalize">
+          <Badge variant="secondary" className="capitalize hidden sm:inline-flex">
             {t(`common.${session.user.role.toLowerCase() as "admin" | "employee"}`)}
           </Badge>
         )}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">

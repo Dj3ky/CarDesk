@@ -19,7 +19,10 @@
       "Bash(xargs grep -l \"after\\(\")",
       "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/offers/[offerId]/pdf\")",
       "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/new\")",
-      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/[id]/edit\")"
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/[id]/edit\")",
+      "Bash(node scripts/generate-icons.mjs)",
+      "Bash(npx tsc *)",
+      "PowerShell(npx tsc --noEmit 2>&1)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

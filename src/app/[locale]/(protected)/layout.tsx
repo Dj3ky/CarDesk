@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { SidebarProvider } from "@/components/layout/sidebar-context";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
@@ -17,14 +18,16 @@ export default async function ProtectedLayout({ children, params }: ProtectedLay
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden pl-64">
-        <Header />
-        <main className="flex-1 overflow-y-auto bg-background p-6">
-          {children}
-        </main>
+    <SidebarProvider>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <div className="flex flex-1 flex-col overflow-hidden md:pl-64">
+          <Header />
+          <main className="flex-1 overflow-y-auto bg-background p-4 md:p-6">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

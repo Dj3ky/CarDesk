@@ -46,6 +46,6 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     update: settingsData,
   });
 
-  revalidateTag("settings");
+  revalidateTag("settings", { expire: 0 });
   return { success: true };
 }

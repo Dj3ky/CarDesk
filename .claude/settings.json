@@ -14,7 +14,9 @@
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; $env:NODE_ENV=\"production\"; npx next build 2>&1 | Select-Object -Last 40)",
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; $env:NODE_ENV=\"production\"; npx next build 2>&1 | Select-Object -Last 30)",
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; $env:NODE_ENV=\"production\"; npx next build 2>&1 | Select-Object -Last 35)",
-      "Bash(xargs grep -l \"revalidateTag\")"
+      "Bash(xargs grep -l \"revalidateTag\")",
+      "Bash(xargs grep -l \"after\\\\b\")",
+      "Bash(xargs grep -l \"after\\(\")"
     ]
   }
 }

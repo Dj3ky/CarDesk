@@ -182,6 +182,61 @@
     "admin": "Admin",
     "employee": "Employee"
   },
+  "import": {
+    "title": "Import Products",
+    "subtitle": "Upload a CSV or Excel file to bulk-import products",
+    "button": "Import",
+    "steps": {
+      "upload": "Upload File",
+      "mapping": "Map Columns",
+      "processing": "Processing"
+    },
+    "upload": {
+      "dropHere": "Drop your file here, or click to browse",
+      "formats": "Supports CSV and XLSX — any file size",
+      "clickToChange": "Click to change file",
+      "uploading": "Uploading...",
+      "continue": "Continue to Mapping",
+      "wrongFormat": "Only CSV and XLSX files are supported",
+      "uploadError": "Upload failed. Please try again."
+    },
+    "mapping": {
+      "subtitle": "{count} rows detected",
+      "colHeader": "Your Column",
+      "colSample": "Sample Data",
+      "colMapsTo": "Maps To",
+      "skip": "(Skip column)",
+      "required": "Required",
+      "missingFields": "Please map required fields: {fields}",
+      "startImport": "Start Import",
+      "starting": "Starting...",
+      "startError": "Failed to start import. Please try again."
+    },
+    "progress": {
+      "processing": "Processing {processed} of {total} rows…",
+      "complete": "Import Complete",
+      "failed": "Import Failed",
+      "inserted": "Inserted",
+      "updated": "Updated",
+      "errors": "Errors",
+      "errorsTable": "Row errors (showing {count})",
+      "rowCol": "Row",
+      "errorCol": "Error",
+      "importAnother": "Import Another File",
+      "viewProducts": "View Products"
+    },
+    "fields": {
+      "productNumber": "Product No.",
+      "barcode": "Barcode",
+      "description": "Description",
+      "brand": "Brand",
+      "supplier": "Supplier",
+      "price": "Price (ex. VAT)",
+      "vatRate": "VAT %",
+      "stock": "Stock",
+      "unit": "Unit"
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Global system configuration",

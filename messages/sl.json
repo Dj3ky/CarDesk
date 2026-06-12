@@ -182,6 +182,61 @@
     "admin": "Administrator",
     "employee": "Uslužbenec"
   },
+  "import": {
+    "title": "Uvoz izdelkov",
+    "subtitle": "Naložite CSV ali Excel datoteko za množičen uvoz izdelkov",
+    "button": "Uvozi",
+    "steps": {
+      "upload": "Naloži datoteko",
+      "mapping": "Poveži stolpce",
+      "processing": "Obdelava"
+    },
+    "upload": {
+      "dropHere": "Povlecite datoteko sem ali kliknite za izbiro",
+      "formats": "Podpira CSV in XLSX — kakršna koli velikost",
+      "clickToChange": "Kliknite za zamenjavo datoteke",
+      "uploading": "Nalagam...",
+      "continue": "Nadaljuj na preslikavo",
+      "wrongFormat": "Podprti so samo formati CSV in XLSX",
+      "uploadError": "Nalaganje ni uspelo. Prosimo, poskusite znova."
+    },
+    "mapping": {
+      "subtitle": "Zaznano {count} vrstic",
+      "colHeader": "Vaš stolpec",
+      "colSample": "Vzorčni podatek",
+      "colMapsTo": "Se preslika v",
+      "skip": "(Preskoči stolpec)",
+      "required": "Obvezno",
+      "missingFields": "Prosimo, preslikajte obvezna polja: {fields}",
+      "startImport": "Začni uvoz",
+      "starting": "Zaganjam...",
+      "startError": "Uvoza ni bilo mogoče začeti. Prosimo, poskusite znova."
+    },
+    "progress": {
+      "processing": "Obdelava {processed} od {total} vrstic…",
+      "complete": "Uvoz končan",
+      "failed": "Uvoz ni uspel",
+      "inserted": "Dodano",
+      "updated": "Posodobljeno",
+      "errors": "Napake",
+      "errorsTable": "Napake v vrsticah (prikazujem {count})",
+      "rowCol": "Vrstica",
+      "errorCol": "Napaka",
+      "importAnother": "Uvozi drugo datoteko",
+      "viewProducts": "Oglej si izdelke"
+    },
+    "fields": {
+      "productNumber": "Šifra",
+      "barcode": "Črtna koda",
+      "description": "Opis",
+      "brand": "Znamka",
+      "supplier": "Dobavitelj",
+      "price": "Cena (brez DDV)",
+      "vatRate": "DDV %",
+      "stock": "Zaloga",
+      "unit": "Enota"
+    }
+  },
   "settings": {
     "title": "Nastavitve",
     "subtitle": "Globalne sistemske nastavitve",

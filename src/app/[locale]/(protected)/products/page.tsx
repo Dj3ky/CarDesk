@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { PackagePlus } from "lucide-react";
+import { PackagePlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductTable } from "@/modules/products/components/product-table";
 import { ProductSearchBar } from "@/modules/products/components/product-search-bar";
@@ -63,12 +63,22 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
             {t("products.subtitle", { count: total })}
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/${locale}/products/new`}>
-            <PackagePlus className="mr-2 h-4 w-4" />
-            {t("products.addNew")}
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {isAdmin && (
+            <Button asChild variant="outline">
+              <Link href={`/${locale}/products/import`}>
+                <Upload className="mr-2 h-4 w-4" />
+                {t("import.button")}
+              </Link>
+            </Button>
+          )}
+          <Button asChild>
+            <Link href={`/${locale}/products/new`}>
+              <PackagePlus className="mr-2 h-4 w-4" />
+              {t("products.addNew")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Search + Filters */}

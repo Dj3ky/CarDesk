@@ -32,11 +32,12 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts  Account[]
-  sessions  Session[]
-  customers Customer[]
-  vehicles  Vehicle[]
-  products  Product[]
+  accounts   Account[]
+  sessions   Session[]
+  customers  Customer[]
+  vehicles   Vehicle[]
+  products   Product[]
+  importJobs ImportJob[]
 
   @@index([email])
   @@index([role])
@@ -167,6 +168,36 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model ImportJob {
+  id            String       @id @default(cuid())
+  status        ImportStatus @default(PENDING)
+  filename      String
+  filePath      String
+  totalRows     Int          @default(0)
+  processedRows Int          @default(0)
+  insertedRows  Int          @default(0)
+  updatedRows   Int          @default(0)
+  errorRows     Int          @default(0)
+  errors        Json         @default("[]")
+  mapping       Json         @default("{}")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  completedAt   DateTime?
+  createdById   String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Settings {

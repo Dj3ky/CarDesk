@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -12,28 +13,32 @@ import {
   FileText,
   Settings,
   User,
+  UserCog,
   X,
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 
-const navItems = [
-  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/customers", labelKey: "customers", icon: Users },
-  { href: "/products",  labelKey: "products",  icon: Package },
-  { href: "/pricelist", labelKey: "pricelist", icon: Tag },
-  { href: "/offers",    labelKey: "offers",    icon: FileText },
-  { href: "/profile",   labelKey: "profile",   icon: User },
-  { href: "/settings",  labelKey: "settings",  icon: Settings },
+const NAV_ITEMS = [
+  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard, adminOnly: false },
+  { href: "/customers", labelKey: "customers", icon: Users,           adminOnly: false },
+  { href: "/products",  labelKey: "products",  icon: Package,         adminOnly: false },
+  { href: "/pricelist", labelKey: "pricelist", icon: Tag,             adminOnly: false },
+  { href: "/offers",    labelKey: "offers",    icon: FileText,        adminOnly: false },
+  { href: "/users",     labelKey: "users",     icon: UserCog,         adminOnly: true  },
+  { href: "/profile",   labelKey: "profile",   icon: User,            adminOnly: false },
+  { href: "/settings",  labelKey: "settings",  icon: Settings,        adminOnly: true  },
 ] as const;
 
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("nav");
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-      {navItems.map(({ href, labelKey, icon: Icon }) => {
+      {NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin).map(({ href, labelKey, icon: Icon }) => {
         const fullPath = `/${locale}${href}`;
         const isActive =
           pathname === fullPath || pathname.startsWith(`${fullPath}/`);
@@ -63,7 +68,7 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Desktop sidebar — always visible at md+ */}
+      {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-50 w-64 flex-col border-r bg-sidebar">
         <div className="flex h-16 items-center border-b px-6">
           <span className="text-xl font-bold text-sidebar-primary">CarDesk</span>
@@ -71,15 +76,13 @@ export function Sidebar() {
         <NavContent />
       </aside>
 
-      {/* Mobile sidebar — overlay drawer */}
+      {/* Mobile sidebar drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          {/* Drawer */}
           <aside className="relative z-10 flex w-64 flex-col border-r bg-sidebar">
             <div className="flex h-16 items-center justify-between border-b px-6">
               <span className="text-xl font-bold text-sidebar-primary">CarDesk</span>

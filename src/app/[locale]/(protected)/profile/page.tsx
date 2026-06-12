@@ -1,62 +1,50 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileForm } from "@/modules/users/components/profile-form";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("nav");
-  return { title: t("profile") };
+  const t = await getTranslations("users.profile");
+  return { title: t("title") };
 }
 
 export default async function ProfilePage() {
-  const t = await getTranslations();
-  const session = await auth();
+  const [session, t, tc] = await Promise.all([
+    auth(),
+    getTranslations("users.profile"),
+    getTranslations("common"),
+  ]);
 
-  const initials = session?.user?.name
-    ? session.user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "?";
+  const name = session?.user?.name ?? null;
+  const email = session?.user?.email ?? "";
+
+  const initials = name
+    ? name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : email[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <h1 className="text-2xl font-bold tracking-tight">{t("nav.profile")}</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={session?.user?.image ?? ""} />
-              <AvatarFallback className="text-lg">{initials}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-semibold text-lg">{session?.user?.name}</p>
-              <p className="text-muted-foreground text-sm">{session?.user?.email}</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">{t("dashboard.role")}</p>
-              <Badge variant="secondary" className="mt-1 capitalize">
-                {session?.user?.role
-                  ? t(`common.${session.user.role.toLowerCase() as "admin" | "employee"}`)
-                  : "—"}
+    <div className="space-y-6 max-w-lg">
+      <div className="flex items-center gap-4">
+        <Avatar className="h-14 w-14">
+          <AvatarImage src={session?.user?.image ?? ""} />
+          <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+        </Avatar>
+        <div>
+          <h1 className="text-xl font-bold">{name ?? email}</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-muted-foreground">{email}</p>
+            {session?.user?.role && (
+              <Badge variant="secondary" className="capitalize text-xs">
+                {tc(session.user.role.toLowerCase() as "admin" | "employee")}
               </Badge>
-            </div>
-            <div>
-              <p className="text-muted-foreground">User ID</p>
-              <p className="mt-1 font-mono text-xs text-muted-foreground">{session?.user?.id}</p>
-            </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      <ProfileForm name={name} email={email} />
     </div>
   );
 }

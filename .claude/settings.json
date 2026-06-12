@@ -22,7 +22,13 @@
       "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/[locale]/\\(protected\\)/offers/[id]/edit\")",
       "Bash(node scripts/generate-icons.mjs)",
       "Bash(npx tsc *)",
-      "PowerShell(npx tsc --noEmit 2>&1)"
+      "PowerShell(npx tsc --noEmit 2>&1)",
+      "Bash(dir \"d:\\\\GitHub\\\\CarDesk\\\\src\\\\app\")",
+      "Read(//d/GitHub/CarDesk/src/app/**)",
+      "Bash(xargs -I {} ls -la \"{}\")",
+      "PowerShell(npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"users|profile\" } | Select-Object -First 30)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"users|profile\" -AllMatches | ForEach-Object { $_.Matches } | Select-Object -First 5)",
+      "Bash(grep -v \"^$\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

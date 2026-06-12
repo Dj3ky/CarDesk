@@ -17,7 +17,8 @@
     "pricelist": "Cenik",
     "offers": "Ponudbe",
     "settings": "Nastavitve",
-    "profile": "Profil"
+    "profile": "Profil",
+    "users": "Uporabniki"
   },
   "dashboard": {
     "title": "Nadzorna plošča",
@@ -66,6 +67,7 @@
     },
     "units": {
       "pcs": "Kosi",
+      "h": "Ure",
       "m": "Metri",
       "kg": "Kilogrami",
       "l": "Litri",
@@ -357,6 +359,44 @@
       "validUntil": "Veljavno do",
       "createdBy": "avtor"
     }
+  },
+  "users": {
+    "title": "Uporabniki",
+    "subtitle": "{count, plural, =0 {Ni uporabnikov} one {# uporabnik} two {# uporabnika} few {# uporabniki} other {# uporabnikov}}",
+    "addNew": "Dodaj uporabnika",
+    "newTitle": "Nov uporabnik",
+    "newSubtitle": "Ustvari nov uporabniški račun",
+    "editTitle": "Uredi uporabnika",
+    "deleteTitle": "Izbriši uporabnika",
+    "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
+    "noUsers": "Ni najdenih uporabnikov.",
+    "fields": {
+      "name": "Polno ime",
+      "email": "E-poštni naslov",
+      "password": "Geslo",
+      "passwordHint": "Pustite prazno, da ohranite trenutno geslo",
+      "role": "Vloga",
+      "isActive": "Aktiven račun",
+      "isActiveHint": "Neaktivni uporabniki se ne morejo prijaviti",
+      "createdAt": "Član od"
+    },
+    "actions": {
+      "activate": "Aktiviraj",
+      "deactivate": "Deaktiviraj"
+    },
+    "profile": {
+      "title": "Moj profil",
+      "accountInfo": "Podatki računa",
+      "changePassword": "Sprememba gesla",
+      "currentPassword": "Trenutno geslo",
+      "newPassword": "Novo geslo",
+      "saveProfile": "Shrani spremembe",
+      "sessionNote": "Spremembe imena začnejo veljati po naslednji prijavi."
+    },
+    "selfDeleteError": "Ne morete izbrisati lastnega računa",
+    "lastAdminError": "Ni mogoče izbrisati zadnjega administratorskega računa",
+    "selfDeactivateError": "Ne morete deaktivirati lastnega računa",
+    "emailTaken": "Ta e-poštni naslov je že v uporabi"
   },
   "errors": {
     "unauthorized": "Nepooblaščen dostop",

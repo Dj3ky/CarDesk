@@ -31,6 +31,7 @@ export function LineItemsEditor({
   currency,
 }: LineItemsEditorProps) {
   const t = useTranslations("offers");
+  const tUnits = useTranslations("products.units");
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const items = useWatch({ control, name: "items" }) ?? [];
   const [searchOpen, setSearchOpen] = useState(false);
@@ -146,7 +147,7 @@ export function LineItemsEditor({
                         className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                       >
                         {UNITS.map((u) => (
-                          <option key={u} value={u}>{u}</option>
+                          <option key={u} value={u}>{tUnits(u)}</option>
                         ))}
                       </select>
                     </td>

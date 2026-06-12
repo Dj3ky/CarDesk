@@ -14,10 +14,10 @@ export type OfferTotals = {
 };
 
 export function calcItem(item: {
-  quantity: number | string | undefined;
-  pricePerUnit: number | string | undefined;
-  vatRate: number | string | undefined;
-  discount: number | string | undefined;
+  quantity?: number | string;
+  pricePerUnit?: number | string;
+  vatRate?: number | string;
+  discount?: number | string;
 }): ItemCalc {
   const qty = Number(item.quantity) || 0;
   const price = Number(item.pricePerUnit) || 0;
@@ -35,10 +35,10 @@ export function calcItem(item: {
 
 export function calcTotals(
   items: Array<{
-    quantity: number | string | undefined;
-    pricePerUnit: number | string | undefined;
-    vatRate: number | string | undefined;
-    discount: number | string | undefined;
+    quantity?: number | string;
+    pricePerUnit?: number | string;
+    vatRate?: number | string;
+    discount?: number | string;
   }>
 ): OfferTotals {
   const vatMap = new Map<number, { base: number; amount: number }>();

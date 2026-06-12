@@ -15,12 +15,13 @@ import {
   Car,
   User,
   CalendarDays,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { DeleteCustomerDialog } from "@/modules/customers/components/delete-customer-dialog";
+import { VehicleList } from "@/modules/vehicles/components/vehicle-list";
 import { getCustomer } from "@/modules/customers/actions/get-customer";
 
 interface CustomerDetailPageProps {
@@ -187,9 +188,9 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
 
         {/* Right column — vehicles + meta */}
         <div className="space-y-6">
-          {/* Vehicles placeholder */}
+          {/* Vehicles */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <CardTitle className="text-base flex items-center gap-2">
                 <Car className="h-4 w-4" />
                 {t("customers.vehicles")}
@@ -197,13 +198,15 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
                   <Badge variant="secondary">{customer._count.vehicles}</Badge>
                 )}
               </CardTitle>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href={`/${locale}/customers/${id}/vehicles/new`}>
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  {t("vehicles.add")}
+                </Link>
+              </Button>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Car className="h-8 w-8 text-muted-foreground/40 mb-3" />
-                <p className="text-sm font-medium">{t("customers.vehiclesComingSoon")}</p>
-                <p className="text-xs text-muted-foreground mt-1">{t("customers.vehiclesPhase3")}</p>
-              </div>
+              <VehicleList customerId={id} locale={locale} />
             </CardContent>
           </Card>
 

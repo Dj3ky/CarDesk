@@ -11,6 +11,15 @@ enum Role {
   EMPLOYEE
 }
 
+enum FuelType {
+  PETROL
+  DIESEL
+  HYBRID
+  ELECTRIC
+  LPG
+  OTHER
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -26,6 +35,7 @@ model User {
   accounts  Account[]
   sessions  Session[]
   customers Customer[]
+  vehicles  Vehicle[]
 
   @@index([email])
   @@index([role])
@@ -61,16 +71,32 @@ model Customer {
   @@index([createdAt])
 }
 
-// Phase 3 — Vehicle model (placeholder)
 model Vehicle {
-  id         String   @id @default(cuid())
-  customerId String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                String   @id @default(cuid())
+  customerId        String
+  make              String
+  model             String
+  year              Int
+  vin               String?  @unique
+  registrationPlate String?
+  fuelType          FuelType @default(PETROL)
+  mileage           Int?
+  color             String?
+  notes             String?  @db.Text
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  createdById       String?
 
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer  Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdBy User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([customerId])
+  @@index([vin])
+  @@index([registrationPlate])
+  @@index([make, model])
+  @@index([year])
+  @@index([isActive])
 }
 
 model Account {

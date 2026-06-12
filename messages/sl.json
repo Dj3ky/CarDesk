@@ -23,6 +23,48 @@
     "totalCustomers": "Skupaj strank",
     "activeCustomers": "Aktivne stranke"
   },
+  "vehicles": {
+    "title": "Vozila",
+    "newTitle": "Novo vozilo",
+    "newSubtitle": "Dodajte vozilo za {customer}",
+    "editTitle": "Uredi vozilo",
+    "noVehicles": "Ni evidentiranih vozil",
+    "addFirst": "Dodaj prvo vozilo",
+    "addVehicle": "Dodaj vozilo",
+    "add": "Dodaj",
+    "create": "Ustvari vozilo",
+    "deleteTitle": "Izbriši vozilo",
+    "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
+    "fuelTypes": {
+      "petrol": "Bencin",
+      "diesel": "Dizel",
+      "hybrid": "Hibrid",
+      "electric": "Električno",
+      "lpg": "UNP",
+      "other": "Drugo"
+    },
+    "sections": {
+      "identity": "Podatki o vozilu",
+      "registration": "Registracija in VIN",
+      "specs": "Specifikacije",
+      "notes": "Opombe in status"
+    },
+    "fields": {
+      "make": "Znamka",
+      "model": "Model",
+      "year": "Letnik",
+      "fuelType": "Vrsta goriva",
+      "mileage": "Kilometraža",
+      "mileageUnit": "v kilometrih",
+      "color": "Barva",
+      "registrationPlate": "Registrska tablica",
+      "vin": "VIN",
+      "vinHint": "17-mestna identifikacijska številka vozila",
+      "notes": "Opombe",
+      "isActive": "Aktivno",
+      "isActiveHint": "Neaktivna vozila so skrita v privzetih seznamih"
+    }
+  },
   "customers": {
     "title": "Stranke",
     "subtitle": "{count, plural, =0 {Ni strank} one {# stranka} two {# stranki} few {# stranke} other {# strank}}",
@@ -35,8 +77,6 @@
     "deleteTitle": "Izbriši stranko",
     "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
     "vehicles": "Vozila",
-    "vehiclesComingSoon": "Upravljanje vozil kmalu",
-    "vehiclesPhase3": "Vozila bodo na voljo v 3. fazi",
     "sections": {
       "personal": "Osebni podatki",
       "contact": "Kontakt",
@@ -76,6 +116,7 @@
     "cancel": "Prekliči",
     "delete": "Izbriši",
     "edit": "Uredi",
+    "view": "Ogled",
     "confirm": "Potrdi",
     "yes": "Da",
     "no": "Ne",

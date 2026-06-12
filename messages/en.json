@@ -341,6 +341,21 @@
       "complete": "Mark as Completed",
       "revertToDraft": "Revert to Draft",
       "downloadPdf": "Download PDF"
+    },
+    "noOffers": "No offers found.",
+    "form": {
+      "title": "Offer Details",
+      "selectCustomer": "— Select customer —",
+      "noVehicle": "— No vehicle —",
+      "saveChanges": "Save Changes",
+      "createOffer": "Create Offer",
+      "notesPlaceholder": "Internal notes or instructions for the customer…"
+    },
+    "detail": {
+      "noVehicle": "No vehicle linked",
+      "viewCustomer": "View customer profile",
+      "validUntil": "Valid until",
+      "createdBy": "by"
     }
   },
   "errors": {

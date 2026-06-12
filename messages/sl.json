@@ -341,6 +341,21 @@
       "complete": "Označi kot zaključeno",
       "revertToDraft": "Vrni v osnutek",
       "downloadPdf": "Prenesi PDF"
+    },
+    "noOffers": "Ni najdenih ponudb.",
+    "form": {
+      "title": "Podatki ponudbe",
+      "selectCustomer": "— Izberite stranko —",
+      "noVehicle": "— Brez vozila —",
+      "saveChanges": "Shrani spremembe",
+      "createOffer": "Ustvari ponudbo",
+      "notesPlaceholder": "Interne opombe ali navodila za stranko…"
+    },
+    "detail": {
+      "noVehicle": "Ni vezanega vozila",
+      "viewCustomer": "Ogled profila stranke",
+      "validUntil": "Veljavno do",
+      "createdBy": "avtor"
     }
   },
   "errors": {

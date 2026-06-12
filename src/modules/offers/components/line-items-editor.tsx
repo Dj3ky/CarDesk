@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { Control, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2, PackageSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ export function LineItemsEditor({
   defaultVATRate,
   currency,
 }: LineItemsEditorProps) {
+  const t = useTranslations("offers");
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const items = useWatch({ control, name: "items" }) ?? [];
   const [searchOpen, setSearchOpen] = useState(false);
@@ -68,7 +70,7 @@ export function LineItemsEditor({
     <div className="space-y-3">
       {fields.length === 0 ? (
         <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-          No items yet. Click &quot;Add Item&quot; to start.
+          {t("items.noItems")}
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -76,13 +78,27 @@ export function LineItemsEditor({
             <thead>
               <tr className="border-b text-xs text-muted-foreground">
                 <th className="py-2 pl-1 pr-2 text-left font-medium w-8">#</th>
-                <th className="py-2 px-2 text-left font-medium min-w-[220px]">Description</th>
-                <th className="py-2 px-2 text-right font-medium w-20">Qty</th>
-                <th className="py-2 px-2 text-center font-medium w-20">Unit</th>
-                <th className="py-2 px-2 text-right font-medium w-24">Price (ex VAT)</th>
-                <th className="py-2 px-2 text-right font-medium w-20">VAT %</th>
-                <th className="py-2 px-2 text-right font-medium w-20">Disc %</th>
-                <th className="py-2 px-2 text-right font-medium w-24">Line Total</th>
+                <th className="py-2 px-2 text-left font-medium min-w-[220px]">
+                  {t("items.description")}
+                </th>
+                <th className="py-2 px-2 text-right font-medium w-20">
+                  {t("items.quantity")}
+                </th>
+                <th className="py-2 px-2 text-center font-medium w-20">
+                  {t("items.unit")}
+                </th>
+                <th className="py-2 px-2 text-right font-medium w-24">
+                  {t("items.pricePerUnit")}
+                </th>
+                <th className="py-2 px-2 text-right font-medium w-20">
+                  {t("items.vatRate")}
+                </th>
+                <th className="py-2 px-2 text-right font-medium w-20">
+                  {t("items.discount")}
+                </th>
+                <th className="py-2 px-2 text-right font-medium w-24">
+                  {t("items.lineTotal")}
+                </th>
                 <th className="py-2 pl-2 pr-1 w-8" />
               </tr>
             </thead>
@@ -96,7 +112,7 @@ export function LineItemsEditor({
                     <td className="py-1.5 pl-1 pr-2 text-center align-top pt-3">
                       <button
                         type="button"
-                        title="Search product"
+                        title={t("items.searchProduct")}
                         onClick={() => openSearch(index)}
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
@@ -106,12 +122,12 @@ export function LineItemsEditor({
                     <td className="py-1.5 px-2 align-top">
                       <Input
                         {...register(`items.${index}.productNumber`)}
-                        placeholder="Part no. (optional)"
+                        placeholder={t("items.productNumber")}
                         className="h-7 text-xs font-mono mb-1"
                       />
                       <Input
                         {...register(`items.${index}.description`)}
-                        placeholder="Description *"
+                        placeholder={`${t("items.description")} *`}
                         className="h-8"
                       />
                     </td>
@@ -130,9 +146,7 @@ export function LineItemsEditor({
                         className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                       >
                         {UNITS.map((u) => (
-                          <option key={u} value={u}>
-                            {u}
-                          </option>
+                          <option key={u} value={u}>{u}</option>
                         ))}
                       </select>
                     </td>
@@ -151,9 +165,7 @@ export function LineItemsEditor({
                         className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                       >
                         {VAT_PRESETS.map((v) => (
-                          <option key={v} value={v}>
-                            {v}%
-                          </option>
+                          <option key={v} value={v}>{v}%</option>
                         ))}
                       </select>
                     </td>
@@ -192,25 +204,25 @@ export function LineItemsEditor({
       <div className="flex items-center justify-between pt-1">
         <Button type="button" variant="outline" size="sm" onClick={addItem}>
           <Plus className="mr-1.5 h-4 w-4" />
-          Add Item
+          {t("items.addItem")}
         </Button>
 
         {items.length > 0 && (
           <div className="space-y-1 text-sm min-w-[220px] text-right">
             <div className="flex justify-between gap-8 text-muted-foreground">
-              <span>Subtotal (ex VAT)</span>
+              <span>{t("totals.subtotal")}</span>
               <span className="font-medium text-foreground">
                 {formatCurrency(totals.subtotalExVat, currency)}
               </span>
             </div>
             {totals.vatBreakdown.map(({ rate, amount }) => (
               <div key={rate} className="flex justify-between gap-8 text-muted-foreground">
-                <span>VAT {rate}%</span>
+                <span>{t("totals.vat", { rate })}</span>
                 <span>{formatCurrency(amount, currency)}</span>
               </div>
             ))}
             <div className="flex justify-between gap-8 border-t pt-1 font-semibold">
-              <span>Total</span>
+              <span>{t("totals.grandTotal")}</span>
               <span>{formatCurrency(totals.grandTotal, currency)}</span>
             </div>
           </div>

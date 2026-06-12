@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -48,6 +49,8 @@ interface SettingsFormProps {
 
 export function SettingsForm({ settings }: SettingsFormProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const router = useRouter();
   const [saveState, setSaveState] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -76,7 +79,12 @@ export function SettingsForm({ settings }: SettingsFormProps) {
     const result = await updateSettings(values);
     if (result.success) {
       setSaveState("success");
-      setTimeout(() => setSaveState("idle"), 3000);
+      if (values.defaultLanguage !== locale) {
+        // Redirect to the same page in the newly selected locale
+        router.push(`/${values.defaultLanguage}/settings`);
+      } else {
+        setTimeout(() => setSaveState("idle"), 3000);
+      }
     } else {
       setSaveState("error");
       setErrorMsg(result.error);

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FileText, Pencil } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -31,10 +32,12 @@ function customerLabel(
 }
 
 export function OfferTable({ offers, locale }: OfferTableProps) {
+  const t = useTranslations("offers");
+
   if (offers.length === 0) {
     return (
       <div className="rounded-lg border border-dashed py-12 text-center text-muted-foreground">
-        No offers found.
+        {t("noOffers")}
       </div>
     );
   }
@@ -44,13 +47,13 @@ export function OfferTable({ offers, locale }: OfferTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Offer No.</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Vehicle</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Valid Until</TableHead>
-            <TableHead className="text-right">Total</TableHead>
+            <TableHead>{t("fields.offerNumber")}</TableHead>
+            <TableHead>{t("fields.status")}</TableHead>
+            <TableHead>{t("fields.customer")}</TableHead>
+            <TableHead>{t("fields.vehicle")}</TableHead>
+            <TableHead>{t("fields.date")}</TableHead>
+            <TableHead>{t("fields.validUntil")}</TableHead>
+            <TableHead className="text-right">{t("fields.total")}</TableHead>
             <TableHead className="w-[80px]" />
           </TableRow>
         </TableHeader>

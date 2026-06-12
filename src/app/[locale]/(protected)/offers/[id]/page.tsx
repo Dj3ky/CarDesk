@@ -68,9 +68,13 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             <OfferStatusBadge status={offer.status} />
           </div>
           <p className="text-sm text-muted-foreground">
-            Created {formatDate(offer.createdAt)}
-            {offer.validUntil ? ` · Valid until ${formatDate(offer.validUntil)}` : ""}
-            {offer.createdBy ? ` · by ${offer.createdBy.name ?? "—"}` : ""}
+            {formatDate(offer.createdAt)}
+            {offer.validUntil
+              ? ` · ${t("detail.validUntil")} ${formatDate(offer.validUntil)}`
+              : ""}
+            {offer.createdBy
+              ? ` · ${t("detail.createdBy")} ${offer.createdBy.name ?? "—"}`
+              : ""}
           </p>
         </div>
 
@@ -82,7 +86,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               rel="noopener noreferrer"
             >
               <FileDown className="mr-1.5 h-3.5 w-3.5" />
-              Download PDF
+              {t("actions.downloadPdf")}
             </a>
           </Button>
 
@@ -91,7 +95,6 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               <Button asChild variant="outline" size="sm">
                 <Link href={`/${locale}/offers/${offer.id}/edit`}>
                   <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                  Edit
                 </Link>
               </Button>
               {isAdmin && (
@@ -115,7 +118,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">
-              Customer
+              {t("fields.customer")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1 text-sm">
@@ -133,9 +136,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             )}
             {(offer.customer.city || offer.customer.postalCode) && (
               <p className="text-muted-foreground">
-                {[offer.customer.postalCode, offer.customer.city]
-                  .filter(Boolean)
-                  .join(" ")}
+                {[offer.customer.postalCode, offer.customer.city].filter(Boolean).join(" ")}
               </p>
             )}
             {offer.customer.email && (
@@ -147,7 +148,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             <div className="pt-1">
               <Button asChild variant="link" size="sm" className="h-auto p-0 text-xs">
                 <Link href={`/${locale}/customers/${offer.customerId}`}>
-                  View customer profile →
+                  {t("detail.viewCustomer")} →
                 </Link>
               </Button>
             </div>
@@ -157,7 +158,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">
-              Vehicle
+              {t("fields.vehicle")}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm">
@@ -178,7 +179,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                 )}
               </div>
             ) : (
-              <p className="text-muted-foreground">No vehicle linked</p>
+              <p className="text-muted-foreground">{t("detail.noVehicle")}</p>
             )}
           </CardContent>
         </Card>
@@ -187,7 +188,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
       {/* Items */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Items</CardTitle>
+          <CardTitle className="text-base">{t("items.title")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -195,13 +196,13 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               <TableHeader>
                 <TableRow>
                   <TableHead className="pl-6 w-8">#</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="text-right">Qty</TableHead>
-                  <TableHead className="text-center">Unit</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">VAT%</TableHead>
-                  <TableHead className="text-right">Disc%</TableHead>
-                  <TableHead className="text-right pr-6">Total</TableHead>
+                  <TableHead>{t("items.description")}</TableHead>
+                  <TableHead className="text-right">{t("items.quantity")}</TableHead>
+                  <TableHead className="text-center">{t("items.unit")}</TableHead>
+                  <TableHead className="text-right">{t("items.pricePerUnit")}</TableHead>
+                  <TableHead className="text-right">{t("items.vatRate")}</TableHead>
+                  <TableHead className="text-right">{t("items.discount")}</TableHead>
+                  <TableHead className="text-right pr-6">{t("items.lineTotal")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -247,20 +248,20 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
           <div className="flex justify-end border-t p-6">
             <div className="w-56 space-y-1.5 text-sm">
               <div className="flex justify-between text-muted-foreground">
-                <span>Subtotal (ex VAT)</span>
+                <span>{t("totals.subtotal")}</span>
                 <span className="font-medium text-foreground">
                   {formatCurrency(totals.subtotalExVat, offer.currency)}
                 </span>
               </div>
               {totals.vatBreakdown.map(({ rate, amount }) => (
                 <div key={rate} className="flex justify-between text-muted-foreground">
-                  <span>VAT {rate}%</span>
+                  <span>{t("totals.vat", { rate })}</span>
                   <span>{formatCurrency(amount, offer.currency)}</span>
                 </div>
               ))}
               <Separator className="my-1" />
               <div className="flex justify-between font-semibold text-base">
-                <span>Total</span>
+                <span>{t("totals.grandTotal")}</span>
                 <span>{formatCurrency(totals.grandTotal, offer.currency)}</span>
               </div>
             </div>
@@ -272,7 +273,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
       {offer.notes && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Notes</CardTitle>
+            <CardTitle className="text-base">{t("fields.notes")}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">{offer.notes}</p>

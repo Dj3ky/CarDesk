@@ -163,12 +163,86 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   COMPLETED: { bg: "#ede9fe", text: "#5b21b6" },
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: "Draft",
-  SENT: "Sent",
-  APPROVED: "Approved",
-  REJECTED: "Rejected",
-  COMPLETED: "Completed",
+type PdfStrings = {
+  title: string;
+  no: string;
+  date: string;
+  validUntil: string;
+  customer: string;
+  vehicle: string;
+  colDescription: string;
+  colQty: string;
+  colUnit: string;
+  colPrice: string;
+  colVat: string;
+  colDisc: string;
+  colTotal: string;
+  subtotal: string;
+  vatLine: (rate: number, base: string) => string;
+  grandTotal: string;
+  notes: string;
+  terms: string;
+  page: (n: number, total: number) => string;
+  statuses: Record<string, string>;
+};
+
+const STRINGS: Record<string, PdfStrings> = {
+  en: {
+    title: "SERVICE OFFER",
+    no: "No:",
+    date: "Date:",
+    validUntil: "Valid until:",
+    customer: "Customer",
+    vehicle: "Vehicle",
+    colDescription: "Description",
+    colQty: "Qty",
+    colUnit: "Unit",
+    colPrice: "Price",
+    colVat: "VAT%",
+    colDisc: "Disc%",
+    colTotal: "Total",
+    subtotal: "Subtotal (ex. VAT)",
+    vatLine: (rate, base) => `VAT ${rate}% on ${base}`,
+    grandTotal: "TOTAL",
+    notes: "Notes",
+    terms: "Terms & Conditions",
+    page: (n, total) => `Page ${n} / ${total}`,
+    statuses: {
+      DRAFT: "Draft",
+      SENT: "Sent",
+      APPROVED: "Approved",
+      REJECTED: "Rejected",
+      COMPLETED: "Completed",
+    },
+  },
+  sl: {
+    title: "SERVISNA PONUDBA",
+    no: "Št.:",
+    date: "Datum:",
+    validUntil: "Veljavno do:",
+    customer: "Stranka",
+    vehicle: "Vozilo",
+    colDescription: "Opis",
+    colQty: "Kol.",
+    colUnit: "Enota",
+    colPrice: "Cena",
+    colVat: "DDV%",
+    colDisc: "Pop.%",
+    colTotal: "Skupaj",
+    subtotal: "Skupaj (brez DDV)",
+    vatLine: (rate, base) => `DDV ${rate}% na ${base}`,
+    grandTotal: "SKUPAJ",
+    notes: "Opombe",
+    terms: "Splošni pogoji",
+    page: (n, total) => `Stran ${n} / ${total}`,
+    statuses: {
+      DRAFT: "Osnutek",
+      SENT: "Poslano",
+      APPROVED: "Potrjeno",
+      REJECTED: "Zavrnjeno",
+      COMPLETED: "Zaključeno",
+    },
+  },
 };
 
 export type OfferPDFProps = {
@@ -177,6 +251,7 @@ export type OfferPDFProps = {
 };
 
 export function OfferPDF({ offer, settings }: OfferPDFProps) {
+  const s = STRINGS[settings.defaultLanguage] ?? STRINGS.en;
   const totals = calcTotals(offer.items);
   const statusColor = STATUS_COLORS[offer.status] ?? STATUS_COLORS.DRAFT;
   const customerName = offer.customer.companyName
@@ -212,24 +287,24 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
           </View>
 
           <View style={styles.offerBlock}>
-            <Text style={styles.offerTitle}>SERVICE OFFER</Text>
+            <Text style={styles.offerTitle}>{s.title}</Text>
             <Text style={styles.offerMeta}>
-              <Text style={styles.offerMetaBold}>No: </Text>
+              <Text style={styles.offerMetaBold}>{s.no} </Text>
               {offer.offerNumber}
             </Text>
             <Text style={styles.offerMeta}>
-              <Text style={styles.offerMetaBold}>Date: </Text>
+              <Text style={styles.offerMetaBold}>{s.date} </Text>
               {fmtDate(offer.createdAt)}
             </Text>
             {offer.validUntil ? (
               <Text style={styles.offerMeta}>
-                <Text style={styles.offerMetaBold}>Valid until: </Text>
+                <Text style={styles.offerMetaBold}>{s.validUntil} </Text>
                 {fmtDate(offer.validUntil)}
               </Text>
             ) : null}
             <View style={[styles.statusBadge, { backgroundColor: statusColor.bg }]}>
               <Text style={[styles.statusText, { color: statusColor.text }]}>
-                {STATUS_LABELS[offer.status] ?? offer.status}
+                {s.statuses[offer.status] ?? offer.status}
               </Text>
             </View>
           </View>
@@ -238,7 +313,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
         {/* ── Customer + Vehicle ── */}
         <View style={styles.infoRow}>
           <View style={styles.infoCard}>
-            <Text style={styles.infoCardTitle}>Customer</Text>
+            <Text style={styles.infoCardTitle}>{s.customer}</Text>
             <Text style={[styles.infoLine, styles.infoBold]}>{customerName}</Text>
             {offer.customer.companyName ? (
               <Text style={styles.infoLine}>
@@ -269,7 +344,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
 
           {offer.vehicle ? (
             <View style={styles.infoCard}>
-              <Text style={styles.infoCardTitle}>Vehicle</Text>
+              <Text style={styles.infoCardTitle}>{s.vehicle}</Text>
               <Text style={[styles.infoLine, styles.infoBold]}>
                 {offer.vehicle.make} {offer.vehicle.model} ({offer.vehicle.year})
               </Text>
@@ -282,7 +357,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
             </View>
           ) : (
             <View style={[styles.infoCard, { backgroundColor: "#f8fafc" }]}>
-              <Text style={styles.infoCardTitle}>Vehicle</Text>
+              <Text style={styles.infoCardTitle}>{s.vehicle}</Text>
               <Text style={{ color: SLATE }}>—</Text>
             </View>
           )}
@@ -292,13 +367,13 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableHeaderCell, styles.colNum]}>#</Text>
-            <Text style={[styles.tableHeaderCell, styles.colDesc]}>Description</Text>
-            <Text style={[styles.tableHeaderCell, styles.colQty]}>Qty</Text>
-            <Text style={[styles.tableHeaderCell, styles.colUnit]}>Unit</Text>
-            <Text style={[styles.tableHeaderCell, styles.colPrice]}>Price</Text>
-            <Text style={[styles.tableHeaderCell, styles.colVat]}>VAT%</Text>
-            <Text style={[styles.tableHeaderCell, styles.colDisc]}>Disc%</Text>
-            <Text style={[styles.tableHeaderCell, styles.colTotal]}>Total</Text>
+            <Text style={[styles.tableHeaderCell, styles.colDesc]}>{s.colDescription}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colQty]}>{s.colQty}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colUnit]}>{s.colUnit}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colPrice]}>{s.colPrice}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colVat]}>{s.colVat}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colDisc]}>{s.colDisc}</Text>
+            <Text style={[styles.tableHeaderCell, styles.colTotal]}>{s.colTotal}</Text>
           </View>
 
           {offer.items.map((item, idx) => {
@@ -338,7 +413,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
         <View style={styles.totalsSection}>
           <View style={styles.totalsBox}>
             <View style={styles.totalsRow}>
-              <Text style={styles.totalsLabel}>Subtotal (ex. VAT)</Text>
+              <Text style={styles.totalsLabel}>{s.subtotal}</Text>
               <Text style={styles.totalsValue}>
                 {fmtNum(totals.subtotalExVat, offer.currency)}
               </Text>
@@ -346,14 +421,14 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
             {totals.vatBreakdown.map(({ rate, base, amount }) => (
               <View key={rate} style={styles.totalsRow}>
                 <Text style={styles.totalsLabel}>
-                  VAT {rate}% on {base.toFixed(2).replace(".", ",")}
+                  {s.vatLine(rate, base.toFixed(2).replace(".", ","))}
                 </Text>
                 <Text style={styles.totalsValue}>{fmtNum(amount, offer.currency)}</Text>
               </View>
             ))}
             <View style={styles.totalsDivider} />
             <View style={styles.grandTotalRow}>
-              <Text style={styles.grandTotalLabel}>TOTAL</Text>
+              <Text style={styles.grandTotalLabel}>{s.grandTotal}</Text>
               <Text style={styles.grandTotalValue}>
                 {fmtNum(totals.grandTotal, offer.currency)}
               </Text>
@@ -364,7 +439,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
         {/* ── Notes ── */}
         {offer.notes ? (
           <View style={styles.notesSection}>
-            <Text style={styles.notesTitle}>Notes</Text>
+            <Text style={styles.notesTitle}>{s.notes}</Text>
             <Text style={styles.notesText}>{offer.notes}</Text>
           </View>
         ) : null}
@@ -372,7 +447,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
         {/* ── T&C ── */}
         {settings.termsAndConditions ? (
           <View style={styles.notesSection}>
-            <Text style={styles.notesTitle}>Terms & Conditions</Text>
+            <Text style={styles.notesTitle}>{s.terms}</Text>
             <Text style={[styles.notesText, { fontSize: 7.5 }]}>
               {settings.termsAndConditions}
             </Text>
@@ -388,7 +463,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
           <Text
             style={styles.footerText}
             render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} / ${totalPages}`
+              s.page(pageNumber, totalPages)
             }
           />
         </View>

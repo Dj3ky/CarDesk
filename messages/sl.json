@@ -182,6 +182,56 @@
     "admin": "Administrator",
     "employee": "Uslužbenec"
   },
+  "settings": {
+    "title": "Nastavitve",
+    "subtitle": "Globalne sistemske nastavitve",
+    "save": "Shrani nastavitve",
+    "saving": "Shranjujem...",
+    "saveSuccess": "Nastavitve so bile uspešno shranjene",
+    "saveError": "Napaka pri shranjevanju nastavitev",
+    "sections": {
+      "company": "Podatki o podjetju",
+      "companyDesc": "Podatki vašega podjetja za dokumente in e-pošto",
+      "finance": "Finančne nastavitve",
+      "financeDesc": "Privzete vrednosti za ponudbe in račune",
+      "documents": "Nastavitve dokumentov",
+      "documentsDesc": "Predpone za oštevilčenje ponudb in računov",
+      "pdf": "PDF in pravni pogoji",
+      "pdfDesc": "Vsebina v generiranih PDF dokumentih",
+      "system": "Sistemske nastavitve",
+      "systemDesc": "Jezikovne in regionalne nastavitve"
+    },
+    "fields": {
+      "companyName": "Naziv podjetja",
+      "companyVAT": "Davčna številka (DDV-ID)",
+      "companyAddress": "Naslov",
+      "companyEmail": "E-pošta podjetja",
+      "companyPhone": "Telefon podjetja",
+      "companyLogo": "URL logotipa",
+      "companyLogoHint": "Direktna URL do slike logotipa (PNG ali SVG)",
+      "defaultVATRate": "Privzeti DDV %",
+      "currency": "Valuta",
+      "offerPrefix": "Predpona ponudbe",
+      "offerPrefixHint": "npr. PON → PON-2024-001",
+      "invoicePrefix": "Predpona računa",
+      "invoicePrefixHint": "npr. RAČ → RAČ-2024-001",
+      "pdfFooterText": "Besedilo v nogi PDF",
+      "pdfFooterTextHint": "Besedilo na dnu vsakega generiranega dokumenta",
+      "termsAndConditions": "Splošni pogoji poslovanja",
+      "termsAndConditionsHint": "Pogoji prikazani na ponudbah in računih",
+      "defaultLanguage": "Privzeti jezik"
+    },
+    "currencies": {
+      "EUR": "EUR — Euro",
+      "USD": "USD — ameriški dolar",
+      "GBP": "GBP — britanski funt",
+      "CHF": "CHF — švicarski frank"
+    },
+    "languages": {
+      "en": "Angleščina",
+      "sl": "Slovenščina"
+    }
+  },
   "errors": {
     "unauthorized": "Nepooblaščen dostop",
     "forbidden": "Dostop prepovedan",

@@ -21,7 +21,7 @@ function isAuthPath(pathname: string): boolean {
 export default auth(async function proxy(req: NextRequest & { auth?: unknown }) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/api/auth")) {
+  if (pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 

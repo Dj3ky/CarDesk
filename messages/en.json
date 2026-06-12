@@ -182,6 +182,56 @@
     "admin": "Admin",
     "employee": "Employee"
   },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Global system configuration",
+    "save": "Save Settings",
+    "saving": "Saving...",
+    "saveSuccess": "Settings saved successfully",
+    "saveError": "Failed to save settings",
+    "sections": {
+      "company": "Company Information",
+      "companyDesc": "Your company details used in documents and emails",
+      "finance": "Finance Settings",
+      "financeDesc": "Default values for new offers and invoices",
+      "documents": "Document Settings",
+      "documentsDesc": "Numbering prefixes for offers and invoices",
+      "pdf": "PDF & Legal",
+      "pdfDesc": "Content shown in generated PDF documents",
+      "system": "System Settings",
+      "systemDesc": "Language and regional preferences"
+    },
+    "fields": {
+      "companyName": "Company Name",
+      "companyVAT": "VAT Number",
+      "companyAddress": "Address",
+      "companyEmail": "Company Email",
+      "companyPhone": "Company Phone",
+      "companyLogo": "Logo URL",
+      "companyLogoHint": "Direct URL to your company logo image (PNG or SVG)",
+      "defaultVATRate": "Default VAT %",
+      "currency": "Currency",
+      "offerPrefix": "Offer Prefix",
+      "offerPrefixHint": "e.g. OFF → OFF-2024-001",
+      "invoicePrefix": "Invoice Prefix",
+      "invoicePrefixHint": "e.g. INV → INV-2024-001",
+      "pdfFooterText": "PDF Footer Text",
+      "pdfFooterTextHint": "Text printed at the bottom of every generated document",
+      "termsAndConditions": "Terms & Conditions",
+      "termsAndConditionsHint": "Terms displayed on offers and invoices",
+      "defaultLanguage": "Default Language"
+    },
+    "currencies": {
+      "EUR": "EUR — Euro",
+      "USD": "USD — US Dollar",
+      "GBP": "GBP — British Pound",
+      "CHF": "CHF — Swiss Franc"
+    },
+    "languages": {
+      "en": "English",
+      "sl": "Slovenian"
+    }
+  },
   "errors": {
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",

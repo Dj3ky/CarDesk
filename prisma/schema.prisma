@@ -168,3 +168,21 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Settings {
+  id                 String   @id @default("settings")
+  companyName        String   @default("")
+  companyVAT         String?
+  companyAddress     String?  @db.Text
+  companyEmail       String?
+  companyPhone       String?
+  companyLogo        String?
+  defaultVATRate     Decimal  @db.Decimal(5, 2) @default(22.00)
+  defaultLanguage    String   @default("en")
+  currency           String   @default("EUR")
+  offerPrefix        String   @default("OFF")
+  invoicePrefix      String   @default("INV")
+  pdfFooterText      String?  @db.Text
+  termsAndConditions String?  @db.Text
+  updatedAt          DateTime @updatedAt
+}

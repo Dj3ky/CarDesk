@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import withPWAInit from "next-pwa";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const withPWA = withPWAInit({
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
@@ -13,9 +13,7 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
-  },
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "pg", "bcryptjs"],
 };
 
-export default withNextIntl(withPWA(nextConfig) as NextConfig);
+export default withNextIntl(withPWA(nextConfig));

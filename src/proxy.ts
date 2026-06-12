@@ -18,7 +18,7 @@ function isAuthPath(pathname: string): boolean {
   return authPaths.some((p) => stripped === p || stripped.startsWith(`${p}/`));
 }
 
-export default auth(async function middleware(req: NextRequest & { auth?: unknown }) {
+export default auth(async function proxy(req: NextRequest & { auth?: unknown }) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/api/auth")) {

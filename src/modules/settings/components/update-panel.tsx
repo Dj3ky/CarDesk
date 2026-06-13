@@ -64,9 +64,15 @@ export function UpdatePanel() {
 
     try {
       const res = await fetch("/api/backup/git-pull", { method: "POST" });
-      if (!res.ok || !res.body) {
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
         setPullStatus("error");
-        setPullLines((prev) => [...prev, `Error: HTTP ${res.status}`]);
+        setPullLines((prev) => [...prev, `Error: ${json.error ?? `HTTP ${res.status}`}`]);
+        return;
+      }
+      if (!res.body) {
+        setPullStatus("error");
+        setPullLines((prev) => [...prev, "Error: no response body"]);
         return;
       }
 

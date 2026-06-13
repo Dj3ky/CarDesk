@@ -27,6 +27,14 @@ export async function POST() {
   }
 
   const projectRoot = findProjectRoot();
+
+  if (!existsSync(path.join(projectRoot, ".env.local"))) {
+    return Response.json(
+      { error: ".env.local not found — run install.sh on the server first." },
+      { status: 500 }
+    );
+  }
+
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({

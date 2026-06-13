@@ -60,7 +60,7 @@
       "notes": "Notes & Status"
     },
     "fields": {
-      "productNumber": "Product No.",
+      "productNumber": "Catalog No.",
       "barcode": "Barcode",
       "description": "Description",
       "brand": "Brand",
@@ -245,7 +245,7 @@
       "viewProducts": "View Products"
     },
     "fields": {
-      "productNumber": "Product No.",
+      "productNumber": "Catalog No.",
       "barcode": "Barcode",
       "description": "Description",
       "brand": "Brand",
@@ -416,7 +416,7 @@
     "items": {
       "title": "Items",
       "description": "Description",
-      "productNumber": "Product No.",
+      "productNumber": "Catalog No.",
       "quantity": "Qty",
       "unit": "Unit",
       "pricePerUnit": "Price (ex VAT)",

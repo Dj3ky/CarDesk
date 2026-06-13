@@ -60,7 +60,7 @@
       "notes": "Opombe in status"
     },
     "fields": {
-      "productNumber": "Šifra",
+      "productNumber": "Kataloška št.",
       "barcode": "Črtna koda",
       "description": "Opis",
       "brand": "Znamka",
@@ -245,7 +245,7 @@
       "viewProducts": "Oglej si izdelke"
     },
     "fields": {
-      "productNumber": "Šifra",
+      "productNumber": "Kataloška št.",
       "barcode": "Črtna koda",
       "description": "Opis",
       "brand": "Znamka",
@@ -416,7 +416,7 @@
     "items": {
       "title": "Postavke",
       "description": "Opis",
-      "productNumber": "Šifra",
+      "productNumber": "Kataloška št.",
       "quantity": "Kol.",
       "unit": "Enota",
       "pricePerUnit": "Cena (brez DDV)",

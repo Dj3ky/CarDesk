@@ -8,6 +8,7 @@ export type ProductListItem = {
   description: string;
   brand: string | null;
   supplier: string | null;
+  substitutionPart: string | null;
   price: string;       // Decimal serialised as string
   vatRate: string;     // Decimal serialised as string
   stock: number;

@@ -71,6 +71,7 @@
       "vatRate": "DDV %",
       "stock": "Zaloga",
       "unit": "Enota",
+      "substitutionPart": "Nadomestna šifra",
       "notes": "Opombe",
       "isActive": "Aktiven izdelek",
       "isActiveHint": "Neaktivni izdelki so skriti v ceniku"
@@ -252,7 +253,8 @@
       "price": "Cena (brez DDV)",
       "vatRate": "DDV %",
       "stock": "Zaloga",
-      "unit": "Enota"
+      "unit": "Enota",
+      "substitutionPart": "Nadomestna šifra"
     }
   },
   "settings": {

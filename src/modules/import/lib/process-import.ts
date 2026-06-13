@@ -25,6 +25,7 @@ async function upsertProductBatch(
       ${p.description},
       ${p.brand},
       ${p.supplier},
+      ${p.substitutionPart},
       ${new Prisma.Decimal(p.price)},
       ${new Prisma.Decimal(p.vatRate)},
       ${p.stock},
@@ -39,20 +40,21 @@ async function upsertProductBatch(
   const result = await prisma.$queryRaw<{ inserted: boolean }[]>(Prisma.sql`
     INSERT INTO "Product" (
       "id", "productNumber", "barcode", "description",
-      "brand", "supplier", "price", "vatRate",
+      "brand", "supplier", "substitutionPart", "price", "vatRate",
       "stock", "unit", "isActive", "createdAt", "updatedAt", "createdById"
     )
     VALUES ${Prisma.join(values)}
     ON CONFLICT ("productNumber") DO UPDATE SET
-      "barcode"     = COALESCE(EXCLUDED."barcode", "Product"."barcode"),
-      "description" = EXCLUDED."description",
-      "brand"       = COALESCE(EXCLUDED."brand", "Product"."brand"),
-      "supplier"    = COALESCE(EXCLUDED."supplier", "Product"."supplier"),
-      "price"       = EXCLUDED."price",
-      "vatRate"     = EXCLUDED."vatRate",
-      "stock"       = EXCLUDED."stock",
-      "unit"        = EXCLUDED."unit",
-      "updatedAt"   = ${now}
+      "barcode"          = COALESCE(EXCLUDED."barcode", "Product"."barcode"),
+      "description"      = EXCLUDED."description",
+      "brand"            = COALESCE(EXCLUDED."brand", "Product"."brand"),
+      "supplier"         = COALESCE(EXCLUDED."supplier", "Product"."supplier"),
+      "substitutionPart" = COALESCE(EXCLUDED."substitutionPart", "Product"."substitutionPart"),
+      "price"            = EXCLUDED."price",
+      "vatRate"          = EXCLUDED."vatRate",
+      "stock"            = EXCLUDED."stock",
+      "unit"             = EXCLUDED."unit",
+      "updatedAt"        = ${now}
     RETURNING (xmax = 0) AS inserted
   `);
 

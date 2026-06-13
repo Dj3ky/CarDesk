@@ -71,6 +71,7 @@
       "vatRate": "VAT %",
       "stock": "Stock",
       "unit": "Unit",
+      "substitutionPart": "Substitution Part No.",
       "notes": "Notes",
       "isActive": "Active product",
       "isActiveHint": "Inactive products are hidden from the pricelist"
@@ -252,7 +253,8 @@
       "price": "Price (ex. VAT)",
       "vatRate": "VAT %",
       "stock": "Stock",
-      "unit": "Unit"
+      "unit": "Unit",
+      "substitutionPart": "Substitution Part No."
     }
   },
   "settings": {

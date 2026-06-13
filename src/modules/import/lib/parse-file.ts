@@ -66,6 +66,7 @@ export function autoMapColumns(headers: string[]): ColumnMapping {
     vatRate: /vat|ddv|davek|tax.?rate|mwst/i,
     stock: /stock|zaloga|qty|quantity|koli[cč]/i,
     unit: /^unit$|enota|^um$|^uom$/i,
+    substitutionPart: /substit|nadomest|replacement|repl[._-]?part|alt[._-]?part/i,
   };
 
   const mapping: ColumnMapping = {};
@@ -133,6 +134,7 @@ export function mapAndValidateRow(
   const brand = get("brand") || null;
   const supplier = get("supplier") || null;
   const unit = (get("unit") || "pcs").substring(0, 10);
+  const substitutionPart = get("substitutionPart") || null;
 
   return {
     product: {
@@ -141,6 +143,7 @@ export function mapAndValidateRow(
       description: description.substring(0, 500),
       brand: brand ? brand.substring(0, 100) : null,
       supplier: supplier ? supplier.substring(0, 100) : null,
+      substitutionPart: substitutionPart && substitutionPart.length <= 100 ? substitutionPart : null,
       price,
       vatRate,
       stock: isNaN(stock) ? 0 : Math.max(0, stock),

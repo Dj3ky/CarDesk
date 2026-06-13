@@ -66,6 +66,7 @@ export async function getProducts(
         description: true,
         brand: true,
         supplier: true,
+        substitutionPart: true,
         price: true,
         vatRate: true,
         stock: true,

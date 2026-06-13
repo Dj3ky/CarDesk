@@ -51,6 +51,7 @@ export function ProductForm({ product }: ProductFormProps) {
       description: product?.description ?? "",
       brand: product?.brand ?? "",
       supplier: product?.supplier ?? "",
+      substitutionPart: product?.substitutionPart ?? "",
       price: product ? parseFloat(product.price) : (0 as unknown as number),
       vatRate: product ? parseFloat(product.vatRate) : 22,
       stock: product?.stock ?? 0,
@@ -149,6 +150,19 @@ export function ProductForm({ product }: ProductFormProps) {
                   <FormLabel>{t("products.fields.supplier")}</FormLabel>
                   <FormControl>
                     <Input placeholder="Auto Parts d.o.o." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="substitutionPart"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("products.fields.substitutionPart")}</FormLabel>
+                  <FormControl>
+                    <Input className="font-mono" placeholder="ART-002" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

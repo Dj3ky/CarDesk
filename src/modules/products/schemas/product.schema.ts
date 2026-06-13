@@ -48,6 +48,12 @@ export const productSchema = z.object({
     .default(0),
   unit: z.string().default("pcs"),
   isActive: z.boolean().default(true),
+  substitutionPart: z
+    .string()
+    .max(100)
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => v?.trim() || undefined),
   notes: z
     .string()
     .max(2000)

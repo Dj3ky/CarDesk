@@ -20,6 +20,11 @@ echo ""
 
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
+# When run from the Next.js standalone server via the UI, the process inherits
+# NODE_PATH pointing at .next/standalone/node_modules/. Unset it so that npm,
+# prisma, and node all resolve modules from the project root instead.
+unset NODE_PATH NODE_OPTIONS
+
 # Remove stale standalone build BEFORE git pull so this runs even when bash
 # has buffered the old version of this script. The corrupted Prisma files
 # inside .next/standalone/node_modules/ cause npm postinstall to fail.

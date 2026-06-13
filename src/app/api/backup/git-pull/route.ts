@@ -37,14 +37,14 @@ export async function POST() {
   }
 
   // Remove stale standalone build before npm install runs.
-  // The corrupted Prisma package.json inside .next/standalone/node_modules/
-  // causes npm to fail even though we're installing into the project root.
+  // Corrupted Prisma files inside .next/standalone/node_modules/ cause npm to
+  // fail even when installing into the project root (NODE_PATH pollution).
   const standaloneDir = path.join(projectRoot, ".next", "standalone");
   if (existsSync(standaloneDir)) {
     try {
       rmSync(standaloneDir, { recursive: true, force: true });
     } catch {
-      // Non-fatal — update.sh will clean it too
+      // Non-fatal — update.sh cleans it too
     }
   }
 
@@ -52,10 +52,8 @@ export async function POST() {
 
   const stream = new ReadableStream({
     start(controller) {
-      // Strip npm_config_* vars inherited from the running server — they can
-      // redirect where npm installs (e.g. npm_config_prefix pointing at standalone).
-      // Strip vars that the standalone Next.js server sets and that redirect
-      // npm/Node module resolution into .next/standalone/node_modules/.
+      // Strip env vars the standalone server sets that redirect npm/Node module
+      // resolution into .next/standalone/node_modules/ instead of the project root.
       const STRIP = /^(npm_|NODE_PATH$|NODE_OPTIONS$)/;
       const env = Object.fromEntries(
         Object.entries(process.env).filter(([k]) => !STRIP.test(k))
@@ -72,10 +70,30 @@ export async function POST() {
         controller.enqueue(encoder.encode(clean));
       }
 
-      proc.stdout.on("data", send);
-      proc.stderr.on("data", send);
+      // Send a keepalive dot every 25 s so nginx (60 s proxy_read_timeout)
+      // does not drop the connection during silent steps like npm install.
+      let lastOutput = Date.now();
+      const heartbeat = setInterval(() => {
+        if (Date.now() - lastOutput >= 25_000) {
+          try {
+            controller.enqueue(encoder.encode("."));
+          } catch {
+            clearInterval(heartbeat);
+          }
+        }
+      }, 25_000);
+
+      proc.stdout.on("data", (data: Buffer) => {
+        lastOutput = Date.now();
+        send(data);
+      });
+      proc.stderr.on("data", (data: Buffer) => {
+        lastOutput = Date.now();
+        send(data);
+      });
 
       proc.on("close", (code: number | null) => {
+        clearInterval(heartbeat);
         controller.enqueue(
           encoder.encode(`\n[Process exited with code ${code ?? "unknown"}]`)
         );
@@ -83,6 +101,7 @@ export async function POST() {
       });
 
       proc.on("error", (err: Error) => {
+        clearInterval(heartbeat);
         controller.enqueue(encoder.encode(`\nError: ${err.message}`));
         controller.close();
       });

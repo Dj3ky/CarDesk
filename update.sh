@@ -63,16 +63,18 @@ if [[ -f .env.local ]]; then
   fi
 fi
 
+SCHEMA="$(pwd)/prisma/schema.prisma"
+
 info "Generating Prisma client …"
-node_modules/.bin/prisma generate
+node_modules/.bin/prisma generate --schema "$SCHEMA"
 
 DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
 if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
   info "Applying migrations …"
-  DATABASE_URL="$DB_URL" node_modules/.bin/prisma migrate deploy
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma migrate deploy --schema "$SCHEMA"
 else
   info "No migrations found — pushing schema to database …"
-  DATABASE_URL="$DB_URL" node_modules/.bin/prisma db push --accept-data-loss
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma db push --schema "$SCHEMA" --accept-data-loss
 fi
 success "Database up to date"
 

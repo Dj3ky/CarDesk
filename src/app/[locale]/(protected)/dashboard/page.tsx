@@ -84,7 +84,14 @@ export default async function DashboardPage() {
   ) as Record<string, number>;
 
   const pendingCount = (statusMap["SENT"] ?? 0) + (statusMap["APPROVED"] ?? 0);
-  const mtdTotals = calcTotals(mtdOfferItems);
+  const mtdTotals = calcTotals(
+    mtdOfferItems.map((i) => ({
+      quantity: i.quantity.toNumber(),
+      pricePerUnit: i.pricePerUnit.toNumber(),
+      vatRate: i.vatRate.toNumber(),
+      discount: i.discount.toNumber(),
+    }))
+  );
   const settings = await prisma.settings.findFirst({ select: { currency: true } });
   const currency = settings?.currency ?? "EUR";
 
@@ -215,7 +222,14 @@ export default async function DashboardPage() {
                     const customerName = offer.customer.companyName
                       ? offer.customer.companyName
                       : `${offer.customer.firstName} ${offer.customer.lastName}`;
-                    const total = calcTotals(offer.items).grandTotal;
+                    const total = calcTotals(
+                      offer.items.map((i) => ({
+                        quantity: i.quantity.toNumber(),
+                        pricePerUnit: i.pricePerUnit.toNumber(),
+                        vatRate: i.vatRate.toNumber(),
+                        discount: i.discount.toNumber(),
+                      }))
+                    ).grandTotal;
                     return (
                       <TableRow key={offer.id} className="cursor-pointer hover:bg-muted/50">
                         <TableCell>

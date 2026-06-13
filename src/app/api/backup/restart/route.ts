@@ -1,5 +1,8 @@
 import { after } from "next/server";
+import { exec } from "child_process";
 import { auth } from "@/lib/auth";
+
+const SERVICE_NAME = process.env.SYSTEMD_SERVICE ?? "cardesk";
 
 export async function POST() {
   const session = await auth();
@@ -7,10 +10,13 @@ export async function POST() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Schedule process exit after the response is flushed to the client.
-  // The container orchestrator (Docker, PM2, systemd) will restart the process.
   after(() => {
-    process.exit(0);
+    exec(`systemctl restart ${SERVICE_NAME}`, (err) => {
+      if (err) {
+        // Fallback if systemctl is unavailable (e.g. Docker without systemd)
+        process.exit(1);
+      }
+    });
   });
 
   return Response.json({ success: true });

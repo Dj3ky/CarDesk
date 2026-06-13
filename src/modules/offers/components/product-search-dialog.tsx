@@ -73,7 +73,7 @@ export function ProductSearchDialog({
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             autoFocus
           />
-          <Button onClick={handleSearch} disabled={!query.trim() || isPending}>
+          <Button onClick={() => handleSearch()} disabled={!query.trim() || isPending}>
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (

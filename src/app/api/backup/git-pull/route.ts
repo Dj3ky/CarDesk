@@ -1,10 +1,24 @@
 import { auth } from "@/lib/auth";
 import { spawn } from "child_process";
+import { existsSync } from "fs";
+import path from "path";
 
 export const runtime = "nodejs";
 
-// Strip ANSI colour/style escape sequences from shell output
 const ANSI_RE = /\x1b\[[0-9;]*[mGKHF]/g;
+
+// Walk up from cwd until we find the directory that contains update.sh.
+// In dev cwd is the project root; in standalone production it is .next/standalone.
+function findProjectRoot(): string {
+  let dir = process.cwd();
+  for (let i = 0; i < 6; i++) {
+    if (existsSync(path.join(dir, "update.sh"))) return dir;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return process.cwd();
+}
 
 export async function POST() {
   const session = await auth();
@@ -12,12 +26,13 @@ export async function POST() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const projectRoot = findProjectRoot();
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     start(controller) {
       const proc = spawn("bash", ["update.sh"], {
-        cwd: process.cwd(),
+        cwd: projectRoot,
         env: { ...process.env, FORCE_COLOR: "0" },
       });
 

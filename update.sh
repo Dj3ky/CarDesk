@@ -20,6 +20,11 @@ echo ""
 
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
+# Remove stale standalone build BEFORE git pull so this runs even when bash
+# has buffered the old version of this script. The corrupted Prisma files
+# inside .next/standalone/node_modules/ cause npm postinstall to fail.
+rm -rf .next/standalone
+
 # ─────────────────────────────────────────────
 section "Pulling latest code"
 # ─────────────────────────────────────────────
@@ -36,10 +41,8 @@ fi
 section "Installing dependencies"
 # ─────────────────────────────────────────────
 
-info "Cleaning previous build artefacts …"
-rm -rf .next/standalone
 info "Running npm install …"
-npm install --prefix .
+npm install --ignore-scripts --prefix .
 success "Dependencies up to date"
 
 # ─────────────────────────────────────────────

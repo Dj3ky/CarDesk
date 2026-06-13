@@ -60,7 +60,7 @@ export function UpdatePanel() {
 
   async function handleGitPull() {
     setPullStatus("pulling");
-    setPullLines(["$ git pull origin master"]);
+    setPullLines(["$ bash update.sh"]);
 
     try {
       const res = await fetch("/api/backup/git-pull", { method: "POST" });

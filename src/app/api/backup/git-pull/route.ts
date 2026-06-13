@@ -3,6 +3,9 @@ import { spawn } from "child_process";
 
 export const runtime = "nodejs";
 
+// Strip ANSI colour/style escape sequences from shell output
+const ANSI_RE = /\x1b\[[0-9;]*[mGKHF]/g;
+
 export async function POST() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -13,17 +16,18 @@ export async function POST() {
 
   const stream = new ReadableStream({
     start(controller) {
-      const proc = spawn("git", ["pull", "origin", "master"], {
+      const proc = spawn("bash", ["update.sh"], {
         cwd: process.cwd(),
+        env: { ...process.env, FORCE_COLOR: "0" },
       });
 
-      proc.stdout.on("data", (data: Buffer) => {
-        controller.enqueue(encoder.encode(data.toString()));
-      });
+      function send(data: Buffer) {
+        const clean = data.toString().replace(ANSI_RE, "");
+        controller.enqueue(encoder.encode(clean));
+      }
 
-      proc.stderr.on("data", (data: Buffer) => {
-        controller.enqueue(encoder.encode(data.toString()));
-      });
+      proc.stdout.on("data", send);
+      proc.stderr.on("data", send);
 
       proc.on("close", (code: number | null) => {
         controller.enqueue(

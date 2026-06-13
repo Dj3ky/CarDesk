@@ -307,7 +307,7 @@
       "pullDesc": "Pull the latest code from the master branch of dj3ky/CarDesk.",
       "pullButton": "Pull from GitHub",
       "pulling": "Pulling...",
-      "pullDone": "Update complete. Restart the server to apply changes.",
+      "pullDone": "Update complete. The server is restarting — the page will reconnect shortly.",
       "pullError": "Pull failed. Check the terminal output for details."
     },
     "sections": {

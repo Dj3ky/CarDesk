@@ -307,7 +307,7 @@
       "pullDesc": "Povleci najnovejšo kodo iz veje master repozitorija dj3ky/CarDesk.",
       "pullButton": "Povleci iz GitHuba",
       "pulling": "Povlačim...",
-      "pullDone": "Posodobitev dokončana. Znova zaženite strežnik, da se spremembe uveljavijo.",
+      "pullDone": "Posodobitev dokončana. Strežnik se zaganja — stran se bo kmalu znova povezala.",
       "pullError": "Povlačenje ni uspelo. Preverite izpis terminala."
     },
     "sections": {

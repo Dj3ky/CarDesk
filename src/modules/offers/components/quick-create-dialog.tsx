@@ -39,6 +39,7 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [taxNumber, setTaxNumber] = useState("");
 
   const [createdCustomer, setCreatedCustomer] = useState<CustomerOption | null>(null);
   const [createdCustomerId, setCreatedCustomerId] = useState<string | null>(null);
@@ -48,6 +49,8 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [registrationPlate, setRegistrationPlate] = useState("");
   const [fuelType, setFuelType] = useState<FuelType>(FuelType.PETROL);
+  const [mileage, setMileage] = useState("");
+  const [vin, setVin] = useState("");
 
   function reset() {
     setStep("customer");
@@ -57,6 +60,7 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
     setPhone("");
     setEmail("");
     setCompanyName("");
+    setTaxNumber("");
     setCreatedCustomer(null);
     setCreatedCustomerId(null);
     setMake("");
@@ -64,6 +68,8 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
     setYear(String(new Date().getFullYear()));
     setRegistrationPlate("");
     setFuelType(FuelType.PETROL);
+    setMileage("");
+    setVin("");
   }
 
   function handleClose() {
@@ -81,6 +87,7 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
         phone: phone.trim() || undefined,
         email: email.trim() || undefined,
         companyName: companyName.trim() || undefined,
+        taxNumber: taxNumber.trim() || undefined,
         country: "SI",
         isActive: true,
       });
@@ -117,6 +124,8 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
         model: model.trim(),
         year: parseInt(year, 10),
         registrationPlate: registrationPlate.trim() || undefined,
+        vin: vin.trim() || undefined,
+        mileage: mileage !== "" ? parseInt(mileage, 10) : undefined,
         fuelType,
         isActive: true,
       });
@@ -192,13 +201,23 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
                 />
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="qc-company">{t("company")}</Label>
-              <Input
-                id="qc-company"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="qc-company">{t("company")}</Label>
+                <Input
+                  id="qc-company"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="qc-taxNumber">{t("taxNumber")}</Label>
+                <Input
+                  id="qc-taxNumber"
+                  value={taxNumber}
+                  onChange={(e) => setTaxNumber(e.target.value)}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
@@ -289,6 +308,27 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
                   id="qc-plate"
                   value={registrationPlate}
                   onChange={(e) => setRegistrationPlate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="qc-mileage">{t("mileage")}</Label>
+                <Input
+                  id="qc-mileage"
+                  type="number"
+                  min={0}
+                  value={mileage}
+                  onChange={(e) => setMileage(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="qc-vin">{t("vin")}</Label>
+                <Input
+                  id="qc-vin"
+                  value={vin}
+                  onChange={(e) => setVin(e.target.value)}
+                  maxLength={17}
                 />
               </div>
             </div>

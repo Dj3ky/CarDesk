@@ -54,8 +54,11 @@ export async function POST() {
     start(controller) {
       // Strip npm_config_* vars inherited from the running server — they can
       // redirect where npm installs (e.g. npm_config_prefix pointing at standalone).
+      // Strip vars that the standalone Next.js server sets and that redirect
+      // npm/Node module resolution into .next/standalone/node_modules/.
+      const STRIP = /^(npm_|NODE_PATH$|NODE_OPTIONS$)/;
       const env = Object.fromEntries(
-        Object.entries(process.env).filter(([k]) => !k.startsWith("npm_"))
+        Object.entries(process.env).filter(([k]) => !STRIP.test(k))
       ) as NodeJS.ProcessEnv;
       env.FORCE_COLOR = "0";
 

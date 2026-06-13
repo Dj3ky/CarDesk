@@ -292,7 +292,13 @@
       "restartButton": "Restart Services",
       "restarting": "Restarting...",
       "restartWaiting": "Server is restarting — reconnecting...",
-      "restartDone": "Server is back online. Reloading..."
+      "restartDone": "Server is back online. Reloading...",
+      "updateTitle": "Update from GitHub",
+      "updateDesc": "Pull the latest code from the main branch of the GitHub repository (dj3ky/CarDesk).",
+      "updateButton": "Pull from GitHub",
+      "pulling": "Pulling...",
+      "pullDone": "Update complete. Restart the server to apply changes.",
+      "pullError": "Pull failed. Check the terminal output for details."
     },
     "sections": {
       "company": "Company Information",

@@ -29,7 +29,15 @@
       "PowerShell(npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"users|profile\" } | Select-Object -First 30)",
       "PowerShell(npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"users|profile\" -AllMatches | ForEach-Object { $_.Matches } | Select-Object -First 5)",
       "Bash(grep -v \"^$\")",
-      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"customer-offer|customers.id.page|offers.new.page|offer-form\" -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value })"
+      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"customer-offer|customers.id.page|offers.new.page|offer-form\" -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value })",
+      "Bash(xargs grep -l -i \"terminal\\\\|console\")",
+      "Bash(cat)",
+      "Read(//tmp/**)",
+      "Bash(python -c \"import json; data=json.load\\(open\\('d:/GitHub/CarDesk/messages/en.json'\\)\\); print\\(json.dumps\\(data.get\\('settings', {}\\), indent=2\\)\\)\")",
+      "Bash(node -e \"const data=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(data.settings, null, 2\\)\\)\")",
+      "Bash(node -e \"const data=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(data.settings?.backup, null, 2\\)\\)\")",
+      "Bash(node -e \"const data=require\\('./messages/sl.json'\\); const s=data.settings?.backup; console.log\\(JSON.stringify\\(Object.keys\\(s\\), null, 2\\)\\)\")",
+      "Bash(node -e \"const data=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(data.settings.backup.restartDone\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

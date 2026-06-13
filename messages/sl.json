@@ -292,7 +292,13 @@
       "restartButton": "Ponovni zagon storitev",
       "restarting": "Zaganjam...",
       "restartWaiting": "Strežnik se zaganja — poskušam vzpostaviti povezavo...",
-      "restartDone": "Strežnik je spet dosegljiv. Nalagam..."
+      "restartDone": "Strežnik je spet dosegljiv. Nalagam...",
+      "updateTitle": "Posodobitev iz GitHuba",
+      "updateDesc": "Povleci najnovejšo kodo iz glavne veje repozitorija na GitHubu (dj3ky/CarDesk).",
+      "updateButton": "Povleci iz GitHuba",
+      "pulling": "Povlačim...",
+      "pullDone": "Posodobitev dokončana. Znova zaženite strežnik, da se spremembe uveljavijo.",
+      "pullError": "Povlačenje ni uspelo. Preverite izpis terminala."
     },
     "sections": {
       "company": "Podatki o podjetju",

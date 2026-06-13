@@ -39,7 +39,7 @@ section "Installing dependencies"
 info "Cleaning previous build artefacts …"
 rm -rf .next/standalone
 info "Running npm install …"
-npm install 2>&1 | tail -5
+npm install
 success "Dependencies up to date"
 
 # ─────────────────────────────────────────────

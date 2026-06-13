@@ -2,12 +2,8 @@ import { randomUUID } from "crypto";
 import { unlink } from "fs/promises";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import {
-  parseXlsxAllRows,
-  countCsvRows,
-  streamCsvRows,
-  mapAndValidateRow,
-} from "./parse-file";
+import { parseXlsxAllRows, countCsvRows, streamCsvRows } from "./parse-file";
+import { mapAndValidateRow } from "./parse-utils";
 import type { ValidatedProduct, ImportError, ColumnMapping } from "../types";
 
 const BATCH_SIZE = 500;

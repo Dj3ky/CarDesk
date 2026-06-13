@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { autoMapColumns } from "../lib/parse-file";
+import { autoMapColumns } from "../lib/parse-utils";
 import { PRODUCT_FIELDS, type ColumnMapping } from "../types";
 
 interface MappingStepProps {

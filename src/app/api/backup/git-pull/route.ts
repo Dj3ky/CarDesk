@@ -52,13 +52,22 @@ export async function POST() {
 
   const stream = new ReadableStream({
     start(controller) {
-      // Strip env vars the standalone server sets that redirect npm/Node module
-      // resolution into .next/standalone/node_modules/ instead of the project root.
-      const STRIP = /^(npm_|NODE_PATH$|NODE_OPTIONS$)/;
-      const env = Object.fromEntries(
-        Object.entries(process.env).filter(([k]) => !STRIP.test(k))
-      ) as NodeJS.ProcessEnv;
-      env.FORCE_COLOR = "0";
+      // Give the child process a minimal, clean environment.
+      // The standalone server sets NODE_PATH (and npm_* vars) that redirect Node
+      // module resolution into .next/standalone/node_modules/ even when env -i is
+      // used inside update.sh — because npm re-sets NODE_PATH before executing
+      // scripts. Starting with only the bare essentials prevents any leakage.
+      const systemPath = (process.env.PATH ?? "")
+        .split(":")
+        .filter((p) => !p.includes(".next"))
+        .join(":");
+      const env: NodeJS.ProcessEnv = {
+        HOME: process.env.HOME ?? "/root",
+        USER: process.env.USER ?? "root",
+        PATH: systemPath || "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        TERM: "dumb",
+        FORCE_COLOR: "0",
+      };
 
       const proc = spawn("bash", ["update.sh"], {
         cwd: projectRoot,

@@ -40,8 +40,14 @@ fi
 section "Installing dependencies"
 # ─────────────────────────────────────────────
 
+# Remove node_modules entirely so npm installs real files.
+# If node_modules/prisma is a symlink to .next/standalone/node_modules/prisma
+# (created by a previous deduplication pass), module resolution for prisma
+# resolves to the standalone path and breaks. A clean install avoids this.
+info "Cleaning node_modules …"
+rm -rf node_modules
 info "Running npm install …"
-npm install --ignore-scripts --prefix .
+npm install --ignore-scripts
 success "Dependencies up to date"
 
 # ─────────────────────────────────────────────
@@ -57,22 +63,16 @@ if [[ -f .env.local ]]; then
   fi
 fi
 
-# Use env -i to give each Prisma command a completely clean environment —
-# only PATH and HOME are inherited. This prevents the standalone server's
-# NODE_PATH from leaking in and redirecting module resolution.
-PRISMA="env -i HOME=$HOME PATH=$(pwd)/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
 info "Generating Prisma client …"
-$PRISMA node_modules/prisma/build/index.js generate
+node_modules/.bin/prisma generate
 
+DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
 if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
   info "Applying migrations …"
-  DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
-  $PRISMA DATABASE_URL="$DB_URL" node_modules/prisma/build/index.js migrate deploy
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma migrate deploy
 else
   info "No migrations found — pushing schema to database …"
-  DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
-  $PRISMA DATABASE_URL="$DB_URL" node_modules/prisma/build/index.js db push --accept-data-loss
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma db push --accept-data-loss
 fi
 success "Database up to date"
 

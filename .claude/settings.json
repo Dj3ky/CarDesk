@@ -60,7 +60,8 @@
       "Bash(dir src/)",
       "Bash(node -e \"const p = require\\('./node_modules/next-auth/package.json'\\); console.log\\('next-auth version:', p.version\\)\")",
       "Bash(xargs wc -l)",
-      "Bash(xargs grep -l \"ProductSearchResult\")"
+      "Bash(xargs grep -l \"ProductSearchResult\")",
+      "Bash(node -e \"const p=require\\('./d:/GitHub/CarDesk/package.json'\\); console.log\\(p.dependencies.next\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

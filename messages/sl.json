@@ -426,7 +426,11 @@
       "createOffer": "Ustvari ponudbo",
       "notesPlaceholder": "Interne opombe ali navodila za stranko…",
       "quickCreate": "Hitro ustvari novo stranko",
-      "quickAddVehicle": "Dodaj novo vozilo tej stranki"
+      "quickAddVehicle": "Dodaj novo vozilo tej stranki",
+      "unsavedTitle": "Neshranjene spremembe",
+      "unsavedDesc": "Imate neshranjene spremembe. Če zapustite stran, bodo spremembe izgubljene.",
+      "unsavedLeave": "Zapusti",
+      "unsavedStay": "Ostani na strani"
     },
     "quickCreate": {
       "newCustomer": "Nova stranka",

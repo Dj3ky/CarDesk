@@ -426,7 +426,11 @@
       "createOffer": "Create Offer",
       "notesPlaceholder": "Internal notes or instructions for the customer…",
       "quickCreate": "Quick-create new customer",
-      "quickAddVehicle": "Add a new vehicle for this customer"
+      "quickAddVehicle": "Add a new vehicle for this customer",
+      "unsavedTitle": "Unsaved Changes",
+      "unsavedDesc": "You have unsaved changes. If you leave now, your changes will be lost.",
+      "unsavedLeave": "Leave",
+      "unsavedStay": "Stay on Page"
     },
     "quickCreate": {
       "newCustomer": "New Customer",

@@ -11,6 +11,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { offerSchema, type OfferFormValues } from "../schemas/offer.schema";
 import { createOffer } from "../actions/create-offer";
 import { updateOffer } from "../actions/update-offer";
@@ -71,13 +81,15 @@ export function OfferForm({
   const [quickCreateOpen, setQuickCreateOpen] = useState(false);
   const [quickAddVehicleOpen, setQuickAddVehicleOpen] = useState(false);
   const pendingVehicleIdRef = useRef<string | null>(null);
+  const [pendingNav, setPendingNav] = useState<string | null>(null); // "__back__" or href
+  const bypassGuard = useRef(false);
 
   const form = useForm<OfferFormValues>({
     resolver: zodResolver(offerSchema),
     defaultValues: buildDefaults(offer, defaultCustomerId),
   });
 
-  const { register, handleSubmit, watch, setValue, control, formState: { errors } } = form;
+  const { register, handleSubmit, watch, setValue, control, formState: { errors, isDirty } } = form;
 
   const selectedCustomerId = watch("customerId");
   const selectedCustomer = customerList.find((c) => c.id === selectedCustomerId) ?? null;
@@ -99,6 +111,49 @@ export function OfferForm({
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCustomerId]);
+
+  // Warn on browser refresh / tab close
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
+
+  // Intercept in-app link clicks (sidebar, nav, etc.)
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: MouseEvent) => {
+      if (bypassGuard.current) return;
+      const anchor = (e.target as Element).closest("a[href]") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const href = anchor.getAttribute("href") ?? "";
+      if (!href || href.startsWith("#") || href.startsWith("mailto:")) return;
+      try {
+        const url = new URL(href, window.location.href);
+        if (url.origin !== window.location.origin) return;
+        if (url.pathname === window.location.pathname) return;
+      } catch { return; }
+      e.preventDefault();
+      e.stopPropagation();
+      setPendingNav(href);
+    };
+    document.addEventListener("click", handler, true);
+    return () => document.removeEventListener("click", handler, true);
+  }, [isDirty]);
+
+  function handleConfirmLeave() {
+    bypassGuard.current = true;
+    const target = pendingNav;
+    setPendingNav(null);
+    if (target === "__back__") router.back();
+    else if (target) router.push(target);
+  }
+
+  function handleCancel() {
+    if (isDirty) { setPendingNav("__back__"); return; }
+    router.back();
+  }
 
   function handleQuickCreated(customer: CustomerOption, vehicle: VehicleOption | null) {
     const alreadyInList = customerList.some((c) => c.id === customer.id);
@@ -251,7 +306,7 @@ export function OfferForm({
       )}
 
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline" onClick={() => router.back()} disabled={isPending}>
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={isPending}>
           {tc("cancel")}
         </Button>
         <Button type="submit" disabled={isPending}>
@@ -271,6 +326,21 @@ export function OfferForm({
         onCreated={handleQuickCreated}
         existingCustomer={selectedCustomer ?? undefined}
       />
+
+      <AlertDialog open={!!pendingNav} onOpenChange={(open) => { if (!open) setPendingNav(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("form.unsavedTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("form.unsavedDesc")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("form.unsavedStay")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmLeave}>
+              {t("form.unsavedLeave")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   );
 }

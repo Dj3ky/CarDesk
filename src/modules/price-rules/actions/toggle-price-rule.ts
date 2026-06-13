@@ -5,6 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function togglePriceRule(id: string, isActive: boolean) {
   await prisma.priceRule.update({ where: { id }, data: { isActive } });
-  revalidateTag("price-rules");
+  revalidateTag("price-rules", { expire: 0 });
   return { success: true as const };
 }

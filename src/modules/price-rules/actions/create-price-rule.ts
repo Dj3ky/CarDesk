@@ -19,6 +19,6 @@ export async function createPriceRule(values: PriceRuleFormValues) {
       adjustmentValue: new Prisma.Decimal(adjustmentValue),
     },
   });
-  revalidateTag("price-rules");
+  revalidateTag("price-rules", { expire: 0 });
   return { success: true as const };
 }

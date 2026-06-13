@@ -8,7 +8,7 @@ import { Plus, Trash2, Loader2, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -262,7 +262,7 @@ export function PricingPanel({ initialRules }: PricingPanelProps) {
                         </span>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Switch
+                        <Checkbox
                           checked={rule.isActive}
                           onCheckedChange={() => handleToggle(rule.id, rule.isActive)}
                           disabled={isPending}

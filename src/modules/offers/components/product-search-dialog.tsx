@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,10 +29,12 @@ export function ProductSearchDialog({
   const [searched, setSearched] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function handleSearch() {
-    if (!query.trim()) return;
+  function handleSearch(overrideQuery?: string) {
+    const q = (overrideQuery ?? query).trim();
+    if (!q) return;
+    if (overrideQuery) setQuery(overrideQuery);
     startTransition(async () => {
-      const found = await searchProductsForOffer(query.trim());
+      const found = await searchProductsForOffer(q);
       setResults(found);
       setSearched(true);
     });
@@ -89,27 +91,43 @@ export function ProductSearchDialog({
         {results.length > 0 && (
           <div className="divide-y rounded-md border max-h-72 overflow-y-auto">
             {results.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => handleSelect(p)}
-                className="w-full px-4 py-3 text-left hover:bg-accent transition-colors"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="font-mono text-xs text-muted-foreground">{p.productNumber}</p>
-                    <p className="text-sm font-medium truncate">{p.description}</p>
-                    {p.brand && <p className="text-xs text-muted-foreground">{p.brand}</p>}
+              <div key={p.id} className="divide-y">
+                <button
+                  type="button"
+                  onClick={() => handleSelect(p)}
+                  className="w-full px-4 py-3 text-left hover:bg-accent transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-mono text-xs text-muted-foreground">{p.productNumber}</p>
+                      <p className="text-sm font-medium truncate">{p.description}</p>
+                      {p.brand && <p className="text-xs text-muted-foreground">{p.brand}</p>}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-semibold">
+                        {parseFloat(p.price).toFixed(2)}{" "}
+                        <span className="text-xs font-normal text-muted-foreground">ex VAT</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">VAT {p.vatRate}%</p>
+                    </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-semibold">
-                      {parseFloat(p.price).toFixed(2)} {" "}
-                      <span className="text-xs font-normal text-muted-foreground">ex VAT</span>
+                </button>
+                {p.substitutionPart && (
+                  <div className="flex items-center justify-between gap-2 bg-amber-50 dark:bg-amber-950 px-4 py-2">
+                    <p className="text-xs text-amber-700 dark:text-amber-300">
+                      Replaced by:{" "}
+                      <span className="font-mono font-semibold">{p.substitutionPart}</span>
                     </p>
-                    <p className="text-xs text-muted-foreground">VAT {p.vatRate}%</p>
+                    <button
+                      type="button"
+                      onClick={() => handleSearch(p.substitutionPart!)}
+                      className="flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300 hover:underline"
+                    >
+                      Search substitution <ArrowRight className="h-3 w-3" />
+                    </button>
                   </div>
-                </div>
-              </button>
+                )}
+              </div>
             ))}
           </div>
         )}

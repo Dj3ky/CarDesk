@@ -86,6 +86,7 @@ export type ProductSearchResult = {
   productNumber: string;
   description: string;
   brand: string | null;
+  substitutionPart: string | null;
   price: string;
   vatRate: string;
   unit: string;

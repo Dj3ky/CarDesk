@@ -59,7 +59,8 @@
       "Bash(ls src/)",
       "Bash(dir src/)",
       "Bash(node -e \"const p = require\\('./node_modules/next-auth/package.json'\\); console.log\\('next-auth version:', p.version\\)\")",
-      "Bash(xargs wc -l)"
+      "Bash(xargs wc -l)",
+      "Bash(xargs grep -l \"ProductSearchResult\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

@@ -19,14 +19,12 @@ export default async function ProtectedLayout({ children, params }: ProtectedLay
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
-        <div className="flex flex-1 flex-col overflow-hidden md:pl-64">
-          <Header />
-          <main className="flex-1 overflow-y-auto bg-background p-4 md:p-6">
-            {children}
-          </main>
-        </div>
+      <Sidebar />
+      <div className="flex min-h-screen flex-col md:pl-64">
+        <Header />
+        <main className="flex-1 bg-background p-4 md:p-6">
+          {children}
+        </main>
       </div>
     </SidebarProvider>
   );

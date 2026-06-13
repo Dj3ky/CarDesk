@@ -47,6 +47,7 @@ export async function ProductTable({
             <TableHead>{t("products.fields.description")}</TableHead>
             <TableHead className="hidden md:table-cell">{t("products.fields.brand")}</TableHead>
             <TableHead className="hidden lg:table-cell">{t("products.fields.supplier")}</TableHead>
+            <TableHead className="hidden xl:table-cell w-[130px]">{t("products.fields.substitutionPart")}</TableHead>
             <TableHead className="text-right w-[110px]">{t("products.fields.priceExVat")}</TableHead>
             <TableHead className="hidden sm:table-cell text-right w-[60px]">
               {t("products.fields.vatRate")}
@@ -74,11 +75,6 @@ export async function ProductTable({
                   {p.barcode && (
                     <div className="text-xs text-muted-foreground font-mono">{p.barcode}</div>
                   )}
-                  {p.substitutionPart && (
-                    <div className="text-xs text-muted-foreground font-mono">
-                      → {p.substitutionPart}
-                    </div>
-                  )}
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">{p.description}</div>
@@ -93,6 +89,9 @@ export async function ProductTable({
                 </TableCell>
                 <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                   {p.supplier ?? "—"}
+                </TableCell>
+                <TableCell className="hidden xl:table-cell text-sm font-mono text-muted-foreground">
+                  {p.substitutionPart ?? "—"}
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-sm">
                   {formatEur(exVat)}

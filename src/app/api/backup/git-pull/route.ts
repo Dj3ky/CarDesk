@@ -61,7 +61,7 @@ export async function POST() {
         .split(":")
         .filter((p) => !p.includes(".next"))
         .join(":");
-      const env: NodeJS.ProcessEnv = {
+      const env = {
         HOME: process.env.HOME ?? "/root",
         USER: process.env.USER ?? "root",
         PATH: systemPath || "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",

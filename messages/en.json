@@ -293,7 +293,7 @@
       "restartButton": "Restart Services",
       "restarting": "Restarting...",
       "restartWaiting": "Server is restarting — reconnecting...",
-      "restartDone": "Server is back online. Reloading...",
+      "restartDone": "Server is back online. Reloading..."
     },
     "update": {
       "checkTitle": "Check for Updates",

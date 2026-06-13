@@ -293,7 +293,7 @@
       "restartButton": "Ponovni zagon storitev",
       "restarting": "Zaganjam...",
       "restartWaiting": "Strežnik se zaganja — poskušam vzpostaviti povezavo...",
-      "restartDone": "Strežnik je spet dosegljiv. Nalagam...",
+      "restartDone": "Strežnik je spet dosegljiv. Nalagam..."
     },
     "update": {
       "checkTitle": "Preveri posodobitve",

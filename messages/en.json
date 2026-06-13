@@ -415,7 +415,29 @@
       "noVehicle": "— No vehicle —",
       "saveChanges": "Save Changes",
       "createOffer": "Create Offer",
-      "notesPlaceholder": "Internal notes or instructions for the customer…"
+      "notesPlaceholder": "Internal notes or instructions for the customer…",
+      "quickCreate": "Quick-create new customer"
+    },
+    "quickCreate": {
+      "newCustomer": "New Customer",
+      "addVehicle": "Add Vehicle",
+      "customerDesc": "Enter the customer's basic details to get started.",
+      "vehicleDesc": "Add a vehicle for {name} (optional).",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "company": "Company",
+      "phone": "Phone",
+      "email": "Email",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "registrationPlate": "Reg. Plate",
+      "fuelType": "Fuel Type",
+      "nextAddVehicle": "Next: Add Vehicle",
+      "skipVehicle": "Skip — no vehicle",
+      "back": "Back",
+      "createAndSelect": "Create & Select",
+      "cancel": "Cancel"
     },
     "detail": {
       "noVehicle": "No vehicle linked",

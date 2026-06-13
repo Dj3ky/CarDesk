@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +16,7 @@ import { createOffer } from "../actions/create-offer";
 import { updateOffer } from "../actions/update-offer";
 import { getVehiclesForCustomer } from "../actions/get-vehicles-for-customer";
 import { LineItemsEditor } from "./line-items-editor";
+import { QuickCreateDialog } from "./quick-create-dialog";
 import type { CustomerOption, OfferDetail, VehicleOption } from "../types";
 
 interface OfferFormProps {
@@ -64,8 +65,11 @@ export function OfferForm({
   const tc = useTranslations("common");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [customerList, setCustomerList] = useState<CustomerOption[]>(customers);
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+  const pendingVehicleIdRef = useRef<string | null>(null);
 
   const form = useForm<OfferFormValues>({
     resolver: zodResolver(offerSchema),
@@ -83,12 +87,24 @@ export function OfferForm({
     }
     getVehiclesForCustomer(selectedCustomerId).then((v) => {
       setVehicles(v);
-      if (!offer || offer.customerId !== selectedCustomerId) {
+      const pending = pendingVehicleIdRef.current;
+      pendingVehicleIdRef.current = null;
+      if (pending && v.some((x) => x.id === pending)) {
+        setValue("vehicleId", pending);
+      } else if (!offer || offer.customerId !== selectedCustomerId) {
         setValue("vehicleId", "");
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCustomerId]);
+
+  function handleQuickCreated(customer: CustomerOption, vehicle: VehicleOption | null) {
+    setCustomerList((prev) => [customer, ...prev.filter((c) => c.id !== customer.id)]);
+    if (vehicle) {
+      pendingVehicleIdRef.current = vehicle.id;
+    }
+    setValue("customerId", customer.id);
+  }
 
   function onSubmit(values: OfferFormValues) {
     startTransition(async () => {
@@ -118,19 +134,31 @@ export function OfferForm({
             <Label htmlFor="customerId">
               {t("fields.customer")} <span className="text-destructive">*</span>
             </Label>
-            <select
-              id="customerId"
-              {...register("customerId")}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              <option value="">{t("form.selectCustomer")}</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.lastName}, {c.firstName}
-                  {c.companyName ? ` (${c.companyName})` : ""}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="customerId"
+                {...register("customerId")}
+                className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="">{t("form.selectCustomer")}</option>
+                {customerList.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.lastName}, {c.firstName}
+                    {c.companyName ? ` (${c.companyName})` : ""}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setQuickCreateOpen(true)}
+                title={t("form.quickCreate")}
+                className="shrink-0"
+              >
+                <UserPlus className="h-4 w-4" />
+              </Button>
+            </div>
             {errors.customerId && (
               <p className="text-xs text-destructive">{errors.customerId.message}</p>
             )}
@@ -208,6 +236,12 @@ export function OfferForm({
           {offer ? t("form.saveChanges") : t("form.createOffer")}
         </Button>
       </div>
+
+      <QuickCreateDialog
+        open={quickCreateOpen}
+        onClose={() => setQuickCreateOpen(false)}
+        onCreated={handleQuickCreated}
+      />
     </form>
   );
 }

@@ -415,7 +415,29 @@
       "noVehicle": "— Brez vozila —",
       "saveChanges": "Shrani spremembe",
       "createOffer": "Ustvari ponudbo",
-      "notesPlaceholder": "Interne opombe ali navodila za stranko…"
+      "notesPlaceholder": "Interne opombe ali navodila za stranko…",
+      "quickCreate": "Hitro ustvari novo stranko"
+    },
+    "quickCreate": {
+      "newCustomer": "Nova stranka",
+      "addVehicle": "Dodaj vozilo",
+      "customerDesc": "Vnesite osnovne podatke stranke.",
+      "vehicleDesc": "Dodajte vozilo za {name} (neobvezno).",
+      "firstName": "Ime",
+      "lastName": "Priimek",
+      "company": "Podjetje",
+      "phone": "Telefon",
+      "email": "E-pošta",
+      "make": "Znamka",
+      "model": "Model",
+      "year": "Letnik",
+      "registrationPlate": "Reg. tablica",
+      "fuelType": "Gorivo",
+      "nextAddVehicle": "Naprej: Dodaj vozilo",
+      "skipVehicle": "Preskoči — brez vozila",
+      "back": "Nazaj",
+      "createAndSelect": "Ustvari in izberi",
+      "cancel": "Prekliči"
     },
     "detail": {
       "noVehicle": "Ni vezanega vozila",

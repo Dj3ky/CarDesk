@@ -28,7 +28,8 @@
       "Bash(xargs -I {} ls -la \"{}\")",
       "PowerShell(npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"users|profile\" } | Select-Object -First 30)",
       "PowerShell(npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"users|profile\" -AllMatches | ForEach-Object { $_.Matches } | Select-Object -First 5)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Out-String | Select-String -Pattern \"customer-offer|customers.id.page|offers.new.page|offer-form\" -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value })"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

@@ -16,12 +16,14 @@ import {
   User,
   CalendarDays,
   Plus,
+  ScrollText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteCustomerDialog } from "@/modules/customers/components/delete-customer-dialog";
 import { VehicleList } from "@/modules/vehicles/components/vehicle-list";
+import { CustomerOfferList } from "@/modules/offers/components/customer-offer-list";
 import { getCustomer } from "@/modules/customers/actions/get-customer";
 
 interface CustomerDetailPageProps {
@@ -239,6 +241,25 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
           </Card>
         </div>
       </div>
+
+      {/* Offers */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardTitle className="text-base flex items-center gap-2">
+            <ScrollText className="h-4 w-4" />
+            {t("customers.offers")}
+          </CardTitle>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href={`/${locale}/offers/new?customerId=${id}`}>
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              {t("offers.addNew")}
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <CustomerOfferList customerId={id} locale={locale} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

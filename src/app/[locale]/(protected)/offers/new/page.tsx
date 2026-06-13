@@ -11,10 +11,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 interface NewOfferPageProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function NewOfferPage({ params }: NewOfferPageProps) {
+export default async function NewOfferPage({ params, searchParams }: NewOfferPageProps) {
   const { locale } = await params;
+  const { customerId } = await searchParams;
   const t = await getTranslations("offers");
 
   const [customers, settings] = await Promise.all([
@@ -34,6 +36,7 @@ export default async function NewOfferPage({ params }: NewOfferPageProps) {
         customers={customers}
         defaultVATRate={parseFloat(settings.defaultVATRate)}
         currency={settings.currency}
+        defaultCustomerId={typeof customerId === "string" ? customerId : undefined}
       />
     </div>
   );

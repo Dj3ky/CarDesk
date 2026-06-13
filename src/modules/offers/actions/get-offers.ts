@@ -9,14 +9,17 @@ export async function getOffers({
   page = 1,
   status,
   search,
+  customerId,
 }: {
   page?: number;
   status?: string;
   search?: string;
+  customerId?: string;
 } = {}): Promise<{ offers: OfferListItem[]; total: number; totalPages: number }> {
   const skip = (page - 1) * PAGE_SIZE;
 
   const where = {
+    ...(customerId ? { customerId } : {}),
     ...(status && status !== "ALL" ? { status: status as OfferStatus } : {}),
     ...(search
       ? {

@@ -143,6 +143,7 @@
     "deleteTitle": "Delete Customer",
     "deleteConfirm": "Are you sure you want to permanently delete {name}? This action cannot be undone.",
     "vehicles": "Vehicles",
+    "offers": "Offers",
     "sections": {
       "personal": "Personal Information",
       "contact": "Contact",
@@ -359,6 +360,7 @@
       "downloadPdf": "Download PDF"
     },
     "noOffers": "No offers found.",
+    "addFirst": "Create First Offer",
     "form": {
       "title": "Offer Details",
       "selectCustomer": "— Select customer —",

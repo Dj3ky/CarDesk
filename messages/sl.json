@@ -143,6 +143,7 @@
     "deleteTitle": "Izbriši stranko",
     "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
     "vehicles": "Vozila",
+    "offers": "Ponudbe",
     "sections": {
       "personal": "Osebni podatki",
       "contact": "Kontakt",
@@ -359,6 +360,7 @@
       "downloadPdf": "Prenesi PDF"
     },
     "noOffers": "Ni najdenih ponudb.",
+    "addFirst": "Ustvari prvo ponudbo",
     "form": {
       "title": "Podatki ponudbe",
       "selectCustomer": "— Izberite stranko —",

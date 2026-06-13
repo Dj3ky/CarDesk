@@ -24,11 +24,12 @@ interface OfferFormProps {
   defaultVATRate: number;
   currency: string;
   offer?: OfferDetail;
+  defaultCustomerId?: string;
 }
 
-function buildDefaults(offer: OfferDetail | undefined): OfferFormValues {
+function buildDefaults(offer: OfferDetail | undefined, defaultCustomerId?: string): OfferFormValues {
   if (!offer) {
-    return { customerId: "", vehicleId: "", notes: "", validUntil: "", items: [] };
+    return { customerId: defaultCustomerId ?? "", vehicleId: "", notes: "", validUntil: "", items: [] };
   }
   return {
     customerId: offer.customerId,
@@ -57,6 +58,7 @@ export function OfferForm({
   defaultVATRate,
   currency,
   offer,
+  defaultCustomerId,
 }: OfferFormProps) {
   const t = useTranslations("offers");
   const tc = useTranslations("common");
@@ -67,7 +69,7 @@ export function OfferForm({
 
   const form = useForm<OfferFormValues>({
     resolver: zodResolver(offerSchema),
-    defaultValues: buildDefaults(offer),
+    defaultValues: buildDefaults(offer, defaultCustomerId),
   });
 
   const { register, handleSubmit, watch, setValue, control, formState: { errors } } = form;

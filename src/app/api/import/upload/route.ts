@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  if (parsed.totalRows === 0) {
+  if (parsed.preview.length === 0) {
     return Response.json({ error: "File contains no data rows" }, { status: 400 });
   }
 

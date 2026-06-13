@@ -110,6 +110,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
         firstName: c.firstName,
         lastName: c.lastName,
         companyName: c.companyName,
+        defaultDiscount: null,
       };
       setCreatedCustomer(opt);
       setCreatedCustomerId(c.id);

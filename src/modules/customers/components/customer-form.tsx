@@ -70,6 +70,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
       postalCode: customer?.postalCode ?? "",
       country: customer?.country ?? "SI",
       notes: customer?.notes ?? "",
+      defaultDiscount: customer?.defaultDiscount != null ? parseFloat(String(customer.defaultDiscount)) : "",
       isActive: customer?.isActive ?? true,
     },
   });
@@ -297,6 +298,33 @@ export function CustomerForm({ customer }: CustomerFormProps) {
                     <Textarea rows={4} {...field} />
                   </FormControl>
                   <FormDescription>{t("customers.fields.notesHint")}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="defaultDiscount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("customers.fields.defaultDiscount")}</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        placeholder="0"
+                        className="w-32"
+                        {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) => field.onChange(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                      />
+                      <span className="text-sm text-muted-foreground">%</span>
+                    </div>
+                  </FormControl>
+                  <FormDescription>{t("customers.fields.defaultDiscountHint")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

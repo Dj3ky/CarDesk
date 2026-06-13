@@ -170,6 +170,8 @@
       "country": "Country",
       "notes": "Notes",
       "notesHint": "Internal notes — not visible to the customer",
+      "defaultDiscount": "Default Discount",
+      "defaultDiscountHint": "Applied automatically to new offer items for this customer",
       "isActive": "Active customer",
       "isActiveHint": "Inactive customers are hidden from default lists",
       "createdAt": "Created",

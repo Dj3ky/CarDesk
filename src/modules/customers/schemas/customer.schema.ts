@@ -59,6 +59,10 @@ export const customerSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform((v) => v || undefined),
+  defaultDiscount: z
+    .union([z.number().min(0).max(100), z.literal("")])
+    .optional()
+    .transform((v) => (v === "" || v === undefined ? null : v)),
   isActive: z.boolean().default(true),
 });
 

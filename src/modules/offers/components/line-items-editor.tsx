@@ -20,6 +20,7 @@ interface LineItemsEditorProps {
   register: UseFormRegister<OfferFormValues>;
   setValue: UseFormSetValue<OfferFormValues>;
   defaultVATRate: number;
+  defaultDiscount: number;
   currency: string;
 }
 
@@ -28,6 +29,7 @@ export function LineItemsEditor({
   register,
   setValue,
   defaultVATRate,
+  defaultDiscount,
   currency,
 }: LineItemsEditorProps) {
   const t = useTranslations("offers");
@@ -45,7 +47,7 @@ export function LineItemsEditor({
       unit: "pcs",
       pricePerUnit: 0,
       vatRate: defaultVATRate,
-      discount: 0,
+      discount: defaultDiscount,
     });
   }
 

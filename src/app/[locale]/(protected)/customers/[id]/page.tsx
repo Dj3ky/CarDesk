@@ -175,14 +175,21 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
             </Card>
           )}
 
-          {/* Notes */}
-          {customer.notes && (
+          {/* Notes & discount */}
+          {(customer.notes || customer.defaultDiscount != null) && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">{t("customers.sections.notes")}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{customer.notes}</p>
+              <CardContent className="space-y-3">
+                {customer.defaultDiscount != null && parseFloat(String(customer.defaultDiscount)) > 0 && (
+                  <DetailRow icon={<FileText className="h-4 w-4" />} label={t("customers.fields.defaultDiscount")}>
+                    {parseFloat(String(customer.defaultDiscount)).toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} %
+                  </DetailRow>
+                )}
+                {customer.notes && (
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{customer.notes}</p>
+                )}
               </CardContent>
             </Card>
           )}

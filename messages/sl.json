@@ -170,6 +170,8 @@
       "country": "Država",
       "notes": "Opombe",
       "notesHint": "Interne opombe — stranka jih ne vidi",
+      "defaultDiscount": "Privzeti popust",
+      "defaultDiscountHint": "Samodejno se uporabi za nove postavke ponudbe za to stranko",
       "isActive": "Aktivna stranka",
       "isActiveHint": "Neaktivne stranke so skrite v privzetih seznamih",
       "createdAt": "Ustvarjeno",

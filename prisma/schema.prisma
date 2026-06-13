@@ -57,11 +57,12 @@ model Customer {
   city        String?
   postalCode  String?
   country     String   @default("SI")
-  notes       String?  @db.Text
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String?
+  notes           String?  @db.Text
+  defaultDiscount Decimal? @db.Decimal(5, 2)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdById     String?
 
   createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
   vehicles  Vehicle[]

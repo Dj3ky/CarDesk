@@ -71,6 +71,7 @@ export type CustomerOption = {
   firstName: string;
   lastName: string;
   companyName: string | null;
+  defaultDiscount: number | null;
 };
 
 export type VehicleOption = {

@@ -277,6 +277,7 @@ export function OfferForm({
             register={register}
             setValue={setValue}
             defaultVATRate={defaultVATRate}
+            defaultDiscount={selectedCustomer?.defaultDiscount ?? 0}
             currency={currency}
           />
           {typeof errors.items?.message === "string" && (

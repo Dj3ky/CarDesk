@@ -396,6 +396,13 @@
       "searchProduct": "Iskanje izdelka",
       "noItems": "Ni postavk. Kliknite »Dodaj postavko« za začetek."
     },
+    "productSearch": {
+      "title": "Iskanje v katalogu izdelkov",
+      "placeholder": "Šifra ali opis izdelka…",
+      "noResults": "Ni najdenih izdelkov.",
+      "replacedBy": "Nadomešča ga:",
+      "searchSubstitution": "Išči nadomestni del"
+    },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",
       "vat": "DDV {rate}%",

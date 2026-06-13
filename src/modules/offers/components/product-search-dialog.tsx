@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Search, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ export function ProductSearchDialog({
   onClose,
   onSelect,
 }: ProductSearchDialogProps) {
+  const t = useTranslations("offers.productSearch");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductSearchResult[]>([]);
   const [searched, setSearched] = useState(false);
@@ -62,12 +64,12 @@ export function ProductSearchDialog({
     >
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Search Product Catalog</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
 
         <div className="flex gap-2">
           <Input
-            placeholder="Product number or description…"
+            placeholder={t("placeholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -84,7 +86,7 @@ export function ProductSearchDialog({
 
         {searched && results.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No products found.
+            {t("noResults")}
           </p>
         )}
 
@@ -115,7 +117,7 @@ export function ProductSearchDialog({
                 {p.substitutionPart && (
                   <div className="flex items-center justify-between gap-2 bg-amber-50 dark:bg-amber-950 px-4 py-2">
                     <p className="text-xs text-amber-700 dark:text-amber-300">
-                      Replaced by:{" "}
+                      {t("replacedBy")}{" "}
                       <span className="font-mono font-semibold">{p.substitutionPart}</span>
                     </p>
                     <button
@@ -123,7 +125,7 @@ export function ProductSearchDialog({
                       onClick={() => handleSearch(p.substitutionPart!)}
                       className="flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300 hover:underline"
                     >
-                      Search substitution <ArrowRight className="h-3 w-3" />
+                      {t("searchSubstitution")} <ArrowRight className="h-3 w-3" />
                     </button>
                   </div>
                 )}

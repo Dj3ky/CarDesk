@@ -54,9 +54,9 @@ export async function POST() {
     start(controller) {
       // Strip npm_config_* vars inherited from the running server — they can
       // redirect where npm installs (e.g. npm_config_prefix pointing at standalone).
-      const env: Record<string, string> = {};
+      const env: NodeJS.ProcessEnv = {};
       for (const [k, v] of Object.entries(process.env)) {
-        if (v !== undefined && !k.startsWith("npm_")) env[k] = v;
+        if (!k.startsWith("npm_")) env[k] = v;
       }
       env.FORCE_COLOR = "0";
 

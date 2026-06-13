@@ -2,12 +2,23 @@ import { randomUUID } from "crypto";
 import { unlink } from "fs/promises";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { parseFileAllRows, mapAndValidateRow } from "./parse-file";
+import {
+  parseXlsxAllRows,
+  countCsvRows,
+  streamCsvRows,
+  mapAndValidateRow,
+} from "./parse-file";
 import type { ValidatedProduct, ImportError, ColumnMapping } from "../types";
 
 const BATCH_SIZE = 500;
-const PROGRESS_EVERY = 5000; // update DB after every N rows processed
+const PROGRESS_EVERY = 5000;
 const MAX_STORED_ERRORS = 500;
+
+// Yields control back to the Node.js event loop so other requests
+// can be served between processing batches.
+function yieldToEventLoop(): Promise<void> {
+  return new Promise((resolve) => setImmediate(resolve));
+}
 
 async function upsertProductBatch(
   products: ValidatedProduct[],
@@ -62,93 +73,165 @@ async function upsertProductBatch(
   return { inserted, updated: result.length - inserted };
 }
 
+// Shared batch-processing state passed between helpers.
+interface ProcessState {
+  jobId: string;
+  createdById: string | null;
+  mapping: ColumnMapping;
+  processedRows: number;
+  insertedRows: number;
+  updatedRows: number;
+  errorRows: number;
+  errors: ImportError[];
+  lastProgressUpdate: number;
+}
+
+async function flushBatch(
+  validProducts: ValidatedProduct[],
+  batchStartRow: number,
+  state: ProcessState
+): Promise<void> {
+  if (validProducts.length === 0) return;
+  try {
+    const counts = await upsertProductBatch(validProducts, state.createdById);
+    state.insertedRows += counts.inserted;
+    state.updatedRows += counts.updated;
+  } catch (err) {
+    for (let k = 0; k < validProducts.length; k++) {
+      state.errorRows++;
+      if (state.errors.length < MAX_STORED_ERRORS) {
+        state.errors.push({
+          row: batchStartRow + k,
+          message: err instanceof Error ? err.message : "Database error",
+        });
+      }
+    }
+  }
+}
+
+async function saveProgress(state: ProcessState): Promise<void> {
+  await prisma.importJob.update({
+    where: { id: state.jobId },
+    data: {
+      processedRows: state.processedRows,
+      insertedRows: state.insertedRows,
+      updatedRows: state.updatedRows,
+      errorRows: state.errorRows,
+      errors: state.errors as unknown as Prisma.JsonArray,
+    },
+  });
+  state.lastProgressUpdate = state.processedRows;
+}
+
+// Processes an iterable/array of raw rows in BATCH_SIZE chunks.
+// Works for both CSV (async generator) and XLSX (plain array).
+async function processRows(
+  rows: AsyncIterable<Record<string, string>> | Record<string, string>[],
+  totalRows: number,
+  state: ProcessState
+): Promise<void> {
+  let validProducts: ValidatedProduct[] = [];
+  let batchStartRow = 2; // 1-based, row 1 is the header
+
+  const handleRow = async (rawRow: Record<string, string>) => {
+    const rowNumber = state.processedRows + 2;
+    const result = mapAndValidateRow(rawRow, state.mapping, rowNumber);
+
+    if ("error" in result) {
+      state.errorRows++;
+      if (state.errors.length < MAX_STORED_ERRORS)
+        state.errors.push(result.error);
+    } else {
+      validProducts.push(result.product);
+    }
+
+    state.processedRows++;
+
+    if (validProducts.length >= BATCH_SIZE) {
+      await flushBatch(validProducts, batchStartRow, state);
+      batchStartRow = state.processedRows + 2;
+      validProducts = [];
+      await yieldToEventLoop();
+    }
+
+    if (
+      state.processedRows - state.lastProgressUpdate >= PROGRESS_EVERY ||
+      state.processedRows === totalRows
+    ) {
+      await saveProgress(state);
+    }
+  };
+
+  if (Array.isArray(rows)) {
+    for (const row of rows) {
+      await handleRow(row);
+    }
+  } else {
+    for await (const row of rows) {
+      await handleRow(row);
+    }
+  }
+
+  // Flush the last partial batch
+  if (validProducts.length > 0) {
+    await flushBatch(validProducts, batchStartRow, state);
+    await saveProgress(state);
+  }
+}
+
 export async function processImportJob(jobId: string): Promise<void> {
   try {
     const job = await prisma.importJob.findUnique({ where: { id: jobId } });
     if (!job) throw new Error(`Job ${jobId} not found`);
 
     const mapping = job.mapping as ColumnMapping;
-    const allRows = parseFileAllRows(job.filePath);
+    const isCsv = job.filePath.toLowerCase().endsWith(".csv");
 
-    await prisma.importJob.update({
-      where: { id: jobId },
-      data: { status: "PROCESSING", totalRows: allRows.length },
-    });
+    const state: ProcessState = {
+      jobId,
+      createdById: job.createdById,
+      mapping,
+      processedRows: 0,
+      insertedRows: 0,
+      updatedRows: 0,
+      errorRows: 0,
+      errors: [],
+      lastProgressUpdate: 0,
+    };
 
-    let processedRows = 0;
-    let insertedRows = 0;
-    let updatedRows = 0;
-    let errorRows = 0;
-    const errors: ImportError[] = [];
-    let lastProgressUpdate = 0;
+    if (isCsv) {
+      // Fast non-blocking row count so the UI can show progress %.
+      const totalRows = await countCsvRows(job.filePath);
+      await prisma.importJob.update({
+        where: { id: jobId },
+        data: { status: "PROCESSING", totalRows },
+      });
 
-    for (let i = 0; i < allRows.length; i += BATCH_SIZE) {
-      const batch = allRows.slice(i, i + BATCH_SIZE);
-      const validProducts: ValidatedProduct[] = [];
+      // Stream rows one at a time — no full file in memory.
+      await processRows(streamCsvRows(job.filePath), totalRows, state);
+    } else {
+      // XLSX: must load the whole file. Disable unused cell features
+      // to reduce parse time and peak memory usage.
+      const allRows = parseXlsxAllRows(job.filePath);
+      await prisma.importJob.update({
+        where: { id: jobId },
+        data: { status: "PROCESSING", totalRows: allRows.length },
+      });
 
-      for (const [j, rawRow] of batch.entries()) {
-        const rowNumber = i + j + 2; // +1 for header, +1 for 1-based index
-        const result = mapAndValidateRow(rawRow, mapping, rowNumber);
-        if ("error" in result) {
-          errorRows++;
-          if (errors.length < MAX_STORED_ERRORS) errors.push(result.error);
-        } else {
-          validProducts.push(result.product);
-        }
-      }
-
-      if (validProducts.length > 0) {
-        try {
-          const counts = await upsertProductBatch(validProducts, job.createdById);
-          insertedRows += counts.inserted;
-          updatedRows += counts.updated;
-        } catch (err) {
-          // Whole batch failed — mark all valid rows as errors
-          for (let k = 0; k < validProducts.length; k++) {
-            errorRows++;
-            if (errors.length < MAX_STORED_ERRORS) {
-              errors.push({
-                row: i + k + 2,
-                message:
-                  err instanceof Error ? err.message : "Database error",
-              });
-            }
-          }
-        }
-      }
-
-      processedRows += batch.length;
-
-      if (
-        processedRows - lastProgressUpdate >= PROGRESS_EVERY ||
-        processedRows === allRows.length
-      ) {
-        await prisma.importJob.update({
-          where: { id: jobId },
-          data: {
-            processedRows,
-            insertedRows,
-            updatedRows,
-            errorRows,
-            errors: errors as unknown as Prisma.JsonArray,
-          },
-        });
-        lastProgressUpdate = processedRows;
-      }
+      await processRows(allRows, allRows.length, state);
     }
 
-    // Delete temp file
     await unlink(job.filePath).catch(() => {});
 
     await prisma.importJob.update({
       where: { id: jobId },
       data: {
         status: "COMPLETED",
-        processedRows,
-        insertedRows,
-        updatedRows,
-        errorRows,
-        errors: errors as unknown as Prisma.JsonArray,
+        processedRows: state.processedRows,
+        insertedRows: state.insertedRows,
+        updatedRows: state.updatedRows,
+        errorRows: state.errorRows,
+        errors: state.errors as unknown as Prisma.JsonArray,
         completedAt: new Date(),
       },
     });

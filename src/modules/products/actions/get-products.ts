@@ -7,10 +7,10 @@ import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rul
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
 async function getApproximateCount(): Promise<number> {
-  const result = await prisma.$queryRaw<[{ reltuples: number }]>`
+  const result = await prisma.$queryRaw<[{ reltuples: bigint }]>`
     SELECT reltuples::bigint AS reltuples FROM pg_class WHERE relname = 'Product'
   `;
-  return result[0]?.reltuples ?? 0;
+  return Number(result[0]?.reltuples ?? 0);
 }
 
 const PAGE_SIZE_ADMIN = 25;

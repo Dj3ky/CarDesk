@@ -43,7 +43,22 @@
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\({workspaces:p.workspaces, scripts:p.scripts}, null, 2\\)\\)\")",
       "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('next:', p.dependencies?.next || p.devDependencies?.next\\)\")",
       "Bash(node -e \"try { require\\('sharp'\\); console.log\\('sharp ok'\\); } catch\\(e\\) { console.log\\('no sharp'\\); }\")",
-      "Bash(node -e \"try { require\\('canvas'\\); console.log\\('canvas ok'\\); } catch\\(e\\) { console.log\\('no canvas'\\); }\")"
+      "Bash(node -e \"try { require\\('canvas'\\); console.log\\('canvas ok'\\); } catch\\(e\\) { console.log\\('no canvas'\\); }\")",
+      "PowerShell(git add src/app/api/backup/git-pull/route.ts update.sh)",
+      "PowerShell(git push)",
+      "PowerShell(git add src/app/api/backup/git-pull/route.ts)",
+      "PowerShell(git commit -m \"fix: remove NodeJS.ProcessEnv annotation to resolve TS build error\")",
+      "PowerShell(git commit -m \"fix: add NODE_ENV to satisfy augmented ProcessEnv type in spawn call\")",
+      "PowerShell(git add update.sh)",
+      "PowerShell(git commit -m \"fix: pass explicit --schema path to prisma commands in update.sh\")",
+      "PowerShell(git commit -m \"fix: cd to script dir at startup so prisma.config.ts and schema resolve correctly\")",
+      "PowerShell(git commit -m \"fix: remove --ignore-scripts so prisma postinstall sets up prisma.config.ts support\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('next:', p.dependencies.next, 'xlsx:', p.dependencies.xlsx\\)\")",
+      "Bash(node -e \"const n = require\\('next/package.json'\\); console.log\\(n.version\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(ls src/)",
+      "Bash(dir src/)",
+      "Bash(node -e \"const p = require\\('./node_modules/next-auth/package.json'\\); console.log\\('next-auth version:', p.version\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

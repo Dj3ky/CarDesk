@@ -20,18 +20,8 @@ echo ""
 
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
-# When run from the Next.js standalone server via the UI, the process inherits
-# NODE_PATH and PATH entries pointing at .next/standalone/node_modules/.
-# Strip those out so every subsequent npm/node/prisma call uses the project root.
-unset NODE_PATH NODE_OPTIONS
-# Remove .next/* entries injected by the standalone server from PATH.
-export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v '\.next' | tr '\n' ':' | sed 's/:$//')"
-# Prepend the project's own node_modules/.bin so prisma etc. are found here first.
-export PATH="$(pwd)/node_modules/.bin:$PATH"
-
 # Remove stale standalone build BEFORE git pull so this runs even when bash
-# has buffered the old version of this script. The corrupted Prisma files
-# inside .next/standalone/node_modules/ cause npm postinstall to fail.
+# has buffered an older version of this script.
 rm -rf .next/standalone
 
 # ─────────────────────────────────────────────
@@ -67,15 +57,22 @@ if [[ -f .env.local ]]; then
   fi
 fi
 
+# Use env -i to give each Prisma command a completely clean environment —
+# only PATH and HOME are inherited. This prevents the standalone server's
+# NODE_PATH from leaking in and redirecting module resolution.
+PRISMA="env -i HOME=$HOME PATH=$(pwd)/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 info "Generating Prisma client …"
-node_modules/.bin/prisma generate
+$PRISMA node_modules/prisma/build/index.js generate
 
 if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
   info "Applying migrations …"
-  node_modules/.bin/prisma migrate deploy
+  DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
+  $PRISMA DATABASE_URL="$DB_URL" node_modules/prisma/build/index.js migrate deploy
 else
   info "No migrations found — pushing schema to database …"
-  node_modules/.bin/prisma db push --accept-data-loss
+  DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
+  $PRISMA DATABASE_URL="$DB_URL" node_modules/prisma/build/index.js db push --accept-data-loss
 fi
 success "Database up to date"
 

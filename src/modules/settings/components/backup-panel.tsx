@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Download, Upload, AlertTriangle, Loader2, CheckCircle2, AlertCircle, RefreshCw, GitPullRequest } from "lucide-react";
+import { Download, Upload, AlertTriangle, Loader2, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,9 +21,6 @@ export function BackupPanel() {
   const [restoreState, setRestoreState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [restoreError, setRestoreError] = useState<string | null>(null);
   const [restartState, setRestartState] = useState<"idle" | "restarting" | "waiting" | "done">("idle");
-  const [pullState, setPullState] = useState<"idle" | "pulling" | "done" | "error">("idle");
-  const [pullLines, setPullLines] = useState<string[]>([]);
-  const terminalRef = useRef<HTMLDivElement>(null);
 
   async function handleDownload() {
     setDownloadState("loading");
@@ -71,52 +68,6 @@ export function BackupPanel() {
     } catch {
       setRestoreState("error");
       setRestoreError(t("restoreError"));
-    }
-  }
-
-  useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [pullLines]);
-
-  async function handleGitPull() {
-    setPullState("pulling");
-    setPullLines(["$ git pull origin main"]);
-
-    try {
-      const res = await fetch("/api/backup/git-pull", { method: "POST" });
-      if (!res.ok || !res.body) {
-        setPullState("error");
-        setPullLines((prev) => [...prev, `Error: HTTP ${res.status}`]);
-        return;
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        const incoming = text.split("\n");
-        setPullLines((prev) => {
-          const updated = [...prev];
-          incoming.forEach((chunk, i) => {
-            if (i === 0 && updated.length > 0) {
-              updated[updated.length - 1] += chunk;
-            } else {
-              updated.push(chunk);
-            }
-          });
-          return updated;
-        });
-      }
-
-      setPullState("done");
-    } catch (err) {
-      setPullState("error");
-      setPullLines((prev) => [...prev, `Error: ${err instanceof Error ? err.message : "Unknown error"}`]);
     }
   }
 
@@ -231,77 +182,6 @@ export function BackupPanel() {
             <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
               <AlertCircle className="h-4 w-4 shrink-0" />
               {restoreError ?? t("restoreError")}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Separator />
-
-      {/* Update from GitHub */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("updateTitle")}</CardTitle>
-          <CardDescription>{t("updateDesc")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={pullState === "pulling"}
-            onClick={handleGitPull}
-          >
-            {pullState === "pulling" ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <GitPullRequest className="mr-2 h-4 w-4" />
-            )}
-            {pullState === "pulling" ? t("pulling") : t("updateButton")}
-          </Button>
-
-          {/* Terminal window */}
-          {pullLines.length > 0 && (
-            <div
-              ref={terminalRef}
-              className="rounded-md bg-zinc-950 border border-zinc-800 p-3 h-48 overflow-y-auto font-mono text-xs leading-relaxed"
-            >
-              {pullLines.map((line, i) => (
-                <div
-                  key={i}
-                  className={
-                    line.startsWith("Error") || line.startsWith("\nError")
-                      ? "text-red-400"
-                      : line.startsWith("$ ")
-                      ? "text-zinc-400"
-                      : line.includes("exited with code 0")
-                      ? "text-green-400"
-                      : line.includes("exited with code")
-                      ? "text-red-400"
-                      : "text-green-300"
-                  }
-                >
-                  {line || " "}
-                </div>
-              ))}
-              {pullState === "pulling" && (
-                <div className="flex items-center gap-1 text-zinc-500 mt-1">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>{t("pulling")}</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {pullState === "done" && (
-            <div className="flex items-center gap-2 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
-              {t("pullDone")}
-            </div>
-          )}
-          {pullState === "error" && (
-            <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              {t("pullError")}
             </div>
           )}
         </CardContent>

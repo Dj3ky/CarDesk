@@ -13,7 +13,7 @@ export async function POST() {
 
   const stream = new ReadableStream({
     start(controller) {
-      const proc = spawn("git", ["pull", "origin", "main"], {
+      const proc = spawn("git", ["pull", "origin", "master"], {
         cwd: process.cwd(),
       });
 

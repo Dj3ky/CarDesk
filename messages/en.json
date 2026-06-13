@@ -267,7 +267,8 @@
       "finance": "Finance",
       "documents": "Documents",
       "system": "System",
-      "backup": "Backup"
+      "backup": "Backup",
+      "update": "Update"
     },
     "backup": {
       "title": "Backup & Restore",
@@ -293,9 +294,18 @@
       "restarting": "Restarting...",
       "restartWaiting": "Server is restarting — reconnecting...",
       "restartDone": "Server is back online. Reloading...",
-      "updateTitle": "Update from GitHub",
-      "updateDesc": "Pull the latest code from the main branch of the GitHub repository (dj3ky/CarDesk).",
-      "updateButton": "Pull from GitHub",
+    },
+    "update": {
+      "checkTitle": "Check for Updates",
+      "checkDesc": "Fetch the latest commit from GitHub and compare it with the running version.",
+      "checkButton": "Check for Updates",
+      "checking": "Checking...",
+      "upToDate": "Already up to date.",
+      "updateAvailable": "{count, plural, one {# new commit available} other {# new commits available}} — update ready to install.",
+      "checkError": "Could not reach GitHub. Check your network or git remote configuration.",
+      "pullTitle": "Pull from GitHub",
+      "pullDesc": "Pull the latest code from the master branch of dj3ky/CarDesk.",
+      "pullButton": "Pull from GitHub",
       "pulling": "Pulling...",
       "pullDone": "Update complete. Restart the server to apply changes.",
       "pullError": "Pull failed. Check the terminal output for details."

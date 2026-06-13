@@ -7,6 +7,7 @@ import { getSettings } from "@/modules/settings/actions/get-settings";
 import { SettingsForm } from "@/modules/settings/components/settings-form";
 import { SettingsNav, type SettingsTab } from "@/modules/settings/components/settings-nav";
 import { BackupPanel } from "@/modules/settings/components/backup-panel";
+import { UpdatePanel } from "@/modules/settings/components/update-panel";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings");
@@ -18,7 +19,7 @@ interface PageProps {
   searchParams: Promise<{ tab?: string }>;
 }
 
-const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "backup"];
+const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "backup", "update"];
 
 export default async function SettingsPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
@@ -55,6 +56,8 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
         <div className="flex-1 min-w-0 max-w-2xl">
           {activeTab === "backup" ? (
             <BackupPanel />
+          ) : activeTab === "update" ? (
+            <UpdatePanel />
           ) : (
             <SettingsForm settings={settings} activeTab={activeTab} />
           )}

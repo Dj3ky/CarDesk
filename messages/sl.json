@@ -267,7 +267,8 @@
       "finance": "Finance",
       "documents": "Dokumenti",
       "system": "Sistem",
-      "backup": "Varnostne kopije"
+      "backup": "Varnostne kopije",
+      "update": "Posodobitev"
     },
     "backup": {
       "title": "Varnostne kopije in obnovitev",
@@ -293,9 +294,18 @@
       "restarting": "Zaganjam...",
       "restartWaiting": "Strežnik se zaganja — poskušam vzpostaviti povezavo...",
       "restartDone": "Strežnik je spet dosegljiv. Nalagam...",
-      "updateTitle": "Posodobitev iz GitHuba",
-      "updateDesc": "Povleci najnovejšo kodo iz glavne veje repozitorija na GitHubu (dj3ky/CarDesk).",
-      "updateButton": "Povleci iz GitHuba",
+    },
+    "update": {
+      "checkTitle": "Preveri posodobitve",
+      "checkDesc": "Pridobi zadnji commit iz GitHuba in ga primerja s trenutno nameščeno različico.",
+      "checkButton": "Preveri posodobitve",
+      "checking": "Preverjam...",
+      "upToDate": "Že imate najnovejšo različico.",
+      "updateAvailable": "{count, plural, one {Na voljo je # nova različica} other {Na voljo je # novih različic}} — posodobitev je pripravljena za namestitev.",
+      "checkError": "Ni mogoče doseči GitHuba. Preverite omrežje ali konfiguracijo git remote.",
+      "pullTitle": "Povleci iz GitHuba",
+      "pullDesc": "Povleci najnovejšo kodo iz veje master repozitorija dj3ky/CarDesk.",
+      "pullButton": "Povleci iz GitHuba",
       "pulling": "Povlačim...",
       "pullDone": "Posodobitev dokončana. Znova zaženite strežnik, da se spremembe uveljavijo.",
       "pullError": "Povlačenje ni uspelo. Preverite izpis terminala."

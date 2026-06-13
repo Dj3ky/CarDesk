@@ -2,10 +2,10 @@
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Building2, DollarSign, FileText, Settings2, Database } from "lucide-react";
+import { Building2, DollarSign, FileText, Settings2, Database, GitPullRequest } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type SettingsTab = "company" | "finance" | "documents" | "system" | "backup";
+export type SettingsTab = "company" | "finance" | "documents" | "system" | "backup" | "update";
 
 const TABS: { key: SettingsTab; Icon: React.ElementType }[] = [
   { key: "company", Icon: Building2 },
@@ -13,6 +13,7 @@ const TABS: { key: SettingsTab; Icon: React.ElementType }[] = [
   { key: "documents", Icon: FileText },
   { key: "system", Icon: Settings2 },
   { key: "backup", Icon: Database },
+  { key: "update", Icon: GitPullRequest },
 ];
 
 interface SettingsNavProps {

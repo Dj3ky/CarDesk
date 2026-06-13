@@ -21,9 +21,13 @@ echo ""
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
 # When run from the Next.js standalone server via the UI, the process inherits
-# NODE_PATH pointing at .next/standalone/node_modules/. Unset it so that npm,
-# prisma, and node all resolve modules from the project root instead.
+# NODE_PATH and PATH entries pointing at .next/standalone/node_modules/.
+# Strip those out so every subsequent npm/node/prisma call uses the project root.
 unset NODE_PATH NODE_OPTIONS
+# Remove .next/* entries injected by the standalone server from PATH.
+export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v '\.next' | tr '\n' ':' | sed 's/:$//')"
+# Prepend the project's own node_modules/.bin so prisma etc. are found here first.
+export PATH="$(pwd)/node_modules/.bin:$PATH"
 
 # Remove stale standalone build BEFORE git pull so this runs even when bash
 # has buffered the old version of this script. The corrupted Prisma files
@@ -64,14 +68,14 @@ if [[ -f .env.local ]]; then
 fi
 
 info "Generating Prisma client …"
-npm run db:generate
+node_modules/.bin/prisma generate
 
 if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
   info "Applying migrations …"
-  npm run db:migrate:deploy
+  node_modules/.bin/prisma migrate deploy
 else
   info "No migrations found — pushing schema to database …"
-  npx prisma db push --accept-data-loss
+  node_modules/.bin/prisma db push --accept-data-loss
 fi
 success "Database up to date"
 

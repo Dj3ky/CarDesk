@@ -38,7 +38,6 @@ export function ProductSearchBar({ defaultValue = "" }: { defaultValue?: string 
         onChange={handleChange}
         placeholder={`${t("search")}…`}
         className="pl-9 pr-9 w-72"
-        disabled={isPending}
       />
       {defaultValue && (
         <Button

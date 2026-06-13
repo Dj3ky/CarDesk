@@ -48,7 +48,6 @@ export function CustomerSearch({ defaultValue = "" }: { defaultValue?: string })
         onChange={handleChange}
         placeholder={`${t("search")}…`}
         className="pl-9 pr-9 w-64"
-        disabled={isPending}
       />
       {defaultValue && (
         <Button

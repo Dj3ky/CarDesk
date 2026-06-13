@@ -432,7 +432,9 @@
       "placeholder": "Product number or description…",
       "noResults": "No products found.",
       "replacedBy": "Replaced by:",
-      "searchSubstitution": "Search substitution"
+      "searchSubstitution": "Search substitution",
+      "exVat": "ex VAT",
+      "vatLine": "VAT {rate}%"
     },
     "totals": {
       "subtotal": "Subtotal (ex VAT)",

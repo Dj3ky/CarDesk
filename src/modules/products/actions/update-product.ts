@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -35,6 +35,7 @@ export async function updateProduct(
 
     revalidatePath("/products");
     revalidatePath("/pricelist");
+    revalidateTag("products");
     return { success: true, data: { id } };
   } catch (err: unknown) {
     const e = err as { code?: string; meta?: { target?: string[] } };

@@ -6,6 +6,13 @@ import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rul
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
+async function getApproximateCount(): Promise<number> {
+  const result = await prisma.$queryRaw<[{ reltuples: number }]>`
+    SELECT reltuples::bigint AS reltuples FROM pg_class WHERE relname = 'Product'
+  `;
+  return result[0]?.reltuples ?? 0;
+}
+
 const PAGE_SIZE_ADMIN = 25;
 const PAGE_SIZE_PRICELIST = 50;
 
@@ -55,6 +62,9 @@ export async function getProducts(
   const where: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
+  // Approximate count is only accurate when there is no WHERE clause (admin, no filters)
+  const useApproxCount = andConditions.length === 0;
+
   const [rawProducts, total, priceRules] = await Promise.all([
     prisma.product.findMany({
       where,
@@ -76,7 +86,7 @@ export async function getProducts(
         isActive: true,
       },
     }),
-    prisma.product.count({ where }),
+    useApproxCount ? getApproximateCount() : prisma.product.count({ where }),
     getActivePriceRules(),
   ]);
 

@@ -432,7 +432,9 @@
       "placeholder": "Šifra ali opis izdelka…",
       "noResults": "Ni najdenih izdelkov.",
       "replacedBy": "Nadomešča ga:",
-      "searchSubstitution": "Išči nadomestni del"
+      "searchSubstitution": "Išči nadomestni del",
+      "exVat": "brez DDV",
+      "vatLine": "DDV {rate}%"
     },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",

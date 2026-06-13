@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { unlink } from "fs/promises";
+import { revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { parseXlsxAllRows, countCsvRows, streamCsvRows } from "./parse-file";
@@ -231,6 +232,8 @@ export async function processImportJob(jobId: string): Promise<void> {
         completedAt: new Date(),
       },
     });
+
+    revalidateTag("products");
   } catch (err) {
     console.error(`[import] job ${jobId} failed:`, err);
     await prisma.importJob

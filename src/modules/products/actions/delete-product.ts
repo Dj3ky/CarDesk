@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { ActionResult } from "../types";
@@ -14,6 +14,7 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
     await prisma.product.delete({ where: { id } });
     revalidatePath("/products");
     revalidatePath("/pricelist");
+    revalidateTag("products");
     return { success: true };
   } catch (err: unknown) {
     const e = err as { code?: string };

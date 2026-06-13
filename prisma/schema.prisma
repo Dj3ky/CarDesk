@@ -131,9 +131,10 @@ model Product {
   @@index([supplier], map: "product_supplier_btree_idx")
   @@index([price])
   @@index([isActive])
-  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin, map: "product_description_gin_idx")
-  @@index([brand(ops: raw("gin_trgm_ops"))],       type: Gin, map: "product_brand_gin_idx")
-  @@index([supplier(ops: raw("gin_trgm_ops"))],    type: Gin, map: "product_supplier_gin_idx")
+  @@index([productNumber(ops: raw("gin_trgm_ops"))], type: Gin, map: "product_productNumber_gin_idx")
+  @@index([description(ops: raw("gin_trgm_ops"))],   type: Gin, map: "product_description_gin_idx")
+  @@index([brand(ops: raw("gin_trgm_ops"))],         type: Gin, map: "product_brand_gin_idx")
+  @@index([supplier(ops: raw("gin_trgm_ops"))],      type: Gin, map: "product_supplier_gin_idx")
 }
 
 enum OfferStatus {

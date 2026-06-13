@@ -110,7 +110,7 @@ export function ProductSearchDialog({
                         <>
                           <p className="text-sm font-semibold">
                             {parseFloat(p.adjustedPrice).toFixed(2)}{" "}
-                            <span className="text-xs font-normal text-muted-foreground">ex VAT</span>
+                            <span className="text-xs font-normal text-muted-foreground">{t("exVat")}</span>
                           </p>
                           <p className="text-xs text-muted-foreground line-through">
                             {parseFloat(p.price).toFixed(2)}
@@ -119,10 +119,10 @@ export function ProductSearchDialog({
                       ) : (
                         <p className="text-sm font-semibold">
                           {parseFloat(p.price).toFixed(2)}{" "}
-                          <span className="text-xs font-normal text-muted-foreground">ex VAT</span>
+                          <span className="text-xs font-normal text-muted-foreground">{t("exVat")}</span>
                         </p>
                       )}
-                      <p className="text-xs text-muted-foreground">VAT {p.vatRate}%</p>
+                      <p className="text-xs text-muted-foreground">{t("vatLine", { rate: p.vatRate })}</p>
                     </div>
                   </div>
                 </button>

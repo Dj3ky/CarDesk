@@ -1,10 +1,10 @@
 "use server";
 
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { FilterOptions } from "../types";
 
-// DISTINCT queries use B-tree index scans — fast even at 100k rows
-export async function getFilterOptions(): Promise<FilterOptions> {
+async function fetchFilterOptions(): Promise<FilterOptions> {
   const [brandRows, supplierRows] = await Promise.all([
     prisma.product.findMany({
       where: { isActive: true, brand: { not: null } },
@@ -27,3 +27,8 @@ export async function getFilterOptions(): Promise<FilterOptions> {
     suppliers: supplierRows.map((r) => r.supplier!),
   };
 }
+
+export const getFilterOptions = unstable_cache(fetchFilterOptions, ["product-filter-options"], {
+  revalidate: 3600,
+  tags: ["products"],
+});

@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { spawn } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, rmSync } from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
@@ -34,6 +34,18 @@ export async function POST() {
       { error: ".env.local not found — run install.sh on the server first." },
       { status: 500 }
     );
+  }
+
+  // Remove stale standalone build before npm install runs.
+  // The corrupted Prisma package.json inside .next/standalone/node_modules/
+  // causes npm to fail even though we're installing into the project root.
+  const standaloneDir = path.join(projectRoot, ".next", "standalone");
+  if (existsSync(standaloneDir)) {
+    try {
+      rmSync(standaloneDir, { recursive: true, force: true });
+    } catch {
+      // Non-fatal — update.sh will clean it too
+    }
   }
 
   const encoder = new TextEncoder();

@@ -38,7 +38,8 @@
       "Bash(node -e \"const data=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(data.settings?.backup, null, 2\\)\\)\")",
       "Bash(node -e \"const data=require\\('./messages/sl.json'\\); const s=data.settings?.backup; console.log\\(JSON.stringify\\(Object.keys\\(s\\), null, 2\\)\\)\")",
       "Bash(node -e \"const data=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(data.settings.backup.restartDone\\)\\)\")",
-      "Bash(git -C d:/GitHub/CarDesk remote show origin)"
+      "Bash(git -C d:/GitHub/CarDesk remote show origin)",
+      "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.settings.update, null, 2\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

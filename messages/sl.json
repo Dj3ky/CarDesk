@@ -305,10 +305,10 @@
       "checkError": "Ni mogoče doseči GitHuba. Preverite omrežje ali konfiguracijo git remote.",
       "pullTitle": "Povleci iz GitHuba",
       "pullDesc": "Povleci najnovejšo kodo iz veje master repozitorija dj3ky/CarDesk.",
-      "pullButton": "Povleci iz GitHuba",
-      "pulling": "Povlačim...",
+      "pullButton": "Posodobi iz GitHuba",
+      "pulling": "Posodabljam...",
       "pullDone": "Posodobitev dokončana. Strežnik se zaganja — stran se bo kmalu znova povezala.",
-      "pullError": "Povlačenje ni uspelo. Preverite izpis terminala."
+      "pullError": "Posodobitev ni uspela. Preverite izpis terminala."
     },
     "sections": {
       "company": "Podatki o podjetju",

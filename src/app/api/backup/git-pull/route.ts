@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
+export const maxDuration = 600; // 10 minutes — npm install + build can be slow
 
 const ANSI_RE = /\x1b\[[0-9;]*[mGKHF]/g;
 

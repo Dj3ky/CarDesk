@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Car roof -->
+  <rect x="8" y="7" width="16" height="7" rx="3" fill="white"/>
+  <!-- Car body -->
+  <rect x="2" y="13" width="28" height="10" rx="2" fill="white"/>
+  <!-- Left wheel -->
+  <circle cx="9" cy="24" r="4.5" fill="#1d4ed8" stroke="white" stroke-width="2"/>
+  <!-- Right wheel -->
+  <circle cx="23" cy="24" r="4.5" fill="#1d4ed8" stroke="white" stroke-width="2"/>
+</svg>

@@ -188,7 +188,7 @@ type PdfStrings = {
 
 const STRINGS: Record<string, PdfStrings> = {
   en: {
-    title: "SERVICE OFFER",
+    title: "OFFER",
     no: "No:",
     date: "Date:",
     validUntil: "Valid until:",
@@ -216,7 +216,7 @@ const STRINGS: Record<string, PdfStrings> = {
     },
   },
   sl: {
-    title: "SERVISNA PONUDBA",
+    title: "PONUDBA",
     no: "Št.:",
     date: "Datum:",
     validUntil: "Veljavno do:",
@@ -262,7 +262,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
     <Document
       title={offer.offerNumber}
       author={settings.companyName}
-      subject="Service Offer"
+      subject="Offer"
     >
       <Page size="A4" style={styles.page}>
         {/* ── Header ── */}

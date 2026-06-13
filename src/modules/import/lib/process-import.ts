@@ -233,7 +233,7 @@ export async function processImportJob(jobId: string): Promise<void> {
       },
     });
 
-    revalidateTag("products");
+    revalidateTag("products", { expire: 0 });
   } catch (err) {
     console.error(`[import] job ${jobId} failed:`, err);
     await prisma.importJob

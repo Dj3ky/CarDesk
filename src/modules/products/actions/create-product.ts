@@ -33,7 +33,7 @@ export async function createProduct(data: ProductFormValues): Promise<ActionResu
 
     revalidatePath("/products");
     revalidatePath("/pricelist");
-    revalidateTag("products");
+    revalidateTag("products", { expire: 0 });
     return { success: true, data: product };
   } catch (err: unknown) {
     const e = err as { code?: string; meta?: { target?: string[] } };

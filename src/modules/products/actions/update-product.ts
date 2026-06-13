@@ -35,7 +35,7 @@ export async function updateProduct(
 
     revalidatePath("/products");
     revalidatePath("/pricelist");
-    revalidateTag("products");
+    revalidateTag("products", { expire: 0 });
     return { success: true, data: { id } };
   } catch (err: unknown) {
     const e = err as { code?: string; meta?: { target?: string[] } };

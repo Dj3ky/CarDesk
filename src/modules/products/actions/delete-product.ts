@@ -14,7 +14,7 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
     await prisma.product.delete({ where: { id } });
     revalidatePath("/products");
     revalidatePath("/pricelist");
-    revalidateTag("products");
+    revalidateTag("products", { expire: 0 });
     return { success: true };
   } catch (err: unknown) {
     const e = err as { code?: string };

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2, AlertCircle, UserPlus } from "lucide-react";
+import { Loader2, AlertCircle, UserPlus, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -69,6 +69,7 @@ export function OfferForm({
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+  const [quickAddVehicleOpen, setQuickAddVehicleOpen] = useState(false);
   const pendingVehicleIdRef = useRef<string | null>(null);
 
   const form = useForm<OfferFormValues>({
@@ -79,6 +80,7 @@ export function OfferForm({
   const { register, handleSubmit, watch, setValue, control, formState: { errors } } = form;
 
   const selectedCustomerId = watch("customerId");
+  const selectedCustomer = customerList.find((c) => c.id === selectedCustomerId) ?? null;
 
   useEffect(() => {
     if (!selectedCustomerId) {
@@ -99,9 +101,17 @@ export function OfferForm({
   }, [selectedCustomerId]);
 
   function handleQuickCreated(customer: CustomerOption, vehicle: VehicleOption | null) {
-    setCustomerList((prev) => [customer, ...prev.filter((c) => c.id !== customer.id)]);
+    const alreadyInList = customerList.some((c) => c.id === customer.id);
+    if (!alreadyInList) {
+      setCustomerList((prev) => [customer, ...prev]);
+    }
     if (vehicle) {
       pendingVehicleIdRef.current = vehicle.id;
+      if (alreadyInList) {
+        setVehicles((prev) => [...prev, vehicle]);
+        setValue("vehicleId", vehicle.id);
+        return;
+      }
     }
     setValue("customerId", customer.id);
   }
@@ -166,20 +176,33 @@ export function OfferForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="vehicleId">{t("fields.vehicle")}</Label>
-            <select
-              id="vehicleId"
-              {...register("vehicleId")}
-              disabled={!selectedCustomerId}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
-            >
-              <option value="">{t("form.noVehicle")}</option>
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.make} {v.model} ({v.year})
-                  {v.registrationPlate ? ` — ${v.registrationPlate}` : ""}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="vehicleId"
+                {...register("vehicleId")}
+                disabled={!selectedCustomerId}
+                className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
+              >
+                <option value="">{t("form.noVehicle")}</option>
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.make} {v.model} ({v.year})
+                    {v.registrationPlate ? ` — ${v.registrationPlate}` : ""}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                disabled={!selectedCustomerId}
+                onClick={() => setQuickAddVehicleOpen(true)}
+                title={t("form.quickAddVehicle")}
+                className="shrink-0"
+              >
+                <Car className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-1.5">
@@ -241,6 +264,12 @@ export function OfferForm({
         open={quickCreateOpen}
         onClose={() => setQuickCreateOpen(false)}
         onCreated={handleQuickCreated}
+      />
+      <QuickCreateDialog
+        open={quickAddVehicleOpen}
+        onClose={() => setQuickAddVehicleOpen(false)}
+        onCreated={handleQuickCreated}
+        existingCustomer={selectedCustomer ?? undefined}
       />
     </form>
   );

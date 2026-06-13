@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { UserPlus, Car, Loader2, AlertCircle, ChevronRight } from "lucide-react";
 import {
@@ -22,11 +22,12 @@ interface QuickCreateDialogProps {
   open: boolean;
   onClose: () => void;
   onCreated: (customer: CustomerOption, vehicle: VehicleOption | null) => void;
+  existingCustomer?: CustomerOption;
 }
 
 type Step = "customer" | "vehicle";
 
-export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialogProps) {
+export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }: QuickCreateDialogProps) {
   const t = useTranslations("offers.quickCreate");
   const tv = useTranslations("vehicles.fuelTypes");
 
@@ -51,6 +52,14 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
   const [fuelType, setFuelType] = useState<FuelType>(FuelType.PETROL);
   const [mileage, setMileage] = useState("");
   const [vin, setVin] = useState("");
+
+  useEffect(() => {
+    if (open && existingCustomer) {
+      setCreatedCustomer(existingCustomer);
+      setCreatedCustomerId(existingCustomer.id);
+      setStep("vehicle");
+    }
+  }, [open, existingCustomer]);
 
   function reset() {
     setStep("customer");
@@ -353,23 +362,25 @@ export function QuickCreateDialog({ open, onClose, onCreated }: QuickCreateDialo
               </div>
             )}
             <div className="flex items-center justify-between gap-2 pt-1">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={handleSkipVehicle}
-                disabled={isPending}
-              >
-                {t("skipVehicle")}
-              </Button>
-              <div className="flex gap-2">
+              {!existingCustomer && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSkipVehicle}
+                  disabled={isPending}
+                >
+                  {t("skipVehicle")}
+                </Button>
+              )}
+              <div className="flex gap-2 ml-auto">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => { setStep("customer"); setError(null); }}
+                  onClick={() => existingCustomer ? handleClose() : (setStep("customer"), setError(null))}
                   disabled={isPending}
                 >
-                  {t("back")}
+                  {existingCustomer ? t("cancel") : t("back")}
                 </Button>
                 <Button
                   type="button"

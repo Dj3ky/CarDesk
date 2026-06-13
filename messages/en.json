@@ -416,7 +416,8 @@
       "saveChanges": "Save Changes",
       "createOffer": "Create Offer",
       "notesPlaceholder": "Internal notes or instructions for the customer…",
-      "quickCreate": "Quick-create new customer"
+      "quickCreate": "Quick-create new customer",
+      "quickAddVehicle": "Add a new vehicle for this customer"
     },
     "quickCreate": {
       "newCustomer": "New Customer",

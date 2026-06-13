@@ -416,7 +416,8 @@
       "saveChanges": "Shrani spremembe",
       "createOffer": "Ustvari ponudbo",
       "notesPlaceholder": "Interne opombe ali navodila za stranko…",
-      "quickCreate": "Hitro ustvari novo stranko"
+      "quickCreate": "Hitro ustvari novo stranko",
+      "quickAddVehicle": "Dodaj novo vozilo tej stranki"
     },
     "quickCreate": {
       "newCustomer": "Nova stranka",

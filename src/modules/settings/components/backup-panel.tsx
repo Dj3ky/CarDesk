@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Download, Upload, AlertTriangle, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Download, Upload, AlertTriangle, Loader2, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,6 +20,7 @@ export function BackupPanel() {
   const [downloadState, setDownloadState] = useState<"idle" | "loading">("idle");
   const [restoreState, setRestoreState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [restoreError, setRestoreError] = useState<string | null>(null);
+  const [restartState, setRestartState] = useState<"idle" | "restarting" | "waiting" | "done">("idle");
 
   async function handleDownload() {
     setDownloadState("loading");
@@ -68,6 +69,31 @@ export function BackupPanel() {
       setRestoreState("error");
       setRestoreError(t("restoreError"));
     }
+  }
+
+  async function handleRestart() {
+    setRestartState("restarting");
+    try {
+      await fetch("/api/backup/restart", { method: "POST" });
+    } catch {
+      // Expected — server may close the connection before responding
+    }
+
+    setRestartState("waiting");
+
+    // Poll until the server responds again, then reload
+    const poll = setInterval(async () => {
+      try {
+        const res = await fetch("/api/health", { cache: "no-store" });
+        if (res.ok) {
+          clearInterval(poll);
+          setRestartState("done");
+          setTimeout(() => window.location.reload(), 800);
+        }
+      } catch {
+        // Still down — keep polling
+      }
+    }, 1500);
   }
 
   return (
@@ -156,6 +182,46 @@ export function BackupPanel() {
             <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
               <AlertCircle className="h-4 w-4 shrink-0" />
               {restoreError ?? t("restoreError")}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Separator />
+
+      {/* Restart Services */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{t("restartTitle")}</CardTitle>
+          <CardDescription>{t("restartDesc")}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{t("restartWarning")}</span>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            disabled={restartState !== "idle"}
+            onClick={handleRestart}
+          >
+            {restartState === "restarting" || restartState === "waiting" ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-2 h-4 w-4" />
+            )}
+            {restartState === "idle" && t("restartButton")}
+            {restartState === "restarting" && t("restarting")}
+            {restartState === "waiting" && t("restartWaiting")}
+            {restartState === "done" && t("restartDone")}
+          </Button>
+
+          {restartState === "done" && (
+            <div className="flex items-center gap-2 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              {t("restartDone")}
             </div>
           )}
         </CardContent>

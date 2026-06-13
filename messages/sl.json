@@ -285,7 +285,14 @@
       "restoreSuccess": "Baza podatkov je bila uspešno obnovljena. Stran se bo znova naložila.",
       "restoreError": "Obnovitev ni uspela",
       "invalidFile": "Neveljavna oblika varnostne kopije",
-      "noFile": "Najprej izberite datoteko varnostne kopije"
+      "noFile": "Najprej izberite datoteko varnostne kopije",
+      "restartTitle": "Ponovni zagon storitev",
+      "restartDesc": "Znova zaženite strežnik aplikacije. Priporočeno po obnovitvi varnostne kopije za čiščenje predpomnilnikov.",
+      "restartWarning": "Aplikacija bo med ponovnim zagonom kratkotrajno nedosegljiva.",
+      "restartButton": "Ponovni zagon storitev",
+      "restarting": "Zaganjam...",
+      "restartWaiting": "Strežnik se zaganja — poskušam vzpostaviti povezavo...",
+      "restartDone": "Strežnik je spet dosegljiv. Nalagam..."
     },
     "sections": {
       "company": "Podatki o podjetju",

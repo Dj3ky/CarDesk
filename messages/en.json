@@ -285,7 +285,14 @@
       "restoreSuccess": "Database restored successfully. The page will reload.",
       "restoreError": "Restore failed",
       "invalidFile": "Invalid backup file format",
-      "noFile": "Please select a backup file first"
+      "noFile": "Please select a backup file first",
+      "restartTitle": "Restart Services",
+      "restartDesc": "Restart the application server. Recommended after restoring a backup to ensure all caches are cleared.",
+      "restartWarning": "The application will be briefly unavailable while it restarts.",
+      "restartButton": "Restart Services",
+      "restarting": "Restarting...",
+      "restartWaiting": "Server is restarting — reconnecting...",
+      "restartDone": "Server is back online. Reloading..."
     },
     "sections": {
       "company": "Company Information",

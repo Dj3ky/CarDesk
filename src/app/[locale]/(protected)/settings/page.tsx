@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { Settings } from "lucide-react";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 import { SettingsForm } from "@/modules/settings/components/settings-form";
+import { SettingsNav, type SettingsTab } from "@/modules/settings/components/settings-nav";
+import { BackupPanel } from "@/modules/settings/components/backup-panel";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings");
@@ -13,15 +15,22 @@ export async function generateMetadata(): Promise<Metadata> {
 
 interface PageProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
-export default async function SettingsPage({ params }: PageProps) {
+const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "backup"];
+
+export default async function SettingsPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
+  const { tab } = await searchParams;
   const session = await auth();
 
   if (session?.user?.role !== "ADMIN") {
     redirect(`/${locale}/dashboard`);
   }
+
+  const activeTab: SettingsTab =
+    tab && VALID_TABS.includes(tab as SettingsTab) ? (tab as SettingsTab) : "company";
 
   const [t, settings] = await Promise.all([
     getTranslations("settings"),
@@ -29,7 +38,7 @@ export default async function SettingsPage({ params }: PageProps) {
   ]);
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
           <Settings className="h-5 w-5 text-primary" />
@@ -40,7 +49,17 @@ export default async function SettingsPage({ params }: PageProps) {
         </div>
       </div>
 
-      <SettingsForm settings={settings} />
+      <div className="flex gap-8">
+        <SettingsNav activeTab={activeTab} />
+
+        <div className="flex-1 min-w-0 max-w-2xl">
+          {activeTab === "backup" ? (
+            <BackupPanel />
+          ) : (
+            <SettingsForm settings={settings} activeTab={activeTab} />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

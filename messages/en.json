@@ -262,6 +262,31 @@
     "saving": "Saving...",
     "saveSuccess": "Settings saved successfully",
     "saveError": "Failed to save settings",
+    "tabs": {
+      "company": "Company",
+      "finance": "Finance",
+      "documents": "Documents",
+      "system": "System",
+      "backup": "Backup"
+    },
+    "backup": {
+      "title": "Backup & Restore",
+      "subtitle": "Manage your database backups",
+      "createTitle": "Create Backup",
+      "createDesc": "Download a full backup of your database as a JSON file. This includes all customers, vehicles, products, offers, and settings.",
+      "downloadButton": "Download Backup",
+      "downloading": "Preparing backup...",
+      "restoreTitle": "Restore Database",
+      "restoreDesc": "Upload a previously downloaded backup file to restore your data.",
+      "restoreWarning": "Warning: Restoring will permanently overwrite all existing data. This action cannot be undone.",
+      "chooseFile": "Choose backup file",
+      "restoreButton": "Restore Database",
+      "restoring": "Restoring...",
+      "restoreSuccess": "Database restored successfully. The page will reload.",
+      "restoreError": "Restore failed",
+      "invalidFile": "Invalid backup file format",
+      "noFile": "Please select a backup file first"
+    },
     "sections": {
       "company": "Company Information",
       "companyDesc": "Your company details used in documents and emails",

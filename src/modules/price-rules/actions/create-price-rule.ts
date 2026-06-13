@@ -1,0 +1,24 @@
+"use server";
+
+import { revalidateTag } from "next/cache";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { priceRuleSchema, type PriceRuleFormValues } from "../schemas/price-rule.schema";
+
+export async function createPriceRule(values: PriceRuleFormValues) {
+  const parsed = priceRuleSchema.safeParse(values);
+  if (!parsed.success) {
+    return { success: false as const, error: "Invalid input" };
+  }
+  const { filterType, filterValue, adjustmentType, adjustmentValue } = parsed.data;
+  await prisma.priceRule.create({
+    data: {
+      filterType,
+      filterValue: filterValue.trim(),
+      adjustmentType,
+      adjustmentValue: new Prisma.Decimal(adjustmentValue),
+    },
+  });
+  revalidateTag("price-rules");
+  return { success: true as const };
+}

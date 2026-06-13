@@ -9,8 +9,9 @@ export type ProductListItem = {
   brand: string | null;
   supplier: string | null;
   substitutionPart: string | null;
-  price: string;       // Decimal serialised as string
-  vatRate: string;     // Decimal serialised as string
+  price: string;           // Decimal serialised as string
+  adjustedPrice?: string;  // Price after applying a matching PriceRule
+  vatRate: string;         // Decimal serialised as string
   stock: number;
   unit: string;
   isActive: boolean;

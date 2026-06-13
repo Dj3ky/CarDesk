@@ -60,7 +60,7 @@ export function LineItemsEditor({
     setValue(`items.${i}.productId`, product.id);
     setValue(`items.${i}.productNumber`, product.productNumber);
     setValue(`items.${i}.description`, product.description);
-    setValue(`items.${i}.pricePerUnit`, parseFloat(product.price));
+    setValue(`items.${i}.pricePerUnit`, parseFloat(product.adjustedPrice ?? product.price));
     setValue(`items.${i}.vatRate`, parseFloat(product.vatRate));
     setValue(`items.${i}.unit`, product.unit);
   }

@@ -269,8 +269,39 @@
       "finance": "Finance",
       "documents": "Dokumenti",
       "system": "Sistem",
+      "pricing": "Cene",
       "backup": "Varnostne kopije",
       "update": "Posodobitev"
+    },
+    "pricing": {
+      "title": "Pravila cen",
+      "description": "Samodejno prilagodite cene za izdelke določenih blagovnih znamk ali dobaviteljev pri dodajanju v ponudbe.",
+      "addRule": "Dodaj pravilo",
+      "newRule": "Novo pravilo cene",
+      "noRules": "Ni definiranih pravil cen. Dodajte pravilo za samodejno prilagajanje cen.",
+      "cancel": "Prekliči",
+      "save": "Shrani pravilo",
+      "fields": {
+        "filterType": "Velja za",
+        "filterValue": "Vrednost",
+        "filterValuePlaceholder": "npr. Toyota",
+        "adjustmentType": "Vrsta",
+        "adjustmentValue": "Vrednost"
+      },
+      "filterTypes": {
+        "brand": "Blagovna znamka",
+        "supplier": "Dobavitelj"
+      },
+      "adjustmentTypes": {
+        "percent": "Odstotek (%)",
+        "fixed": "Fiksni znesek"
+      },
+      "columns": {
+        "filter": "Filter",
+        "value": "Vrednost",
+        "adjustment": "Prilagoditev",
+        "active": "Aktivno"
+      }
     },
     "backup": {
       "title": "Varnostne kopije in obnovitev",

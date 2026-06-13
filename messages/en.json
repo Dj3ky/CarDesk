@@ -269,8 +269,39 @@
       "finance": "Finance",
       "documents": "Documents",
       "system": "System",
+      "pricing": "Pricing",
       "backup": "Backup",
       "update": "Update"
+    },
+    "pricing": {
+      "title": "Price Rules",
+      "description": "Automatically adjust prices for products from specific brands or suppliers when adding to offers.",
+      "addRule": "Add Rule",
+      "newRule": "New Price Rule",
+      "noRules": "No price rules defined. Add a rule to start adjusting prices automatically.",
+      "cancel": "Cancel",
+      "save": "Save Rule",
+      "fields": {
+        "filterType": "Apply to",
+        "filterValue": "Value",
+        "filterValuePlaceholder": "e.g. Toyota",
+        "adjustmentType": "Type",
+        "adjustmentValue": "Amount"
+      },
+      "filterTypes": {
+        "brand": "Brand",
+        "supplier": "Supplier"
+      },
+      "adjustmentTypes": {
+        "percent": "Percent (%)",
+        "fixed": "Fixed amount"
+      },
+      "columns": {
+        "filter": "Filter",
+        "value": "Value",
+        "adjustment": "Adjustment",
+        "active": "Active"
+      }
     },
     "backup": {
       "title": "Backup & Restore",

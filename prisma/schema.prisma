@@ -256,6 +256,19 @@ model ImportJob {
   @@index([createdAt])
 }
 
+model PriceRule {
+  id              String   @id @default(cuid())
+  filterType      String   // "brand" | "supplier"
+  filterValue     String
+  adjustmentType  String   // "percent" | "fixed"
+  adjustmentValue Decimal  @db.Decimal(10, 4)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([filterType, isActive])
+}
+
 model Settings {
   id                 String   @id @default("settings")
   companyName        String   @default("")

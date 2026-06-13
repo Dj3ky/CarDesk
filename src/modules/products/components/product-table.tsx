@@ -65,6 +65,8 @@ export async function ProductTable({
           {products.map((p) => {
             const exVat = priceExVat(p.price);
             const incVat = priceIncVat(p.price, p.vatRate);
+            const adjExVat = p.adjustedPrice ? priceExVat(p.adjustedPrice) : undefined;
+            const adjIncVat = p.adjustedPrice ? priceIncVat(p.adjustedPrice, p.vatRate) : undefined;
             const vatPct = parseFloat(p.vatRate);
             const lowStock = p.stock <= 0;
 
@@ -94,13 +96,27 @@ export async function ProductTable({
                   {p.substitutionPart ?? "—"}
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-sm">
-                  {formatEur(exVat)}
+                  {adjExVat !== undefined ? (
+                    <>
+                      <div className="font-medium">{formatEur(adjExVat)}</div>
+                      <div className="text-xs text-muted-foreground line-through">{formatEur(exVat)}</div>
+                    </>
+                  ) : (
+                    formatEur(exVat)
+                  )}
                 </TableCell>
                 <TableCell className="hidden sm:table-cell text-right text-sm text-muted-foreground">
                   {vatPct}%
                 </TableCell>
                 <TableCell className="text-right tabular-nums font-medium text-sm">
-                  {formatEur(incVat)}
+                  {adjIncVat !== undefined ? (
+                    <>
+                      <div>{formatEur(adjIncVat)}</div>
+                      <div className="text-xs text-muted-foreground font-normal line-through">{formatEur(incVat)}</div>
+                    </>
+                  ) : (
+                    formatEur(incVat)
+                  )}
                 </TableCell>
                 <TableCell className="hidden md:table-cell text-right text-sm">
                   <span className={lowStock ? "text-destructive font-medium" : ""}>

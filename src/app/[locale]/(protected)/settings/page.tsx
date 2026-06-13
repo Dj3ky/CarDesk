@@ -8,6 +8,8 @@ import { SettingsForm } from "@/modules/settings/components/settings-form";
 import { SettingsNav, type SettingsTab } from "@/modules/settings/components/settings-nav";
 import { BackupPanel } from "@/modules/settings/components/backup-panel";
 import { UpdatePanel } from "@/modules/settings/components/update-panel";
+import { getAllPriceRules } from "@/modules/price-rules/actions/get-price-rules";
+import { PricingPanel } from "@/modules/price-rules/components/pricing-panel";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings");
@@ -19,7 +21,7 @@ interface PageProps {
   searchParams: Promise<{ tab?: string }>;
 }
 
-const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "backup", "update"];
+const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "pricing", "backup", "update"];
 
 export default async function SettingsPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
@@ -33,9 +35,10 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
   const activeTab: SettingsTab =
     tab && VALID_TABS.includes(tab as SettingsTab) ? (tab as SettingsTab) : "company";
 
-  const [t, settings] = await Promise.all([
+  const [t, settings, priceRules] = await Promise.all([
     getTranslations("settings"),
     getSettings(),
+    getAllPriceRules(),
   ]);
 
   return (
@@ -58,6 +61,8 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
             <BackupPanel />
           ) : activeTab === "update" ? (
             <UpdatePanel />
+          ) : activeTab === "pricing" ? (
+            <PricingPanel initialRules={priceRules} />
           ) : (
             <SettingsForm settings={settings} activeTab={activeTab} />
           )}

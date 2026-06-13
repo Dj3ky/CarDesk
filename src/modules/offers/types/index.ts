@@ -88,6 +88,7 @@ export type ProductSearchResult = {
   brand: string | null;
   substitutionPart: string | null;
   price: string;
+  adjustedPrice?: string; // Price after applying a matching PriceRule
   vatRate: string;
   unit: string;
 };

@@ -2,6 +2,8 @@
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
+import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
 const PAGE_SIZE_ADMIN = 25;
@@ -53,7 +55,7 @@ export async function getProducts(
   const where: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  const [rawProducts, total] = await Promise.all([
+  const [rawProducts, total, priceRules] = await Promise.all([
     prisma.product.findMany({
       where,
       orderBy: [{ productNumber: "asc" }],
@@ -75,14 +77,21 @@ export async function getProducts(
       },
     }),
     prisma.product.count({ where }),
+    getActivePriceRules(),
   ]);
 
-  // Serialise Decimals to strings for RSC boundary
-  const products: ProductListItem[] = rawProducts.map((p) => ({
-    ...p,
-    price: p.price.toString(),
-    vatRate: p.vatRate.toString(),
-  }));
+  // Serialise Decimals to strings, apply any matching price rule
+  const products: ProductListItem[] = rawProducts.map((p) => {
+    const basePrice = parseFloat(p.price.toString());
+    const rule = findMatchingRule(p.brand, p.supplier, priceRules);
+    const adjusted = rule ? applyRule(basePrice, rule) : undefined;
+    return {
+      ...p,
+      price: p.price.toString(),
+      vatRate: p.vatRate.toString(),
+      ...(adjusted !== undefined && { adjustedPrice: adjusted.toFixed(2) }),
+    };
+  });
 
   return { products, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
 }

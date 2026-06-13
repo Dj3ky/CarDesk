@@ -18,6 +18,11 @@ section() { echo -e "\n${BOLD}━━━ $* ━━━━━━━━━━━━�
 echo -e "${BOLD}  CarDesk Update${RESET}"
 echo ""
 
+# Always run from the directory that contains this script so relative paths
+# (prisma/schema.prisma, node_modules/.bin/prisma, .env.local) resolve correctly
+# regardless of what cwd the spawning process set.
+cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
 # Remove stale standalone build BEFORE git pull so this runs even when bash
@@ -63,18 +68,16 @@ if [[ -f .env.local ]]; then
   fi
 fi
 
-SCHEMA="$(pwd)/prisma/schema.prisma"
-
 info "Generating Prisma client …"
-node_modules/.bin/prisma generate --schema "$SCHEMA"
+node_modules/.bin/prisma generate
 
 DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')
 if [[ -d prisma/migrations ]] && compgen -G "prisma/migrations/*/migration.sql" > /dev/null 2>&1; then
   info "Applying migrations …"
-  DATABASE_URL="$DB_URL" node_modules/.bin/prisma migrate deploy --schema "$SCHEMA"
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma migrate deploy
 else
   info "No migrations found — pushing schema to database …"
-  DATABASE_URL="$DB_URL" node_modules/.bin/prisma db push --schema "$SCHEMA" --accept-data-loss
+  DATABASE_URL="$DB_URL" node_modules/.bin/prisma db push --accept-data-loss
 fi
 success "Database up to date"
 

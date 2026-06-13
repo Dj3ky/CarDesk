@@ -67,7 +67,8 @@ export async function POST() {
         PATH: systemPath || "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
         TERM: "dumb",
         FORCE_COLOR: "0",
-      };
+        NODE_ENV: process.env.NODE_ENV ?? "production",
+      } satisfies NodeJS.ProcessEnv;
 
       const proc = spawn("bash", ["update.sh"], {
         cwd: projectRoot,

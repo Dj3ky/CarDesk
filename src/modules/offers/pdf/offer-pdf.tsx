@@ -1,4 +1,5 @@
 import React from "react";
+import path from "path";
 import {
   Document,
   Page,
@@ -6,10 +7,23 @@ import {
   View,
   StyleSheet,
   Image,
+  Font,
 } from "@react-pdf/renderer";
 import type { OfferDetail } from "../types";
 import type { SettingsData } from "@/modules/settings/types";
 import { calcItem, calcTotals } from "../lib/calculations";
+
+const FONTS_DIR = path.join(process.cwd(), "public", "fonts");
+
+Font.register({
+  family: "Roboto",
+  src: path.join(FONTS_DIR, "Roboto-Regular.ttf"),
+});
+Font.register({
+  family: "Roboto-Bold",
+  src: path.join(FONTS_DIR, "Roboto-Bold.ttf"),
+});
+Font.registerHyphenationCallback((word) => [word]);
 
 const BLUE = "#1e3a5f";
 const BLUE_LIGHT = "#dbeafe";
@@ -19,7 +33,7 @@ const WHITE = "#ffffff";
 
 const styles = StyleSheet.create({
   page: {
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     fontSize: 9,
     color: "#1e293b",
     paddingTop: 40,
@@ -36,13 +50,13 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   companyBlock: { flex: 1, paddingRight: 16 },
-  companyName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: BLUE, marginBottom: 4 },
+  companyName: { fontSize: 16, fontFamily: "Roboto-Bold", color: BLUE, marginBottom: 4 },
   companyDetail: { color: SLATE, marginBottom: 2 },
   logo: { width: 100, height: 40, objectFit: "contain", marginBottom: 6 },
   offerBlock: { alignItems: "flex-end", minWidth: 160 },
-  offerTitle: { fontSize: 20, fontFamily: "Helvetica-Bold", color: BLUE, marginBottom: 6 },
+  offerTitle: { fontSize: 20, fontFamily: "Roboto-Bold", color: BLUE, marginBottom: 6 },
   offerMeta: { color: SLATE, marginBottom: 2 },
-  offerMetaBold: { fontFamily: "Helvetica-Bold", color: "#1e293b" },
+  offerMetaBold: { fontFamily: "Roboto-Bold", color: "#1e293b" },
   // Status badge
   statusBadge: {
     marginTop: 6,
@@ -51,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: "flex-end",
   },
-  statusText: { fontSize: 8, fontFamily: "Helvetica-Bold" },
+  statusText: { fontSize: 8, fontFamily: "Roboto-Bold" },
   // Info cards
   infoRow: { flexDirection: "row", gap: 12, marginBottom: 20 },
   infoCard: {
@@ -63,14 +77,14 @@ const styles = StyleSheet.create({
   },
   infoCardTitle: {
     fontSize: 7,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Roboto-Bold",
     color: SLATE,
     textTransform: "uppercase",
     letterSpacing: 0.5,
     marginBottom: 6,
   },
   infoLine: { marginBottom: 2 },
-  infoBold: { fontFamily: "Helvetica-Bold" },
+  infoBold: { fontFamily: "Roboto-Bold" },
   // Items table
   table: { marginBottom: 16 },
   tableHeader: {
@@ -83,7 +97,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderCell: {
     fontSize: 8,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Roboto-Bold",
     color: WHITE,
   },
   tableRow: {
@@ -111,17 +125,17 @@ const styles = StyleSheet.create({
   totalsBox: { width: 200 },
   totalsRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 2 },
   totalsLabel: { color: SLATE },
-  totalsValue: { fontFamily: "Helvetica-Bold" },
+  totalsValue: { fontFamily: "Roboto-Bold" },
   totalsDivider: { borderTopWidth: 1, borderTopColor: BLUE, marginVertical: 4 },
-  discountValue: { fontFamily: "Helvetica-Bold", color: "#16a34a" },
+  discountValue: { fontFamily: "Roboto-Bold", color: "#16a34a" },
   grandTotalRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 3 },
-  grandTotalLabel: { fontSize: 10, fontFamily: "Helvetica-Bold", color: BLUE },
-  grandTotalValue: { fontSize: 10, fontFamily: "Helvetica-Bold", color: BLUE },
+  grandTotalLabel: { fontSize: 10, fontFamily: "Roboto-Bold", color: BLUE },
+  grandTotalValue: { fontSize: 10, fontFamily: "Roboto-Bold", color: BLUE },
   // Notes
   notesSection: { marginBottom: 20 },
   notesTitle: {
     fontSize: 8,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Roboto-Bold",
     color: SLATE,
     textTransform: "uppercase",
     letterSpacing: 0.5,

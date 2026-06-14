@@ -17,7 +17,7 @@ export function BackupPanel() {
   const t = useTranslations("settings.backup");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [downloadState, setDownloadState] = useState<"idle" | "loading">("idle");
+  const [downloadState, setDownloadState] = useState<"idle" | "loading" | "error">("idle");
   const [restoreState, setRestoreState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [restoreError, setRestoreError] = useState<string | null>(null);
   const [restartState, setRestartState] = useState<"idle" | "restarting" | "waiting" | "done">("idle");
@@ -26,7 +26,7 @@ export function BackupPanel() {
     setDownloadState("loading");
     try {
       const res = await fetch("/api/backup/create");
-      if (!res.ok) throw new Error("Download failed");
+      if (!res.ok) throw new Error(`Download failed: ${res.status}`);
       const blob = await res.blob();
       const filename =
         res.headers.get("Content-Disposition")?.match(/filename="(.+?)"/)?.[1] ??
@@ -35,12 +35,13 @@ export function BackupPanel() {
       const a = document.createElement("a");
       a.href = url;
       a.download = filename;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      // silently ignore — browser download errors are not actionable
-    } finally {
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
       setDownloadState("idle");
+    } catch {
+      setDownloadState("error");
     }
   }
 
@@ -118,6 +119,12 @@ export function BackupPanel() {
             )}
             {downloadState === "loading" ? t("downloading") : t("downloadButton")}
           </Button>
+          {downloadState === "error" && (
+            <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {t("downloadError")}
+            </div>
+          )}
         </CardContent>
       </Card>
 

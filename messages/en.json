@@ -314,6 +314,7 @@
       "createDesc": "Download a full backup of your database as a JSON file. This includes all customers, vehicles, products, offers, and settings.",
       "downloadButton": "Download Backup",
       "downloading": "Preparing backup...",
+      "downloadError": "Backup download failed. Please try again.",
       "restoreTitle": "Restore Database",
       "restoreDesc": "Upload a previously downloaded backup file to restore your data.",
       "restoreWarning": "Warning: Restoring will permanently overwrite all existing data. This action cannot be undone.",

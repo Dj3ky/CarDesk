@@ -314,6 +314,7 @@
       "createDesc": "Prenesite celotno varnostno kopijo baze podatkov v obliki JSON datoteke. Vključuje vse stranke, vozila, izdelke, ponudbe in nastavitve.",
       "downloadButton": "Prenesi varnostno kopijo",
       "downloading": "Priprava varnostne kopije...",
+      "downloadError": "Prenos varnostne kopije ni uspel. Poskusite znova.",
       "restoreTitle": "Obnovi bazo podatkov",
       "restoreDesc": "Naložite predhodno ustvarjeno varnostno kopijo za obnovitev podatkov.",
       "restoreWarning": "Opozorilo: Obnovitev bo trajno prepisala vse obstoječe podatke. Tega dejanja ni mogoče razveljaviti.",

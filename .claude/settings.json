@@ -74,7 +74,11 @@
       "Bash(xxd -l4 -p NotoSans-Bold.ttf)",
       "Bash(git add *)",
       "Bash(git rm *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "PowerShell(git commit -m \"fix: re-exec after git pull so updated script runs; add cwd diagnostic before prisma\")",
+      "PowerShell(git add src/app/api/backup/git-pull/route.ts next.config.ts)",
+      "PowerShell(git commit -m \"fix: npm install --include=dev so prisma CLI is installed \\(it is a devDependency\\)\")",
+      "PowerShell(git commit -m \"fix: CI=true for non-interactive npm, drop rm -rf node_modules \\(no longer needed\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

@@ -4,7 +4,7 @@ set -euo pipefail
 # ─────────────────────────────────────────────
 #  CarDesk — Full Automated Installer
 #  Supports: Ubuntu 20.04/22.04/24.04, Debian 11/12
-#  Installs: Node.js 20, PostgreSQL 16, CarDesk app
+#  Installs: Node.js 22, PostgreSQL 16, CarDesk app
 #  Run as root or with sudo privileges
 # ─────────────────────────────────────────────
 
@@ -25,7 +25,7 @@ echo "  ██║     ██╔══██║██╔══██╗██║ 
 echo "  ╚██████╗██║  ██║██║  ██║██████╔╝███████╗███████║██║  ██╗"
 echo "   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝"
 echo -e "${RESET}"
-echo -e "  ${BOLD}Full Installer — Node.js · PostgreSQL · CarDesk${RESET}"
+echo -e "  ${BOLD}Full Installer — Node.js 22 · PostgreSQL · CarDesk${RESET}"
 echo ""
 
 # ─────────────────────────────────────────────
@@ -127,23 +127,23 @@ apt-get install -y -qq \
 success "Base packages ready"
 
 # ─────────────────────────────────────────────
-section "Node.js 20"
+section "Node.js 22"
 # ─────────────────────────────────────────────
 
 NEED_NODE=true
 if command -v node &>/dev/null; then
   CURRENT_NODE=$(node -e "console.log(parseInt(process.versions.node.split('.')[0]))")
-  if [[ "$CURRENT_NODE" -ge 20 ]]; then
+  if [[ "$CURRENT_NODE" -ge 22 ]]; then
     success "Node.js $(node --version) already installed"
     NEED_NODE=false
   else
-    warn "Node.js $(node --version) found — upgrading to v20"
+    warn "Node.js $(node --version) found — upgrading to v22"
   fi
 fi
 
 if [[ "$NEED_NODE" == true ]]; then
-  info "Adding NodeSource repository (Node.js 20) …"
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &>/dev/null
+  info "Adding NodeSource repository (Node.js 22) …"
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash - &>/dev/null
   apt-get install -y -qq nodejs
   success "Node.js $(node --version) installed"
 fi
@@ -247,7 +247,7 @@ section "Installing Node.js dependencies"
 # ─────────────────────────────────────────────
 
 info "Running npm install …"
-npm install 2>&1 | tail -5
+npm install --include=dev 2>&1 | tail -5
 success "Dependencies installed"
 
 # ─────────────────────────────────────────────

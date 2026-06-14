@@ -46,6 +46,7 @@ export type OfferDetail = {
   currency: string;
   notes: string | null;
   validUntil: Date | null;
+  hideCatalogNumber: boolean;
   createdAt: Date;
   updatedAt: Date;
   customer: OfferCustomer;

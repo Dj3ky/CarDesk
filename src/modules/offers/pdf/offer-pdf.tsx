@@ -407,7 +407,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
               >
                 <Text style={[styles.tableCell, styles.colNum]}>{idx + 1}</Text>
                 <View style={styles.colDesc}>
-                  {item.productNumber ? (
+                  {!offer.hideCatalogNumber && item.productNumber ? (
                     <Text style={{ fontSize: 7, color: SLATE }}>{item.productNumber}</Text>
                   ) : null}
                   <Text style={styles.tableCell}>{item.description}</Text>

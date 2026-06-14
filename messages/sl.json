@@ -90,6 +90,14 @@
       "l": "l",
       "set": "komplet",
       "pair": "par"
+    },
+    "substitutionPopup": {
+      "title": "Nadomestni artikel",
+      "notFound": "Artikel ni najden v katalogu",
+      "priceExVat": "Cena (brez DDV)",
+      "priceIncVat": "Cena (z DDV)",
+      "stock": "Zaloga",
+      "inactive": "Neaktiven"
     }
   },
   "vehicles": {
@@ -485,7 +493,9 @@
       "unsavedTitle": "Neshranjene spremembe",
       "unsavedDesc": "Imate neshranjene spremembe. Če zapustite stran, bodo spremembe izgubljene.",
       "unsavedLeave": "Zapusti",
-      "unsavedStay": "Ostani na strani"
+      "unsavedStay": "Ostani na strani",
+      "hideCatalogNumber": "Skrij kataloško številko v PDF",
+      "hideCatalogNumberHint": "Kataloške številke ne bodo prikazane na tiskani ponudbi"
     },
     "quickCreate": {
       "newCustomer": "Nova stranka",

@@ -64,6 +64,7 @@ export async function getOffer(id: string): Promise<OfferDetail | null> {
     currency: offer.currency,
     notes: offer.notes,
     validUntil: offer.validUntil,
+    hideCatalogNumber: offer.hideCatalogNumber,
     createdAt: offer.createdAt,
     updatedAt: offer.updatedAt,
     customer: offer.customer,

@@ -156,9 +156,10 @@ model Offer {
   vehicleId   String?
   mileage     Int?
   currency    String      @default("EUR")
-  notes       String?     @db.Text
-  validUntil  DateTime?
-  createdAt   DateTime    @default(now())
+  notes               String?  @db.Text
+  validUntil          DateTime?
+  hideCatalogNumber   Boolean  @default(false)
+  createdAt           DateTime @default(now())
   updatedAt   DateTime    @updatedAt
   createdById String?
 

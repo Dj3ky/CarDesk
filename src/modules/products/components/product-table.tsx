@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DeleteProductDialog } from "./delete-product-dialog";
+import { SubstitutionPartCell } from "./substitution-part-cell";
 import { priceExVat, priceIncVat, formatEur } from "../lib/price";
 import type { ProductListItem } from "../types";
 
@@ -92,8 +93,8 @@ export async function ProductTable({
                 <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                   {p.supplier ?? "—"}
                 </TableCell>
-                <TableCell className="hidden xl:table-cell text-sm font-mono text-muted-foreground">
-                  {p.substitutionPart ?? "—"}
+                <TableCell className="hidden xl:table-cell text-sm">
+                  <SubstitutionPartCell substitutionPart={p.substitutionPart} />
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-sm">
                   {adjExVat !== undefined ? (

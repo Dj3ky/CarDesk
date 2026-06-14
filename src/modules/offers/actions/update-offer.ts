@@ -40,6 +40,7 @@ export async function updateOffer(
           mileage: d.mileage ?? null,
           notes: d.notes ?? null,
           validUntil: d.validUntil ? new Date(d.validUntil) : null,
+          hideCatalogNumber: d.hideCatalogNumber ?? false,
         },
       });
 

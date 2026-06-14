@@ -64,6 +64,7 @@ export const offerSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform((v) => v || undefined),
+  hideCatalogNumber: z.boolean().default(false),
   items: z.array(offerItemSchema).min(1, "At least one item is required"),
 });
 

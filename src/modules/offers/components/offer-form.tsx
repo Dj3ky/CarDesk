@@ -40,7 +40,7 @@ interface OfferFormProps {
 
 function buildDefaults(offer: OfferDetail | undefined, defaultCustomerId?: string): OfferFormValues {
   if (!offer) {
-    return { customerId: defaultCustomerId ?? "", vehicleId: "", mileage: "", notes: "", validUntil: "", items: [] };
+    return { customerId: defaultCustomerId ?? "", vehicleId: "", mileage: "", notes: "", validUntil: "", hideCatalogNumber: false, items: [] };
   }
   return {
     customerId: offer.customerId,
@@ -50,6 +50,7 @@ function buildDefaults(offer: OfferDetail | undefined, defaultCustomerId?: strin
     validUntil: offer.validUntil
       ? new Date(offer.validUntil).toISOString().split("T")[0]
       : "",
+    hideCatalogNumber: offer.hideCatalogNumber,
     items: offer.items.map((item) => ({
       id: item.id,
       productId: item.productId ?? "",
@@ -314,12 +315,27 @@ export function OfferForm({
         <CardHeader>
           <CardTitle className="text-base">{t("fields.notes")}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <Textarea
             {...register("notes")}
             placeholder={t("form.notesPlaceholder")}
             rows={3}
           />
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              {...register("hideCatalogNumber")}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-input accent-primary"
+            />
+            <span className="space-y-0.5">
+              <span className="text-sm font-medium leading-none">
+                {t("form.hideCatalogNumber")}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                {t("form.hideCatalogNumberHint")}
+              </span>
+            </span>
+          </label>
         </CardContent>
       </Card>
 

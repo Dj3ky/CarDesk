@@ -90,6 +90,14 @@
       "l": "l",
       "set": "set",
       "pair": "pair"
+    },
+    "substitutionPopup": {
+      "title": "Substitution Product",
+      "notFound": "Product not found in catalog",
+      "priceExVat": "Price (ex VAT)",
+      "priceIncVat": "Price (inc VAT)",
+      "stock": "Stock",
+      "inactive": "Inactive"
     }
   },
   "vehicles": {
@@ -485,7 +493,9 @@
       "unsavedTitle": "Unsaved Changes",
       "unsavedDesc": "You have unsaved changes. If you leave now, your changes will be lost.",
       "unsavedLeave": "Leave",
-      "unsavedStay": "Stay on Page"
+      "unsavedStay": "Stay on Page",
+      "hideCatalogNumber": "Hide catalog number in PDF",
+      "hideCatalogNumberHint": "Product catalog numbers will not appear on the printed offer"
     },
     "quickCreate": {
       "newCustomer": "New Customer",

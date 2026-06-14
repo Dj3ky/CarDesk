@@ -92,7 +92,10 @@
       "Bash(manifest)",
       "Bash(fallback\")",
       "PowerShell(Get-ChildItem \"d:\\\\GitHub\\\\CarDesk\\\\public\\\\icons\\\\\" | Select-Object Name, @{N=\"KB\";E={[math]::Round\\($_.Length/1KB,1\\)}})",
-      "Bash(mkdir -p \"d:\\\\GitHub\\\\CarDesk\\\\src\\\\app\\\\icons\\\\[name]\")"
+      "Bash(mkdir -p \"d:\\\\GitHub\\\\CarDesk\\\\src\\\\app\\\\icons\\\\[name]\")",
+      "Bash(xargs grep -l \"pricelist\\\\|priceRule\")",
+      "Bash(grep -v \"//\")",
+      "Bash(python3 -c ' *)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

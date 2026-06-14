@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
+import { UserCog, UserPlus } from "lucide-react";
 import { UserTable } from "@/modules/users/components/user-table";
 import { getUsers } from "@/modules/users/actions/get-users";
 
@@ -32,11 +32,16 @@ export default async function UsersPage({ params }: UsersPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle", { count: users.length })}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <UserCog className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground">
+              {t("subtitle", { count: users.length })}
+            </p>
+          </div>
         </div>
         <Button asChild>
           <Link href={`/${locale}/users/new`}>

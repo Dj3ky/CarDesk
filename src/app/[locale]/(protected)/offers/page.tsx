@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { FilePlus2 } from "lucide-react";
+import { FilePlus2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/modules/customers/components/pagination";
 import { OfferTable } from "@/modules/offers/components/offer-table";
@@ -54,11 +54,16 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {total} {total === 1 ? "offer" : "offers"}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <FileText className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {total} {total === 1 ? "offer" : "offers"}
+            </p>
+          </div>
         </div>
         <Button asChild>
           <Link href={`${basePath}/new`}>

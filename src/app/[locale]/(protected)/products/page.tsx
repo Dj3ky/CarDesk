@@ -57,11 +57,16 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("products.title")}</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            {t("products.subtitle", { count: total })}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Package className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{t("products.title")}</h1>
+            <p className="text-muted-foreground text-sm mt-1">
+              {t("products.subtitle", { count: total })}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {isAdmin && (

@@ -41,13 +41,18 @@ export function SettingsNav({ activeTab }: SettingsNavProps) {
           type="button"
           onClick={() => setTab(key)}
           className={cn(
-            "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors text-left w-full",
+            "group flex items-center gap-2.5 rounded-md py-2 pr-3 text-sm font-medium transition-all text-left w-full border-l-2 pl-[10px]",
             activeTab === key
-              ? "bg-primary text-primary-foreground font-medium"
-              : "text-muted-foreground hover:bg-accent hover:text-foreground"
+              ? "border-primary bg-accent text-foreground"
+              : "border-transparent text-muted-foreground hover:bg-accent hover:text-foreground"
           )}
         >
-          <Icon className="h-4 w-4 shrink-0" />
+          <Icon className={cn(
+            "h-4 w-4 shrink-0 transition-colors",
+            activeTab === key
+              ? "text-primary"
+              : "text-muted-foreground/50 group-hover:text-muted-foreground"
+          )} />
           {t(key)}
         </button>
       ))}

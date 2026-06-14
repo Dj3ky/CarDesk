@@ -24,6 +24,7 @@ import {
   UserPlus,
   FilePlus,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
 import { OfferStatusBadge } from "@/modules/offers/components/offer-status-badge";
 import { calcTotals, formatCurrency } from "@/modules/offers/lib/calculations";
@@ -130,11 +131,16 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("dashboard.title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("dashboard.welcome", { name: session?.user?.name ?? "—" })}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <LayoutDashboard className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{t("dashboard.title")}</h1>
+            <p className="text-sm text-muted-foreground">
+              {t("dashboard.welcome", { name: session?.user?.name ?? "—" })}
+            </p>
+          </div>
         </div>
         {session?.user?.role && (
           <Badge variant="outline" className="capitalize">

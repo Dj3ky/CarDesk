@@ -64,7 +64,8 @@
       "Bash(node -e \"const p=require\\('./d:/GitHub/CarDesk/package.json'\\); console.log\\(p.dependencies.next\\)\")",
       "Bash(xargs grep -l \"dashboard\")",
       "Bash(xargs grep -l \"audit\\\\|log\\\\|history\")",
-      "Bash(xargs grep -i \"auditlog\\\\|audit_log\\\\|activity\")"
+      "Bash(xargs grep -i \"auditlog\\\\|audit_log\\\\|activity\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

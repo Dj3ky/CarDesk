@@ -1,6 +1,9 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+// Products are excluded — they are large catalog data managed via CSV import/export.
+// Restore them using the CSV import feature.
+
 const BATCH = 500;
 
 export async function GET() {
@@ -16,10 +19,8 @@ export async function GET() {
     async start(controller) {
       const push = (s: string) => controller.enqueue(enc.encode(s));
 
-      // Stream a full table in cursor-paginated batches to avoid OOM.
-      async function streamTable(name: string, first: boolean) {
-        if (!first) push(",");
-        push(`"${name}":[`);
+      async function streamTable(name: string) {
+        push(`,"${name}":[`);
         let cursor: string | undefined;
         let firstRow = true;
         while (true) {
@@ -43,25 +44,25 @@ export async function GET() {
       try {
         push(`{"version":"1.0","createdAt":"${new Date().toISOString()}","data":{`);
 
-        // Small / fixed tables — load all at once (no id cursor needed).
+        // Settings singleton — load all at once
         push('"settings":');
         push(JSON.stringify(await prisma.settings.findMany()));
 
-        push(',"verificationTokens":');
-        push(JSON.stringify(await prisma.verificationToken.findMany()));
+        // Business-critical operational data
+        await streamTable("user");
+        await streamTable("customer");
+        await streamTable("vehicle");
+        await streamTable("offer");
+        await streamTable("offerItem");
+        await streamTable("priceRule");
 
-        // Paginated tables
-        await streamTable("account", false);
-        await streamTable("session", false);
-        await streamTable("user", false);
-        await streamTable("customer", false);
-        await streamTable("vehicle", false);
-        await streamTable("product", false);
-        await streamTable("offer", false);
-        await streamTable("offerItem", false);
-        await streamTable("importJob", false);
-        await streamTable("auditLog", false);
-        await streamTable("priceRule", false);
+        // Auth tables
+        await streamTable("account");
+        await streamTable("session");
+
+        // VerificationToken has no `id` field — load all at once
+        push(',"verificationToken":');
+        push(JSON.stringify(await prisma.verificationToken.findMany()));
 
         push("}}");
         controller.close();

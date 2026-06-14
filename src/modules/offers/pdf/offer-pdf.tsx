@@ -1,5 +1,4 @@
 import React from "react";
-import path from "path";
 import {
   Document,
   Page,
@@ -12,17 +11,10 @@ import {
 import type { OfferDetail } from "../types";
 import type { SettingsData } from "@/modules/settings/types";
 import { calcItem, calcTotals } from "../lib/calculations";
+import { ROBOTO_REGULAR, ROBOTO_BOLD } from "./roboto-fonts";
 
-const FONTS_DIR = path.join(process.cwd(), "public", "fonts");
-
-Font.register({
-  family: "Roboto",
-  src: path.join(FONTS_DIR, "Roboto-Regular.ttf"),
-});
-Font.register({
-  family: "Roboto-Bold",
-  src: path.join(FONTS_DIR, "Roboto-Bold.ttf"),
-});
+Font.register({ family: "Roboto", src: ROBOTO_REGULAR });
+Font.register({ family: "Roboto-Bold", src: ROBOTO_BOLD });
 Font.registerHyphenationCallback((word) => [word]);
 
 const BLUE = "#1e3a5f";

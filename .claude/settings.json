@@ -65,7 +65,8 @@
       "Bash(xargs grep -l \"dashboard\")",
       "Bash(xargs grep -l \"audit\\\\|log\\\\|history\")",
       "Bash(xargs grep -i \"auditlog\\\\|audit_log\\\\|activity\")",
-      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
+      "Bash(grep -n \"readFile\\\\|fetch\\\\|file://\\\\|isUrl\\\\|resolve\" \"node_modules/@react-pdf/font/lib/index.js\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

@@ -454,7 +454,7 @@
       "added": "Dodano",
       "done": "Zapri",
       "qtyLabel": "Količina",
-      "browseButton": "Pregled cenika"
+      "browseButton": "Izberi iz cenika"
     },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",

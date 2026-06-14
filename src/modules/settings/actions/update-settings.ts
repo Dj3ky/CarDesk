@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { settingsSchema } from "../schemas/settings.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function updateSettings(data: unknown): Promise<ActionResult> {
@@ -44,6 +45,14 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     where: { id: "settings" },
     create: { id: "settings", ...settingsData },
     update: settingsData,
+  });
+
+  await logAudit({
+    action: "UPDATE",
+    entity: "SETTINGS",
+    entityId: "settings",
+    entityLabel: d.companyName || "Settings",
+    userId: session.user.id,
   });
 
   revalidateTag("settings", { expire: 0 });

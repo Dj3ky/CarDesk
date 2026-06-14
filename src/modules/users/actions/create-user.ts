@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { createUserSchema } from "../schemas/user.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function createUser(data: unknown): Promise<ActionResult<{ id: string }>> {
@@ -28,6 +29,14 @@ export async function createUser(data: unknown): Promise<ActionResult<{ id: stri
   const user = await prisma.user.create({
     data: { name, email, password: hashed, role, isActive },
     select: { id: true },
+  });
+
+  await logAudit({
+    action: "CREATE",
+    entity: "USER",
+    entityId: user.id,
+    entityLabel: `${name ?? ""} (${email})`.trim(),
+    userId: session.user.id,
   });
 
   return { success: true, data: { id: user.id } };

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult, OfferStatus } from "../types";
 
 const VALID_TRANSITIONS: Record<OfferStatus, OfferStatus[]> = {
@@ -20,7 +21,7 @@ export async function updateOfferStatus(
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
-  const offer = await prisma.offer.findUnique({ where: { id }, select: { status: true } });
+  const offer = await prisma.offer.findUnique({ where: { id }, select: { status: true, offerNumber: true } });
   if (!offer) return { success: false, error: "Offer not found" };
 
   const current = offer.status as OfferStatus;
@@ -29,6 +30,16 @@ export async function updateOfferStatus(
   }
 
   await prisma.offer.update({ where: { id }, data: { status: newStatus } });
+
+  await logAudit({
+    action: "STATUS_CHANGE",
+    entity: "OFFER",
+    entityId: id,
+    entityLabel: offer.offerNumber,
+    userId: session.user?.id,
+    changes: { from: current, to: newStatus },
+  });
+
   revalidatePath("/offers");
   revalidatePath(`/offers/${id}`);
   return { success: true };

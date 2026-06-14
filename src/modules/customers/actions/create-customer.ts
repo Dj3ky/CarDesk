@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { customerSchema, type CustomerFormValues } from "../schemas/customer.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 import type { Customer } from "@prisma/client";
 
@@ -28,6 +29,14 @@ export async function createCustomer(
         ...parsed.data,
         createdById: session.user.id,
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entity: "CUSTOMER",
+      entityId: customer.id,
+      entityLabel: customer.companyName ?? `${customer.lastName} ${customer.firstName}`,
+      userId: session.user.id,
     });
 
     revalidatePath("/customers");

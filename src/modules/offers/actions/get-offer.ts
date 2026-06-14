@@ -60,6 +60,7 @@ export async function getOffer(id: string): Promise<OfferDetail | null> {
     status: offer.status as OfferStatus,
     customerId: offer.customerId,
     vehicleId: offer.vehicleId,
+    mileage: offer.mileage,
     currency: offer.currency,
     notes: offer.notes,
     validUntil: offer.validUntil,

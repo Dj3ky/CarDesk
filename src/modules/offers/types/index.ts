@@ -42,6 +42,7 @@ export type OfferDetail = {
   status: OfferStatus;
   customerId: string;
   vehicleId: string | null;
+  mileage: number | null;
   currency: string;
   notes: string | null;
   validUntil: Date | null;

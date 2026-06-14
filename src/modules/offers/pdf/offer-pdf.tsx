@@ -170,6 +170,7 @@ type PdfStrings = {
   validUntil: string;
   customer: string;
   vehicle: string;
+  mileage: string;
   colDescription: string;
   colQty: string;
   colUnit: string;
@@ -194,6 +195,7 @@ const STRINGS: Record<string, PdfStrings> = {
     validUntil: "Valid until:",
     customer: "Customer",
     vehicle: "Vehicle",
+    mileage: "Mileage:",
     colDescription: "Description",
     colQty: "Qty",
     colUnit: "Unit",
@@ -222,6 +224,7 @@ const STRINGS: Record<string, PdfStrings> = {
     validUntil: "Veljavno do:",
     customer: "Stranka",
     vehicle: "Vozilo",
+    mileage: "Kilometraža:",
     colDescription: "Opis",
     colQty: "Kol.",
     colUnit: "Enota",
@@ -353,6 +356,11 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
               ) : null}
               {offer.vehicle.vin ? (
                 <Text style={styles.infoLine}>VIN: {offer.vehicle.vin}</Text>
+              ) : null}
+              {offer.mileage != null ? (
+                <Text style={styles.infoLine}>
+                  {s.mileage} {offer.mileage.toLocaleString("sl-SI")} km
+                </Text>
               ) : null}
             </View>
           ) : (

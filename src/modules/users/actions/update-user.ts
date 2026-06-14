@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { updateUserSchema } from "../schemas/user.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function updateUser(userId: string, data: unknown): Promise<ActionResult> {
@@ -43,5 +44,14 @@ export async function updateUser(userId: string, data: unknown): Promise<ActionR
   }
 
   await prisma.user.update({ where: { id: userId }, data: updateData });
+
+  await logAudit({
+    action: "UPDATE",
+    entity: "USER",
+    entityId: userId,
+    entityLabel: `${name ?? ""} (${email})`.trim(),
+    userId: session.user.id,
+  });
+
   return { success: true };
 }

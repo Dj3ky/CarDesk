@@ -46,6 +46,13 @@ export const offerSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform((v) => v || undefined),
+  mileage: z.coerce
+    .number({ invalid_type_error: "Must be a number" })
+    .int()
+    .min(0)
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => (v === "" || v === undefined ? undefined : Number(v))),
   notes: z
     .string()
     .max(2000)

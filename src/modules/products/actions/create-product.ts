@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { productSchema, type ProductFormValues } from "../schemas/product.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function createProduct(data: ProductFormValues): Promise<ActionResult<{ id: string }>> {
@@ -28,13 +29,21 @@ export async function createProduct(data: ProductFormValues): Promise<ActionResu
         vatRate: new Prisma.Decimal(parsed.data.vatRate),
         createdById: session.user.id,
       },
-      select: { id: true },
+      select: { id: true, productNumber: true, description: true },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entity: "PRODUCT",
+      entityId: product.id,
+      entityLabel: `${product.productNumber} — ${product.description}`,
+      userId: session.user.id,
     });
 
     revalidatePath("/products");
     revalidatePath("/pricelist");
     revalidateTag("products", { expire: 0 });
-    return { success: true, data: product };
+    return { success: true, data: { id: product.id } };
   } catch (err: unknown) {
     const e = err as { code?: string; meta?: { target?: string[] } };
     if (e?.code === "P2002") {

@@ -40,11 +40,12 @@ interface OfferFormProps {
 
 function buildDefaults(offer: OfferDetail | undefined, defaultCustomerId?: string): OfferFormValues {
   if (!offer) {
-    return { customerId: defaultCustomerId ?? "", vehicleId: "", notes: "", validUntil: "", items: [] };
+    return { customerId: defaultCustomerId ?? "", vehicleId: "", mileage: "", notes: "", validUntil: "", items: [] };
   }
   return {
     customerId: offer.customerId,
     vehicleId: offer.vehicleId ?? "",
+    mileage: offer.mileage ?? "",
     notes: offer.notes ?? "",
     validUntil: offer.validUntil
       ? new Date(offer.validUntil).toISOString().split("T")[0]
@@ -92,6 +93,7 @@ export function OfferForm({
   const { register, handleSubmit, watch, setValue, control, formState: { errors, isDirty } } = form;
 
   const selectedCustomerId = watch("customerId");
+  const selectedVehicleId = watch("vehicleId");
   const selectedCustomer = customerList.find((c) => c.id === selectedCustomerId) ?? null;
 
   useEffect(() => {
@@ -259,6 +261,28 @@ export function OfferForm({
               </Button>
             </div>
           </div>
+
+          {selectedVehicleId && (
+            <div className="space-y-1.5">
+              <Label htmlFor="mileage">{t("fields.mileage")}</Label>
+              <div className="relative">
+                <Input
+                  id="mileage"
+                  type="number"
+                  min={0}
+                  step={1}
+                  {...register("mileage")}
+                  className="pr-10"
+                />
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-muted-foreground">
+                  km
+                </span>
+              </div>
+              {errors.mileage && (
+                <p className="text-xs text-destructive">{errors.mileage.message as string}</p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-1.5">
             <Label htmlFor="validUntil">{t("fields.validUntil")}</Label>

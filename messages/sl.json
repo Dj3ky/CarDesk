@@ -16,6 +16,8 @@
     "products": "Izdelki",
     "pricelist": "Cenik",
     "offers": "Ponudbe",
+    "reports": "Poročila",
+    "audit": "Revizijska sled",
     "settings": "Nastavitve",
     "profile": "Profil",
     "users": "Uporabniki"
@@ -408,6 +410,7 @@
       "offerNumber": "Št. ponudbe",
       "customer": "Stranka",
       "vehicle": "Vozilo",
+      "mileage": "Kilometraža",
       "validUntil": "Veljavno do",
       "notes": "Opombe",
       "currency": "Valuta",
@@ -541,5 +544,70 @@
     "forbidden": "Dostop prepovedan",
     "notFound": "Ni najdeno",
     "serverError": "Napaka strežnika"
+  },
+  "audit": {
+    "title": "Revizijska sled",
+    "subtitle": "Popolna zgodovina sprememb vseh zapisov",
+    "totalEntries": "{count, plural, =0 {Ni vnosov} one {# vnos} two {# vnosa} few {# vnosi} other {# vnosov}}",
+    "noEntries": "Ni vnosov v revizijski sledi.",
+    "columns": {
+      "when": "Kdaj",
+      "action": "Dejanje",
+      "entity": "Entiteta",
+      "record": "Zapis",
+      "user": "Uporabnik",
+      "details": "Podrobnosti"
+    },
+    "filters": {
+      "allEntities": "Vse entitete",
+      "allActions": "Vsa dejanja",
+      "apply": "Uporabi",
+      "clear": "Počisti filtre"
+    },
+    "pagination": {
+      "page": "Stran {page} od {total}",
+      "prev": "Prejšnja",
+      "next": "Naslednja"
+    }
+  },
+  "reports": {
+    "title": "Poročila in analitika",
+    "subtitle": "Prihodki, najboljši kupci in pregled zaloge",
+    "noData": "Ni podatkov za to obdobje.",
+    "periods": {
+      "week": "7 dni",
+      "month": "30 dni",
+      "quarter": "90 dni",
+      "year": "365 dni"
+    },
+    "kpi": {
+      "revenue": "Prihodki (z DDV)",
+      "revenueDesc": "Potrjene in zaključene ponudbe v zadnjih {period}",
+      "netRevenue": "Neto prihodki (brez DDV)",
+      "netRevenueDesc": "Skupaj brez davka",
+      "conversion": "Stopnja konverzije",
+      "conversionDesc": "{approved} potrjenih od {sent} poslanih"
+    },
+    "topCustomers": {
+      "title": "Najboljše stranke",
+      "customer": "Stranka",
+      "revenue": "Prihodki"
+    },
+    "topProducts": {
+      "title": "Najboljši izdelki",
+      "product": "Izdelek",
+      "qty": "Kol.",
+      "revenue": "Prihodki"
+    },
+    "slowStock": {
+      "title": "Počasi premikajoča se zaloga",
+      "badge": "Brez naročila v 90 dneh",
+      "desc": "Aktivni izdelki z zalogo, za katere ni bilo ponudbe v zadnjih 90 dneh.",
+      "none": "Ni počasi premikajoče se zaloge.",
+      "colNumber": "Šifra",
+      "colDescription": "Opis",
+      "colStock": "Zaloga",
+      "viewAll": "Prikaži vse izdelke"
+    }
   }
 }

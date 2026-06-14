@@ -177,6 +177,11 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                     VIN: {offer.vehicle.vin}
                   </p>
                 )}
+                {offer.mileage != null && (
+                  <p className="text-muted-foreground">
+                    {t("fields.mileage")}: {offer.mileage.toLocaleString()} km
+                  </p>
+                )}
               </div>
             ) : (
               <p className="text-muted-foreground">{t("detail.noVehicle")}</p>

@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { offerSchema } from "../schemas/offer.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function updateOffer(
@@ -23,7 +24,7 @@ export async function updateOffer(
     };
   }
 
-  const existing = await prisma.offer.findUnique({ where: { id }, select: { status: true } });
+  const existing = await prisma.offer.findUnique({ where: { id }, select: { status: true, offerNumber: true } });
   if (!existing) return { success: false, error: "Offer not found" };
   if (existing.status !== "DRAFT") return { success: false, error: "Only draft offers can be edited" };
 
@@ -36,6 +37,7 @@ export async function updateOffer(
         data: {
           customerId: d.customerId,
           vehicleId: d.vehicleId ?? null,
+          mileage: d.mileage ?? null,
           notes: d.notes ?? null,
           validUntil: d.validUntil ? new Date(d.validUntil) : null,
         },
@@ -57,6 +59,14 @@ export async function updateOffer(
           discount: new Prisma.Decimal(item.discount),
         })),
       });
+    });
+
+    await logAudit({
+      action: "UPDATE",
+      entity: "OFFER",
+      entityId: id,
+      entityLabel: existing.offerNumber,
+      userId: session.user?.id,
     });
 
     revalidatePath("/offers");

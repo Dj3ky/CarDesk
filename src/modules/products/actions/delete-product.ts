@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function deleteProduct(id: string): Promise<ActionResult> {
@@ -11,7 +12,18 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
   if (session.user.role !== "ADMIN") return { success: false, error: "Forbidden" };
 
   try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      select: { productNumber: true, description: true },
+    });
     await prisma.product.delete({ where: { id } });
+    await logAudit({
+      action: "DELETE",
+      entity: "PRODUCT",
+      entityId: id,
+      entityLabel: product ? `${product.productNumber} — ${product.description}` : id,
+      userId: session.user.id,
+    });
     revalidatePath("/products");
     revalidatePath("/pricelist");
     revalidateTag("products", { expire: 0 });

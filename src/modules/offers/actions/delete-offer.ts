@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function deleteOffer(id: string): Promise<ActionResult> {
@@ -10,13 +11,22 @@ export async function deleteOffer(id: string): Promise<ActionResult> {
   if (!session?.user?.id) return { success: false, error: "Unauthorized" };
   if (session.user.role !== "ADMIN") return { success: false, error: "Forbidden" };
 
-  const offer = await prisma.offer.findUnique({ where: { id }, select: { status: true } });
+  const offer = await prisma.offer.findUnique({ where: { id }, select: { status: true, offerNumber: true } });
   if (!offer) return { success: false, error: "Offer not found" };
   if (offer.status !== "DRAFT") {
     return { success: false, error: "Only draft offers can be deleted" };
   }
 
   await prisma.offer.delete({ where: { id } });
+
+  await logAudit({
+    action: "DELETE",
+    entity: "OFFER",
+    entityId: id,
+    entityLabel: offer.offerNumber,
+    userId: session.user?.id,
+  });
+
   revalidatePath("/offers");
   return { success: true };
 }

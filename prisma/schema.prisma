@@ -39,6 +39,7 @@ model User {
   products   Product[]
   importJobs ImportJob[]
   offers     Offer[]
+  auditLogs  AuditLog[]
 
   @@index([email])
   @@index([role])
@@ -152,6 +153,7 @@ model Offer {
   status      OfferStatus @default(DRAFT)
   customerId  String
   vehicleId   String?
+  mileage     Int?
   currency    String      @default("EUR")
   notes       String?     @db.Text
   validUntil  DateTime?
@@ -255,6 +257,22 @@ model ImportJob {
   createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([status])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String
+  entity      String
+  entityId    String
+  entityLabel String?
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  changes     Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([userId])
   @@index([createdAt])
 }
 

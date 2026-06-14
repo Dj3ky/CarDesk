@@ -16,6 +16,8 @@
     "products": "Products",
     "pricelist": "Pricelist",
     "offers": "Offers",
+    "reports": "Reports",
+    "audit": "Audit Log",
     "settings": "Settings",
     "profile": "Profile",
     "users": "Users"
@@ -408,6 +410,7 @@
       "offerNumber": "Offer No.",
       "customer": "Customer",
       "vehicle": "Vehicle",
+      "mileage": "Mileage",
       "validUntil": "Valid Until",
       "notes": "Notes",
       "currency": "Currency",
@@ -541,5 +544,70 @@
     "forbidden": "Forbidden",
     "notFound": "Not found",
     "serverError": "Server error"
+  },
+  "audit": {
+    "title": "Audit Log",
+    "subtitle": "Full change history for all records",
+    "totalEntries": "{count, plural, =0 {No entries} one {# entry} other {# entries}}",
+    "noEntries": "No audit log entries yet.",
+    "columns": {
+      "when": "When",
+      "action": "Action",
+      "entity": "Entity",
+      "record": "Record",
+      "user": "User",
+      "details": "Details"
+    },
+    "filters": {
+      "allEntities": "All entities",
+      "allActions": "All actions",
+      "apply": "Apply",
+      "clear": "Clear filters"
+    },
+    "pagination": {
+      "page": "Page {page} of {total}",
+      "prev": "Previous",
+      "next": "Next"
+    }
+  },
+  "reports": {
+    "title": "Reports & Analytics",
+    "subtitle": "Revenue, top performers, and stock insights",
+    "noData": "No data for this period.",
+    "periods": {
+      "week": "7 days",
+      "month": "30 days",
+      "quarter": "90 days",
+      "year": "365 days"
+    },
+    "kpi": {
+      "revenue": "Revenue (incl. VAT)",
+      "revenueDesc": "Approved & completed in last {period}",
+      "netRevenue": "Net Revenue (ex. VAT)",
+      "netRevenueDesc": "Subtotal before tax",
+      "conversion": "Conversion Rate",
+      "conversionDesc": "{approved} approved out of {sent} sent"
+    },
+    "topCustomers": {
+      "title": "Top Customers",
+      "customer": "Customer",
+      "revenue": "Revenue"
+    },
+    "topProducts": {
+      "title": "Top Products",
+      "product": "Product",
+      "qty": "Qty",
+      "revenue": "Revenue"
+    },
+    "slowStock": {
+      "title": "Slow-Moving Stock",
+      "badge": "No orders in 90 days",
+      "desc": "Active products with stock on hand but no offer in the past 90 days.",
+      "none": "No slow-moving stock found.",
+      "colNumber": "Part No.",
+      "colDescription": "Description",
+      "colStock": "Stock",
+      "viewAll": "View all products"
+    }
   }
 }

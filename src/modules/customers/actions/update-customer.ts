@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { customerSchema, type CustomerFormValues } from "../schemas/customer.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 import type { Customer } from "@prisma/client";
 
@@ -27,6 +28,14 @@ export async function updateCustomer(
     const customer = await prisma.customer.update({
       where: { id },
       data: parsed.data,
+    });
+
+    await logAudit({
+      action: "UPDATE",
+      entity: "CUSTOMER",
+      entityId: id,
+      entityLabel: customer.companyName ?? `${customer.lastName} ${customer.firstName}`,
+      userId: session.user.id,
     });
 
     revalidatePath("/customers");

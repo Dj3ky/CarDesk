@@ -15,6 +15,8 @@ import {
   User,
   UserCog,
   X,
+  BarChart2,
+  ShieldCheck,
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 
@@ -24,7 +26,9 @@ const NAV_ITEMS = [
   { href: "/products",  labelKey: "products",  icon: Package,         adminOnly: false },
   { href: "/pricelist", labelKey: "pricelist", icon: Tag,             adminOnly: false },
   { href: "/offers",    labelKey: "offers",    icon: FileText,        adminOnly: false },
+  { href: "/reports",   labelKey: "reports",   icon: BarChart2,       adminOnly: false },
   { href: "/users",     labelKey: "users",     icon: UserCog,         adminOnly: true  },
+  { href: "/audit",     labelKey: "audit",     icon: ShieldCheck,     adminOnly: true  },
   { href: "/profile",   labelKey: "profile",   icon: User,            adminOnly: false },
   { href: "/settings",  labelKey: "settings",  icon: Settings,        adminOnly: true  },
 ] as const;

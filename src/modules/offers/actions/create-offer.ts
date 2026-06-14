@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { offerSchema } from "../schemas/offer.schema";
 import { generateOfferNumber } from "../lib/offer-number";
 import { getSettings } from "@/modules/settings/actions/get-settings";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function createOffer(
@@ -36,6 +37,7 @@ export async function createOffer(
           offerNumber,
           customerId: d.customerId,
           vehicleId: d.vehicleId ?? null,
+          mileage: d.mileage ?? null,
           currency: settings.currency,
           notes: d.notes ?? null,
           validUntil: d.validUntil ? new Date(d.validUntil) : null,
@@ -59,6 +61,14 @@ export async function createOffer(
       });
 
       return created;
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entity: "OFFER",
+      entityId: offer.id,
+      entityLabel: offerNumber,
+      userId: session.user?.id,
     });
 
     revalidatePath("/offers");

@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { productSchema, type ProductFormValues } from "../schemas/product.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 
 export async function updateProduct(
@@ -24,13 +25,22 @@ export async function updateProduct(
   }
 
   try {
-    await prisma.product.update({
+    const product = await prisma.product.update({
       where: { id },
       data: {
         ...parsed.data,
         price: new Prisma.Decimal(parsed.data.price),
         vatRate: new Prisma.Decimal(parsed.data.vatRate),
       },
+      select: { productNumber: true, description: true },
+    });
+
+    await logAudit({
+      action: "UPDATE",
+      entity: "PRODUCT",
+      entityId: id,
+      entityLabel: `${product.productNumber} — ${product.description}`,
+      userId: session.user.id,
     });
 
     revalidatePath("/products");

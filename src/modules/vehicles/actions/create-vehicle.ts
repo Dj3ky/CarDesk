@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleFormValues } from "../schemas/vehicle.schema";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "../types";
 import type { Vehicle } from "@prisma/client";
 
@@ -30,6 +31,14 @@ export async function createVehicle(
         customerId,
         createdById: session.user.id,
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entity: "VEHICLE",
+      entityId: vehicle.id,
+      entityLabel: `${vehicle.make} ${vehicle.model} (${vehicle.year})`,
+      userId: session.user.id,
     });
 
     revalidatePath(`/customers/${customerId}`);

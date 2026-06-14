@@ -90,10 +90,13 @@
       "Bash(node -e \"console.log\\(require\\('./node_modules/next-pwa/package.json'\\).version\\)\")",
       "Bash(workbox)",
       "Bash(manifest)",
-      "Bash(fallback\")"
+      "Bash(fallback\")",
+      "PowerShell(Get-ChildItem \"d:\\\\GitHub\\\\CarDesk\\\\public\\\\icons\\\\\" | Select-Object Name, @{N=\"KB\";E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "Bash(mkdir -p \"d:\\\\GitHub\\\\CarDesk\\\\src\\\\app\\\\icons\\\\[name]\")"
     ],
     "additionalDirectories": [
-      "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",
+      "d:\\GitHub\\CarDesk\\src\\app\\icons"
     ]
   }
 }

@@ -4,6 +4,19 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const TABLES = [
+  "AuditLog", "OfferItem", "Offer", "Vehicle", "Customer",
+  "Product", "ImportJob", "PriceRule",
+  "Session", "Account", "VerificationToken", "User", "Settings",
+];
+
+async function setTriggers(enabled: boolean) {
+  const sql = enabled ? "ENABLE" : "DISABLE";
+  for (const table of TABLES) {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "${table}" ${sql} TRIGGER ALL`);
+  }
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -26,10 +39,8 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "No file body provided" }, { status: 400 });
   }
 
-  // Clear all data first (TRUNCATE CASCADE handles FK order automatically).
-  // We do this instead of --clean so we never touch extensions or schema objects
-  // that require superuser ownership.
   try {
+    // Wipe all data first
     await prisma.$executeRaw`
       TRUNCATE TABLE
         "AuditLog", "OfferItem", "Offer", "Vehicle", "Customer",
@@ -37,48 +48,59 @@ export async function POST(req: NextRequest) {
         "Session", "Account", "VerificationToken", "User", "Settings"
       CASCADE
     `;
+
+    // Disable FK triggers so pg_restore can insert in dump order
+    await setTriggers(false);
   } catch (err) {
-    console.error("[backup/pgrestore] truncate failed", err);
+    console.error("[backup/pgrestore] pre-restore setup failed", err);
     return Response.json(
-      { error: `Failed to clear database before restore: ${err instanceof Error ? err.message : err}` },
+      { error: `Failed to prepare database for restore: ${err instanceof Error ? err.message : err}` },
       { status: 500 }
     );
   }
 
-  // Restore data only — schema stays as-is (managed by Prisma migrations).
-  // --no-owner / --no-acl skip privilege/ownership commands that need superuser.
-  const pgrestore = spawn(
-    "pg_restore",
-    [
-      "--host", url.hostname,
-      "--port", url.port || "5432",
-      "--username", url.username,
-      "--dbname", url.pathname.replace(/^\//, ""),
-      "--data-only",
-      "--no-owner",
-      "--no-acl",
-      "--no-password",
-    ],
-    {
-      env: { ...process.env, PGPASSWORD: decodeURIComponent(url.password) },
-    }
-  );
+  let restoreCode = 1;
+  let restoreStderr = "";
 
-  const stderrChunks: Buffer[] = [];
-  pgrestore.stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
+  try {
+    const pgrestore = spawn(
+      "pg_restore",
+      [
+        "--host", url.hostname,
+        "--port", url.port || "5432",
+        "--username", url.username,
+        "--dbname", url.pathname.replace(/^\//, ""),
+        "--data-only",
+        "--no-owner",
+        "--no-acl",
+        "--no-password",
+      ],
+      {
+        env: { ...process.env, PGPASSWORD: decodeURIComponent(url.password) },
+      }
+    );
 
-  const nodeReadable = Readable.fromWeb(req.body as import("stream/web").ReadableStream<Uint8Array>);
-  nodeReadable.pipe(pgrestore.stdin);
+    const stderrChunks: Buffer[] = [];
+    pgrestore.stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
 
-  const code = await new Promise<number>((resolve) => {
-    pgrestore.on("close", resolve);
-  });
+    const nodeReadable = Readable.fromWeb(req.body as import("stream/web").ReadableStream<Uint8Array>);
+    nodeReadable.pipe(pgrestore.stdin);
 
-  if (code !== 0) {
-    const stderr = Buffer.concat(stderrChunks).toString();
-    console.error("[backup/pgrestore]", stderr);
+    restoreCode = await new Promise<number>((resolve) => {
+      pgrestore.on("close", resolve);
+    });
+    restoreStderr = Buffer.concat(stderrChunks).toString();
+  } finally {
+    // Always re-enable triggers, even if restore failed
+    await setTriggers(true).catch((err) =>
+      console.error("[backup/pgrestore] failed to re-enable triggers", err)
+    );
+  }
+
+  if (restoreCode !== 0) {
+    console.error("[backup/pgrestore]", restoreStderr);
     return Response.json(
-      { error: `pg_restore failed: ${stderr.slice(0, 500)}` },
+      { error: `pg_restore failed: ${restoreStderr.slice(0, 500)}` },
       { status: 500 }
     );
   }

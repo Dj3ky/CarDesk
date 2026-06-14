@@ -218,6 +218,12 @@ export function LineItemsEditor({
                 {formatCurrency(totals.subtotalExVat, currency)}
               </span>
             </div>
+            {totals.totalDiscount > 0 && (
+              <div className="flex justify-between gap-8 text-muted-foreground">
+                <span>{t("totals.discount")}</span>
+                <span className="text-emerald-600">−{formatCurrency(totals.totalDiscount, currency)}</span>
+              </div>
+            )}
             {totals.vatBreakdown.map(({ rate, amount }) => (
               <div key={rate} className="flex justify-between gap-8 text-muted-foreground">
                 <span>{t("totals.vat", { rate })}</span>

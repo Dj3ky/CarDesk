@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
   totalsLabel: { color: SLATE },
   totalsValue: { fontFamily: "Helvetica-Bold" },
   totalsDivider: { borderTopWidth: 1, borderTopColor: BLUE, marginVertical: 4 },
+  discountValue: { fontFamily: "Helvetica-Bold", color: "#16a34a" },
   grandTotalRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 3 },
   grandTotalLabel: { fontSize: 10, fontFamily: "Helvetica-Bold", color: BLUE },
   grandTotalValue: { fontSize: 10, fontFamily: "Helvetica-Bold", color: BLUE },
@@ -179,6 +180,7 @@ type PdfStrings = {
   colDisc: string;
   colTotal: string;
   subtotal: string;
+  discount: string;
   vatLine: (rate: number, base: string) => string;
   grandTotal: string;
   notes: string;
@@ -204,6 +206,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colDisc: "Disc%",
     colTotal: "Total",
     subtotal: "Subtotal (ex. VAT)",
+    discount: "Discount",
     vatLine: (rate, base) => `VAT ${rate}% on ${base}`,
     grandTotal: "TOTAL",
     notes: "Notes",
@@ -233,6 +236,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colDisc: "Pop.%",
     colTotal: "Skupaj",
     subtotal: "Skupaj (brez DDV)",
+    discount: "Popust",
     vatLine: (rate, base) => `DDV ${rate}% na ${base}`,
     grandTotal: "SKUPAJ",
     notes: "Opombe",
@@ -426,6 +430,14 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
                 {fmtNum(totals.subtotalExVat, offer.currency)}
               </Text>
             </View>
+            {totals.totalDiscount > 0 && (
+              <View style={styles.totalsRow}>
+                <Text style={styles.totalsLabel}>{s.discount}</Text>
+                <Text style={styles.discountValue}>
+                  -{fmtNum(totals.totalDiscount, offer.currency)}
+                </Text>
+              </View>
+            )}
             {totals.vatBreakdown.map(({ rate, base, amount }) => (
               <View key={rate} style={styles.totalsRow}>
                 <Text style={styles.totalsLabel}>

@@ -448,6 +448,7 @@
     },
     "totals": {
       "subtotal": "Subtotal (ex VAT)",
+      "discount": "Discount",
       "vat": "VAT {rate}%",
       "grandTotal": "Total"
     },

@@ -448,6 +448,7 @@
     },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",
+      "discount": "Popust",
       "vat": "DDV {rate}%",
       "grandTotal": "Skupaj z DDV"
     },

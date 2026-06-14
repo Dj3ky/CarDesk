@@ -8,6 +8,7 @@ export type ItemCalc = {
 
 export type OfferTotals = {
   subtotalExVat: number;
+  totalDiscount: number;
   vatBreakdown: { rate: number; base: number; amount: number }[];
   totalVat: number;
   grandTotal: number;
@@ -43,10 +44,12 @@ export function calcTotals(
 ): OfferTotals {
   const vatMap = new Map<number, { base: number; amount: number }>();
   let subtotalExVat = 0;
+  let totalDiscount = 0;
 
   for (const item of items) {
-    const { baseNet, vatAmt } = calcItem(item);
+    const { baseNet, vatAmt, discountAmt } = calcItem(item);
     subtotalExVat += baseNet;
+    totalDiscount += discountAmt;
     const rate = Number(item.vatRate) || 0;
     const existing = vatMap.get(rate) ?? { base: 0, amount: 0 };
     vatMap.set(rate, { base: existing.base + baseNet, amount: existing.amount + vatAmt });
@@ -58,7 +61,7 @@ export function calcTotals(
 
   const totalVat = vatBreakdown.reduce((s, v) => s + v.amount, 0);
 
-  return { subtotalExVat, vatBreakdown, totalVat, grandTotal: subtotalExVat + totalVat };
+  return { subtotalExVat, totalDiscount, vatBreakdown, totalVat, grandTotal: subtotalExVat + totalVat };
 }
 
 export function formatCurrency(amount: number, currency = "EUR"): string {

@@ -1,18 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e40af"/>
-      <stop offset="100%" stop-color="#3b82f6"/>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e3a5f"/>
     </linearGradient>
   </defs>
-  <!-- Background -->
-  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
-  <!-- Car roof -->
-  <rect x="8" y="7" width="16" height="7" rx="3" fill="white"/>
-  <!-- Car body -->
-  <rect x="2" y="13" width="28" height="10" rx="2" fill="white"/>
-  <!-- Left wheel -->
-  <circle cx="9" cy="24" r="4.5" fill="#1d4ed8" stroke="white" stroke-width="2"/>
-  <!-- Right wheel -->
-  <circle cx="23" cy="24" r="4.5" fill="#1d4ed8" stroke="white" stroke-width="2"/>
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <!-- Track arc: 7 o'clock to 5 o'clock through top (240° clockwise) -->
+  <path d="M 7.34 24 A 10 10 0 1 1 24.66 24" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Progress arc: 7 o'clock to ~2 o'clock (70% fill, 168° clockwise) -->
+  <path d="M 7.34 24 A 10 10 0 0 1 23.43 12.31" fill="none" stroke="#60a5fa" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- Needle -->
+  <line x1="16" y1="19" x2="21.2" y2="14.32" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- Center pivot -->
+  <circle cx="16" cy="19" r="2" fill="white"/>
 </svg>

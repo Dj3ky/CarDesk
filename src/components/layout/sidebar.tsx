@@ -17,6 +17,7 @@ import {
   X,
   BarChart2,
   ShieldCheck,
+  Gauge,
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 
@@ -75,7 +76,15 @@ export function Sidebar() {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-50 w-64 flex-col border-r bg-sidebar">
         <div className="flex h-16 items-center border-b px-6">
-          <span className="text-xl font-bold text-sidebar-primary">CarDesk</span>
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary shadow-sm">
+              <Gauge className="h-5 w-5 text-sidebar-primary-foreground" />
+            </div>
+            <span className="text-xl tracking-tight">
+              <span className="font-light text-sidebar-foreground/70">Car</span>
+              <span className="font-bold text-sidebar-primary">Desk</span>
+            </span>
+          </div>
         </div>
         <NavContent />
       </aside>
@@ -89,7 +98,15 @@ export function Sidebar() {
           />
           <aside className="relative z-10 flex w-64 flex-col border-r bg-sidebar">
             <div className="flex h-16 items-center justify-between border-b px-6">
-              <span className="text-xl font-bold text-sidebar-primary">CarDesk</span>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary shadow-sm">
+                  <Gauge className="h-5 w-5 text-sidebar-primary-foreground" />
+                </div>
+                <span className="text-xl tracking-tight">
+                  <span className="font-light text-sidebar-foreground/70">Car</span>
+                  <span className="font-bold text-sidebar-primary">Desk</span>
+                </span>
+              </div>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="rounded-md p-1 text-sidebar-foreground hover:bg-sidebar-accent"

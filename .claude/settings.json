@@ -78,7 +78,15 @@
       "PowerShell(git commit -m \"fix: re-exec after git pull so updated script runs; add cwd diagnostic before prisma\")",
       "PowerShell(git add src/app/api/backup/git-pull/route.ts next.config.ts)",
       "PowerShell(git commit -m \"fix: npm install --include=dev so prisma CLI is installed \\(it is a devDependency\\)\")",
-      "PowerShell(git commit -m \"fix: CI=true for non-interactive npm, drop rm -rf node_modules \\(no longer needed\\)\")"
+      "PowerShell(git commit -m \"fix: CI=true for non-interactive npm, drop rm -rf node_modules \\(no longer needed\\)\")",
+      "PowerShell(git add src/modules/settings/components/update-panel.tsx messages/en.json messages/sl.json)",
+      "PowerShell(git commit -m \"feat: auto-reload page after server restart with 20s countdown\")",
+      "Bash(node -e \"const pkg = require\\('./node_modules/lucide-react/package.json'\\); console.log\\(pkg.version\\);\")",
+      "Bash(node -e \"const {Gauge} = require\\('./node_modules/lucide-react'\\); console.log\\(Gauge ? 'Gauge exists' : 'not found'\\);\")",
+      "Bash(where inkscape *)",
+      "Bash(where rsvg-convert *)",
+      "Bash(where magick *)",
+      "Bash(node scripts/generate-pwa-icons.mjs)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

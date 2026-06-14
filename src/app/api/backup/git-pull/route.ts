@@ -8,17 +8,28 @@ export const maxDuration = 600; // 10 minutes — npm install + build can be slo
 
 const ANSI_RE = /\x1b\[[0-9;]*[mGKHF]/g;
 
-// Walk up from cwd until we find the directory that contains update.sh.
-// In dev cwd is the project root; in standalone production it is .next/standalone.
+// Find the real project root, skipping .next directories.
+// Next.js standalone copies update.sh into .next/standalone via file tracing,
+// so a naive upward walk returns the wrong directory. Strip .next first.
 function findProjectRoot(): string {
-  let dir = process.cwd();
-  for (let i = 0; i < 6; i++) {
-    if (existsSync(path.join(dir, "update.sh"))) return dir;
+  const cwd = process.cwd();
+  // Fast path: strip everything from /.next onwards
+  const nextIdx = cwd.indexOf(path.sep + ".next");
+  if (nextIdx !== -1) {
+    const candidate = cwd.slice(0, nextIdx);
+    if (existsSync(path.join(candidate, "update.sh"))) return candidate;
+  }
+  // Fallback: walk upward but skip any directory whose path contains .next
+  let dir = cwd;
+  for (let i = 0; i < 10; i++) {
+    if (!dir.includes(path.sep + ".next") && existsSync(path.join(dir, "update.sh"))) {
+      return dir;
+    }
     const parent = path.dirname(dir);
     if (parent === dir) break;
     dir = parent;
   }
-  return process.cwd();
+  return cwd;
 }
 
 export async function POST() {
@@ -70,7 +81,10 @@ export async function POST() {
         NODE_ENV: process.env.NODE_ENV ?? "production",
       } satisfies NodeJS.ProcessEnv;
 
-      const proc = spawn("bash", ["update.sh"], {
+      // Pass the absolute script path so ${BASH_SOURCE[0]} inside update.sh is
+      // always absolute. If it were relative ("update.sh") and the cwd changed,
+      // dirname would return "." and cd would silently stay in the wrong directory.
+      const proc = spawn("bash", [path.join(projectRoot, "update.sh")], {
         cwd: projectRoot,
         env,
       });

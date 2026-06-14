@@ -14,6 +14,11 @@ const withPWA = require("next-pwa")({
 const nextConfig: NextConfig = {
   output: "standalone",
   serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "pg", "bcryptjs", "xlsx", "@react-pdf/renderer"],
+  // Prevent shell scripts from being copied into .next/standalone by the file tracer.
+  // If update.sh ends up there, findProjectRoot() mistakes standalone for the project root.
+  outputFileTracingExcludes: {
+    "**": ["*.sh"],
+  },
 };
 
 export default withNextIntl(withPWA(nextConfig));

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { PackagePlus, Upload } from "lucide-react";
+import { Package, PackagePlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductTable } from "@/modules/products/components/product-table";
 import { ProductSearchBar } from "@/modules/products/components/product-search-bar";

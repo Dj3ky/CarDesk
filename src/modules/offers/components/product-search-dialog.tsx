@@ -31,12 +31,12 @@ export function ProductSearchDialog({
   const [searched, setSearched] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function handleSearch(overrideQuery?: string) {
+  function handleSearch(overrideQuery?: string, exact = false) {
     const q = (overrideQuery ?? query).trim();
     if (!q) return;
     if (overrideQuery) setQuery(overrideQuery);
     startTransition(async () => {
-      const found = await searchProductsForOffer(q);
+      const found = await searchProductsForOffer(q, exact);
       setResults(found);
       setSearched(true);
     });
@@ -134,7 +134,7 @@ export function ProductSearchDialog({
                     </p>
                     <button
                       type="button"
-                      onClick={() => handleSearch(p.substitutionPart!)}
+                      onClick={() => handleSearch(p.substitutionPart!, true)}
                       className="flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300 hover:underline"
                     >
                       {t("searchSubstitution")} <ArrowRight className="h-3 w-3" />

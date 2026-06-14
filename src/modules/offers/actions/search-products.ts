@@ -5,18 +5,20 @@ import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rul
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductSearchResult } from "../types";
 
-export async function searchProductsForOffer(query: string): Promise<ProductSearchResult[]> {
+export async function searchProductsForOffer(query: string, exact = false): Promise<ProductSearchResult[]> {
   if (!query.trim()) return [];
 
   const [products, priceRules] = await Promise.all([
     prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { productNumber: { contains: query, mode: "insensitive" } },
-          { description: { contains: query, mode: "insensitive" } },
-        ],
-      },
+      where: exact
+        ? { isActive: true, productNumber: { equals: query, mode: "insensitive" } }
+        : {
+            isActive: true,
+            OR: [
+              { productNumber: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
+            ],
+          },
       select: {
         id: true,
         productNumber: true,

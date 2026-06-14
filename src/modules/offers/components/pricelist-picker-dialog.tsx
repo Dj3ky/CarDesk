@@ -27,6 +27,8 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
   const [addedCount, setAddedCount] = useState(0);
   const [justAdded, setJustAdded] = useState<Record<string, boolean>>({});
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const exactRef = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -47,13 +49,14 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
       setSearched(false);
       return;
     }
+    const exact = exactRef.current;
     debounceRef.current = setTimeout(() => {
       startTransition(async () => {
-        const found = await searchProductsForOffer(q);
+        const found = await searchProductsForOffer(q, exact);
         setResults(found);
         setSearched(true);
       });
-    }, 300);
+    }, exact ? 0 : 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
@@ -75,6 +78,11 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
     setAddedCount((c) => c + 1);
     setJustAdded((prev) => ({ ...prev, [product.id]: true }));
     setTimeout(() => setJustAdded((prev) => ({ ...prev, [product.id]: false })), 1500);
+    exactRef.current = false;
+    setQuery("");
+    setResults([]);
+    setSearched(false);
+    inputRef.current?.focus();
   }
 
   return (
@@ -95,9 +103,10 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
             <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
           )}
           <Input
+            ref={inputRef}
             placeholder={t("placeholder")}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => { exactRef.current = false; setQuery(e.target.value); }}
             className="pl-9 pr-9"
             autoFocus
           />
@@ -175,7 +184,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
                     </p>
                     <button
                       type="button"
-                      onClick={() => setQuery(p.substitutionPart!)}
+                      onClick={() => { exactRef.current = true; setQuery(p.substitutionPart!); }}
                       className="flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300 hover:underline"
                     >
                       {t("searchSubstitution")} <ArrowRight className="h-3 w-3" />

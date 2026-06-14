@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     default: "CarDesk",
   },
   description: "CarDesk — Automotive Dealership Management System",
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

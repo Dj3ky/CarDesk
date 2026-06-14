@@ -86,7 +86,11 @@
       "Bash(where inkscape *)",
       "Bash(where rsvg-convert *)",
       "Bash(where magick *)",
-      "Bash(node scripts/generate-pwa-icons.mjs)"
+      "Bash(node scripts/generate-pwa-icons.mjs)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next-pwa/package.json'\\).version\\)\")",
+      "Bash(workbox)",
+      "Bash(manifest)",
+      "Bash(fallback\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

@@ -66,7 +66,15 @@
       "Bash(xargs grep -l \"audit\\\\|log\\\\|history\")",
       "Bash(xargs grep -i \"auditlog\\\\|audit_log\\\\|activity\")",
       "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
-      "Bash(grep -n \"readFile\\\\|fetch\\\\|file://\\\\|isUrl\\\\|resolve\" \"node_modules/@react-pdf/font/lib/index.js\")"
+      "Bash(grep -n \"readFile\\\\|fetch\\\\|file://\\\\|isUrl\\\\|resolve\" \"node_modules/@react-pdf/font/lib/index.js\")",
+      "Bash(curl -fL \"https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf\" -o NotoSans-Regular.ttf)",
+      "Bash(curl -fL \"https://raw.githubusercontent.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSans/NotoSans-Bold.ttf\" -o NotoSans-Bold.ttf)",
+      "Bash(xxd -l4 -p NotoSans-Regular.ttf)",
+      "Bash(echo \"Regular: $\\(wc -c < NotoSans-Regular.ttf\\) bytes, magic: $\\(xxd -l4 -p NotoSans-Regular.ttf\\)\")",
+      "Bash(xxd -l4 -p NotoSans-Bold.ttf)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m ' *)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]"

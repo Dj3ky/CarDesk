@@ -350,7 +350,8 @@
       "pullButton": "Posodobi iz GitHuba",
       "pulling": "Posodabljam...",
       "pullDone": "Posodobitev dokončana. Strežnik se zaganja — stran se bo kmalu znova povezala.",
-      "pullError": "Posodobitev ni uspela. Preverite izpis terminala."
+      "pullError": "Posodobitev ni uspela. Preverite izpis terminala.",
+      "restarting": "Strežnik se zaganja — stran se bo osvežila čez {seconds}s"
     },
     "sections": {
       "company": "Podatki o podjetju",

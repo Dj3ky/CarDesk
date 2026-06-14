@@ -350,7 +350,8 @@
       "pullButton": "Pull from GitHub",
       "pulling": "Pulling...",
       "pullDone": "Update complete. The server is restarting — the page will reconnect shortly.",
-      "pullError": "Pull failed. Check the terminal output for details."
+      "pullError": "Pull failed. Check the terminal output for details.",
+      "restarting": "Server is restarting — page will reload in {seconds}s"
     },
     "sections": {
       "company": "Company Information",

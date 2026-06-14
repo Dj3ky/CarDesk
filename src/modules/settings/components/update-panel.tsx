@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 type CheckStatus = "idle" | "checking" | "upToDate" | "available" | "error";
-type PullStatus = "idle" | "pulling" | "done" | "error";
+type PullStatus = "idle" | "pulling" | "restarting" | "done" | "error";
 
 interface CheckResult {
   upToDate: boolean;
@@ -29,13 +29,23 @@ export function UpdatePanel() {
   const [checkError, setCheckError] = useState<string | null>(null);
   const [pullStatus, setPullStatus] = useState<PullStatus>("idle");
   const [pullLines, setPullLines] = useState<string[]>([]);
+  const [reloadIn, setReloadIn] = useState<number | null>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const sawRestartRef = useRef(false);
 
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [pullLines]);
+
+  // Countdown → reload
+  useEffect(() => {
+    if (reloadIn === null) return;
+    if (reloadIn <= 0) { window.location.reload(); return; }
+    const t = setTimeout(() => setReloadIn((n) => (n !== null ? n - 1 : null)), 1000);
+    return () => clearTimeout(t);
+  }, [reloadIn]);
 
   async function handleCheck() {
     setCheckStatus("checking");
@@ -61,6 +71,7 @@ export function UpdatePanel() {
   async function handleGitPull() {
     setPullStatus("pulling");
     setPullLines(["$ bash update.sh"]);
+    sawRestartRef.current = false;
 
     try {
       const res = await fetch("/api/backup/git-pull", { method: "POST" });
@@ -83,6 +94,12 @@ export function UpdatePanel() {
         const { done, value } = await reader.read();
         if (done) break;
         const text = decoder.decode(value, { stream: true });
+
+        // Detect the restart section so we know to reload afterwards
+        if (text.includes("Restarting") || text.includes("restarting")) {
+          sawRestartRef.current = true;
+        }
+
         const incoming = text.split("\n");
         setPullLines((prev) => {
           const updated = [...prev];
@@ -97,15 +114,25 @@ export function UpdatePanel() {
         });
       }
 
-      setPullStatus("done");
+      // Stream ended — if a restart was in progress the server killed the
+      // connection before sending an exit code, which is expected.
+      if (sawRestartRef.current) {
+        setPullStatus("restarting");
+        setReloadIn(20);
+      } else {
+        setPullStatus("done");
+      }
       setCheckStatus("idle");
       setCheckResult(null);
-    } catch (err) {
-      setPullStatus("error");
-      setPullLines((prev) => [
-        ...prev,
-        `Error: ${err instanceof Error ? err.message : "Unknown error"}`,
-      ]);
+    } catch {
+      // A network error here also means the server restarted mid-stream.
+      if (sawRestartRef.current) {
+        setPullStatus("restarting");
+        setReloadIn(20);
+      } else {
+        setPullStatus("error");
+        setPullLines((prev) => [...prev, "Connection lost."]);
+      }
     }
   }
 
@@ -121,7 +148,7 @@ export function UpdatePanel() {
           <Button
             type="button"
             variant="outline"
-            disabled={checkStatus === "checking" || pullStatus === "pulling"}
+            disabled={checkStatus === "checking" || pullStatus === "pulling" || pullStatus === "restarting"}
             onClick={handleCheck}
           >
             {checkStatus === "checking" ? (
@@ -173,7 +200,7 @@ export function UpdatePanel() {
           <Button
             type="button"
             variant={checkStatus === "available" ? "default" : "outline"}
-            disabled={pullStatus === "pulling"}
+            disabled={pullStatus === "pulling" || pullStatus === "restarting"}
             onClick={handleGitPull}
           >
             {pullStatus === "pulling" ? (
@@ -213,6 +240,13 @@ export function UpdatePanel() {
                   <span>{t("pulling")}</span>
                 </div>
               )}
+            </div>
+          )}
+
+          {pullStatus === "restarting" && reloadIn !== null && (
+            <div className="flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
+              <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+              {t("restarting", { seconds: reloadIn })}
             </div>
           )}
 

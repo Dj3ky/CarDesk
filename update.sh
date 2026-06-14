@@ -18,37 +18,45 @@ section() { echo -e "\n${BOLD}━━━ $* ━━━━━━━━━━━━�
 echo -e "${BOLD}  CarDesk Update${RESET}"
 echo ""
 
-# Always run from the directory that contains this script so relative paths
-# (prisma/schema.prisma, node_modules/.bin/prisma, .env.local) resolve correctly
-# regardless of what cwd the spawning process set.
-cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# Resolve the project root from the script's own location so paths are correct
+# regardless of what cwd the caller set.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 [[ ! -f .env.local ]] && error ".env.local not found. Run install.sh first."
 
-# Remove stale standalone build BEFORE git pull so this runs even when bash
-# has buffered an older version of this script.
-rm -rf .next/standalone
-
 # ─────────────────────────────────────────────
-section "Pulling latest code"
+# BOOTSTRAP: git pull first, then re-exec with the updated script.
+#
+# Bash reads (and buffers) the entire script file before executing it, so any
+# changes that git pull writes to update.sh are invisible in the current run.
+# Re-exec-ing after pull starts a fresh bash that reads the new file from disk.
+# The env var guard prevents infinite recursion.
 # ─────────────────────────────────────────────
+if [[ "${_CARDESK_REEXEC:-}" != "1" ]]; then
+  rm -rf .next/standalone
 
-if git rev-parse --is-inside-work-tree &>/dev/null; then
-  info "Fetching from git …"
-  git pull
-  success "Code updated"
-else
-  warn "Not a git repository — skipping git pull"
+  section "Pulling latest code"
+  if git rev-parse --is-inside-work-tree &>/dev/null; then
+    info "Fetching from git …"
+    git pull
+    success "Code updated"
+  else
+    warn "Not a git repository — skipping git pull"
+  fi
+
+  export _CARDESK_REEXEC=1
+  exec bash "$SCRIPT_DIR/update.sh" "$@"
 fi
+
+# ── Everything below runs in the re-exec'd invocation with the fresh script ──
 
 # ─────────────────────────────────────────────
 section "Installing dependencies"
 # ─────────────────────────────────────────────
 
-# Remove node_modules entirely so npm installs real files.
-# If node_modules/prisma is a symlink to .next/standalone/node_modules/prisma
-# (created by a previous deduplication pass), module resolution for prisma
-# resolves to the standalone path and breaks. A clean install avoids this.
+# Full reinstall so npm creates real package directories — if node_modules/prisma
+# was a symlink into .next/standalone (npm deduplication artifact) it won't be.
 info "Cleaning node_modules …"
 rm -rf node_modules
 info "Running npm install …"
@@ -69,6 +77,7 @@ if [[ -f .env.local ]]; then
 fi
 
 info "Generating Prisma client …"
+echo "  cwd: $(pwd)  schema: $(ls prisma/schema.prisma 2>/dev/null && echo OK || echo MISSING)"
 node_modules/.bin/prisma generate
 
 DB_URL=$(grep -E '^DATABASE_URL=' .env.local | cut -d'=' -f2- | tr -d '"')

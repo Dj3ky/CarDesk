@@ -60,7 +60,7 @@ section "Installing dependencies"
 info "Cleaning node_modules …"
 rm -rf node_modules
 info "Running npm install …"
-npm install
+npm install --include=dev
 success "Dependencies up to date"
 
 # ─────────────────────────────────────────────

@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import type { Control, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, PackageSearch } from "lucide-react";
+import { Plus, Trash2, PackageSearch, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductSearchDialog } from "./product-search-dialog";
+import { PricelistPickerDialog } from "./pricelist-picker-dialog";
 import { calcItem, calcTotals, formatCurrency } from "../lib/calculations";
 import { UNITS } from "../schemas/offer.schema";
 import type { OfferFormValues } from "../schemas/offer.schema";
@@ -38,6 +39,7 @@ export function LineItemsEditor({
   const items = useWatch({ control, name: "items" }) ?? [];
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchRowIndex, setSearchRowIndex] = useState<number | null>(null);
+  const [pricelistOpen, setPricelistOpen] = useState(false);
 
   function addItem() {
     append({
@@ -65,6 +67,19 @@ export function LineItemsEditor({
     setValue(`items.${i}.pricePerUnit`, parseFloat(product.adjustedPrice ?? product.price));
     setValue(`items.${i}.vatRate`, parseFloat(product.vatRate));
     setValue(`items.${i}.unit`, product.unit);
+  }
+
+  function handlePricelistAdd(product: ProductSearchResult, quantity: number) {
+    append({
+      productId: product.id,
+      productNumber: product.productNumber,
+      description: product.description,
+      quantity,
+      unit: product.unit,
+      pricePerUnit: parseFloat(product.adjustedPrice ?? product.price),
+      vatRate: parseFloat(product.vatRate),
+      discount: defaultDiscount,
+    });
   }
 
   const totals = calcTotals(items);
@@ -205,10 +220,16 @@ export function LineItemsEditor({
       )}
 
       <div className="flex items-center justify-between pt-1">
-        <Button type="button" variant="outline" size="sm" onClick={addItem}>
-          <Plus className="mr-1.5 h-4 w-4" />
-          {t("items.addItem")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
+            <Plus className="mr-1.5 h-4 w-4" />
+            {t("items.addItem")}
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => setPricelistOpen(true)}>
+            <Library className="mr-1.5 h-4 w-4" />
+            {t("pricelistPicker.browseButton")}
+          </Button>
+        </div>
 
         {items.length > 0 && (
           <div className="space-y-1 text-sm min-w-[220px] text-right">
@@ -245,6 +266,12 @@ export function LineItemsEditor({
           setSearchRowIndex(null);
         }}
         onSelect={handleProductSelect}
+      />
+
+      <PricelistPickerDialog
+        open={pricelistOpen}
+        onClose={() => setPricelistOpen(false)}
+        onAdd={handlePricelistAdd}
       />
     </div>
   );

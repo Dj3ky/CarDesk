@@ -446,6 +446,16 @@
       "exVat": "ex VAT",
       "vatLine": "VAT {rate}%"
     },
+    "pricelistPicker": {
+      "title": "Browse Pricelist",
+      "startTyping": "Start typing to search the product catalog…",
+      "addedCount": "{count, plural, one {# item added} other {# items added}}",
+      "add": "Add",
+      "added": "Added",
+      "done": "Done",
+      "qtyLabel": "Quantity",
+      "browseButton": "Browse Pricelist"
+    },
     "totals": {
       "subtotal": "Subtotal (ex VAT)",
       "discount": "Discount",

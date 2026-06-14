@@ -446,6 +446,16 @@
       "exVat": "brez DDV",
       "vatLine": "DDV {rate}%"
     },
+    "pricelistPicker": {
+      "title": "Pregled cenika",
+      "startTyping": "Začnite tipkati za iskanje po katalogu…",
+      "addedCount": "{count, plural, one {# postavka dodana} other {# postavke dodane}}",
+      "add": "Dodaj",
+      "added": "Dodano",
+      "done": "Zapri",
+      "qtyLabel": "Količina",
+      "browseButton": "Pregled cenika"
+    },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",
       "discount": "Popust",

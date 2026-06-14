@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import { Readable } from "stream";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -25,6 +26,27 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "No file body provided" }, { status: 400 });
   }
 
+  // Clear all data first (TRUNCATE CASCADE handles FK order automatically).
+  // We do this instead of --clean so we never touch extensions or schema objects
+  // that require superuser ownership.
+  try {
+    await prisma.$executeRaw`
+      TRUNCATE TABLE
+        "AuditLog", "OfferItem", "Offer", "Vehicle", "Customer",
+        "Product", "ImportJob", "PriceRule",
+        "Session", "Account", "VerificationToken", "User", "Settings"
+      CASCADE
+    `;
+  } catch (err) {
+    console.error("[backup/pgrestore] truncate failed", err);
+    return Response.json(
+      { error: `Failed to clear database before restore: ${err instanceof Error ? err.message : err}` },
+      { status: 500 }
+    );
+  }
+
+  // Restore data only — schema stays as-is (managed by Prisma migrations).
+  // --no-owner / --no-acl skip privilege/ownership commands that need superuser.
   const pgrestore = spawn(
     "pg_restore",
     [
@@ -32,10 +54,10 @@ export async function POST(req: NextRequest) {
       "--port", url.port || "5432",
       "--username", url.username,
       "--dbname", url.pathname.replace(/^\//, ""),
-      "--clean",
-      "--if-exists",
+      "--data-only",
+      "--no-owner",
+      "--no-acl",
       "--no-password",
-      "--single-transaction",
     ],
     {
       env: { ...process.env, PGPASSWORD: decodeURIComponent(url.password) },
@@ -45,7 +67,6 @@ export async function POST(req: NextRequest) {
   const stderrChunks: Buffer[] = [];
   pgrestore.stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
 
-  // Stream the request body directly into pg_restore stdin
   const nodeReadable = Readable.fromWeb(req.body as import("stream/web").ReadableStream<Uint8Array>);
   nodeReadable.pipe(pgrestore.stdin);
 

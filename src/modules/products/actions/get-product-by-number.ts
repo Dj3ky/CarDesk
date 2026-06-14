@@ -1,28 +1,37 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
+import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductListItem } from "../types";
 
 export async function getProductByNumber(productNumber: string): Promise<ProductListItem | null> {
-  const p = await prisma.product.findFirst({
-    where: { productNumber },
-    select: {
-      id: true,
-      productNumber: true,
-      barcode: true,
-      description: true,
-      brand: true,
-      supplier: true,
-      substitutionPart: true,
-      price: true,
-      vatRate: true,
-      stock: true,
-      unit: true,
-      isActive: true,
-    },
-  });
+  const [p, priceRules] = await Promise.all([
+    prisma.product.findFirst({
+      where: { productNumber },
+      select: {
+        id: true,
+        productNumber: true,
+        barcode: true,
+        description: true,
+        brand: true,
+        supplier: true,
+        substitutionPart: true,
+        price: true,
+        vatRate: true,
+        stock: true,
+        unit: true,
+        isActive: true,
+      },
+    }),
+    getActivePriceRules(),
+  ]);
 
   if (!p) return null;
+
+  const basePrice = parseFloat(p.price.toString());
+  const rule = findMatchingRule(p.brand, p.supplier, priceRules);
+  const adjusted = rule ? applyRule(basePrice, rule) : undefined;
 
   return {
     id: p.id,
@@ -37,5 +46,6 @@ export async function getProductByNumber(productNumber: string): Promise<Product
     stock: p.stock,
     unit: p.unit,
     isActive: p.isActive,
+    ...(adjusted !== undefined && { adjustedPrice: adjusted.toFixed(2) }),
   };
 }

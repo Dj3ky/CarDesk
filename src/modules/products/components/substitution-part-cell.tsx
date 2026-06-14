@@ -76,8 +76,12 @@ export function SubstitutionPartCell({ substitutionPart }: SubstitutionPartCellP
 
           {state.status === "found" && (() => {
             const p = state.product;
-            const exVat = priceExVat(p.price);
-            const incVat = priceIncVat(p.price, p.vatRate);
+            const baseExVat = priceExVat(p.price);
+            const baseIncVat = priceIncVat(p.price, p.vatRate);
+            const adjExVat = p.adjustedPrice ? priceExVat(p.adjustedPrice) : undefined;
+            const adjIncVat = p.adjustedPrice ? priceIncVat(p.adjustedPrice, p.vatRate) : undefined;
+            const effectiveExVat = adjExVat ?? baseExVat;
+            const effectiveIncVat = adjIncVat ?? baseIncVat;
             const vatPct = parseFloat(p.vatRate);
             return (
               <div className="space-y-3 py-1">
@@ -113,17 +117,31 @@ export function SubstitutionPartCell({ substitutionPart }: SubstitutionPartCellP
                 <div className="rounded-md border bg-muted/40 p-3 space-y-1.5">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t("substitutionPopup.priceExVat")}</span>
-                    <span className="font-medium tabular-nums">{formatEur(exVat)}</span>
+                    <span className="tabular-nums text-right">
+                      <span className="font-medium">{formatEur(effectiveExVat)}</span>
+                      {adjExVat !== undefined && (
+                        <span className="ml-1.5 text-xs text-muted-foreground line-through">
+                          {formatEur(baseExVat)}
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">VAT {vatPct}%</span>
                     <span className="tabular-nums text-muted-foreground">
-                      {formatEur(incVat - exVat)}
+                      {formatEur(effectiveIncVat - effectiveExVat)}
                     </span>
                   </div>
                   <div className="flex justify-between border-t pt-1.5 text-sm font-semibold">
                     <span>{t("substitutionPopup.priceIncVat")}</span>
-                    <span className="tabular-nums">{formatEur(incVat)}</span>
+                    <span className="tabular-nums text-right">
+                      {formatEur(effectiveIncVat)}
+                      {adjIncVat !== undefined && (
+                        <span className="ml-1.5 text-xs font-normal text-muted-foreground line-through">
+                          {formatEur(baseIncVat)}
+                        </span>
+                      )}
+                    </span>
                   </div>
                 </div>
 

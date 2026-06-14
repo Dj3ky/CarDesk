@@ -83,13 +83,13 @@
       "maxPrice": "Max cena (€)"
     },
     "units": {
-      "pcs": "Kosi",
-      "h": "Ure",
-      "m": "Metri",
-      "kg": "Kilogrami",
-      "l": "Litri",
-      "set": "Komplet",
-      "pair": "Par"
+      "pcs": "kos",
+      "h": "ura",
+      "m": "m",
+      "kg": "kg",
+      "l": "l",
+      "set": "komplet",
+      "pair": "par"
     }
   },
   "vehicles": {

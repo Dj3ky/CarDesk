@@ -194,6 +194,7 @@ type PdfStrings = {
   terms: string;
   page: (n: number, total: number) => string;
   statuses: Record<string, string>;
+  units: Record<string, string>;
 };
 
 const STRINGS: Record<string, PdfStrings> = {
@@ -226,6 +227,7 @@ const STRINGS: Record<string, PdfStrings> = {
       REJECTED: "Rejected",
       COMPLETED: "Completed",
     },
+    units: { pcs: "pcs", h: "h", m: "m", kg: "kg", l: "l", set: "set", pair: "pair" },
   },
   sl: {
     title: "PONUDBA",
@@ -256,6 +258,7 @@ const STRINGS: Record<string, PdfStrings> = {
       REJECTED: "Zavrnjeno",
       COMPLETED: "Zaključeno",
     },
+    units: { pcs: "kos", h: "ura", m: "m", kg: "kg", l: "l", set: "komplet", pair: "par" },
   },
 };
 
@@ -412,7 +415,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
                 <Text style={[styles.tableCell, styles.colQty]}>
                   {Number(item.quantity).toFixed(2).replace(/\.00$/, "")}
                 </Text>
-                <Text style={[styles.tableCell, styles.colUnit]}>{item.unit}</Text>
+                <Text style={[styles.tableCell, styles.colUnit]}>{s.units[item.unit] ?? item.unit}</Text>
                 <Text style={[styles.tableCell, styles.colPrice]}>
                   {Number(item.pricePerUnit).toFixed(2).replace(".", ",")}
                 </Text>

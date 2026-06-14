@@ -83,13 +83,13 @@
       "maxPrice": "Max price (€)"
     },
     "units": {
-      "pcs": "Pieces",
-      "h": "Hours",
-      "m": "Metres",
-      "kg": "Kilograms",
-      "l": "Litres",
-      "set": "Set",
-      "pair": "Pair"
+      "pcs": "pcs",
+      "h": "h",
+      "m": "m",
+      "kg": "kg",
+      "l": "l",
+      "set": "set",
+      "pair": "pair"
     }
   },
   "vehicles": {

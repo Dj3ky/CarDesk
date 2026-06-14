@@ -42,10 +42,11 @@ function formatDate(d: Date | string | null) {
 
 export default async function OfferDetailPage({ params }: OfferDetailPageProps) {
   const { locale, id } = await params;
-  const [offer, session, t] = await Promise.all([
+  const [offer, session, t, tUnits] = await Promise.all([
     getOffer(id),
     auth(),
     getTranslations("offers"),
+    getTranslations("products.units"),
   ]);
 
   if (!offer) notFound();
@@ -228,7 +229,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                         {Number(item.quantity).toFixed(2).replace(/\.00$/, "")}
                       </TableCell>
                       <TableCell className="text-center text-muted-foreground">
-                        {item.unit}
+                        {tUnits.has(item.unit) ? tUnits(item.unit as never) : item.unit}
                       </TableCell>
                       <TableCell className="text-right">
                         {formatCurrency(Number(item.pricePerUnit), offer.currency)}

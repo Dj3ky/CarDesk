@@ -8,14 +8,15 @@ import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rul
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
 // Cached counts for the two common default views (no user-facing filters).
+// Exported so instrumentation.ts can warm them at startup.
 // Invalidated on any product mutation or import via revalidateTag("products").
-const getCachedCountAll = unstable_cache(
+export const getCachedCountAll = unstable_cache(
   () => prisma.product.count(),
   ["product-count-all"],
   { revalidate: 60, tags: ["products"] }
 );
 
-const getCachedCountActive = unstable_cache(
+export const getCachedCountActive = unstable_cache(
   () => prisma.product.count({ where: { isActive: true } }),
   ["product-count-active"],
   { revalidate: 60, tags: ["products"] }

@@ -55,10 +55,6 @@ fi
 section "Installing dependencies"
 # ─────────────────────────────────────────────
 
-# Full reinstall so npm creates real package directories — if node_modules/prisma
-# was a symlink into .next/standalone (npm deduplication artifact) it won't be.
-info "Cleaning node_modules …"
-rm -rf node_modules
 info "Running npm install …"
 npm install --include=dev
 success "Dependencies up to date"

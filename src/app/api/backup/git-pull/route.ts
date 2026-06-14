@@ -79,6 +79,8 @@ export async function POST() {
         TERM: "dumb",
         FORCE_COLOR: "0",
         NODE_ENV: process.env.NODE_ENV ?? "production",
+        // CI=true makes npm non-interactive (no prompts, no SIGINT on missing TTY)
+        CI: "true",
       } satisfies NodeJS.ProcessEnv;
 
       // Pass the absolute script path so ${BASH_SOURCE[0]} inside update.sh is

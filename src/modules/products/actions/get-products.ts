@@ -1,17 +1,25 @@
 "use server";
 
+import { unstable_cache } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
-async function getApproximateCount(): Promise<number> {
-  const result = await prisma.$queryRaw<[{ reltuples: bigint }]>`
-    SELECT reltuples::bigint AS reltuples FROM pg_class WHERE relname = 'Product'
-  `;
-  return Number(result[0]?.reltuples ?? 0);
-}
+// Cached counts for the two common default views (no user-facing filters).
+// Invalidated on any product mutation or import via revalidateTag("products").
+const getCachedCountAll = unstable_cache(
+  () => prisma.product.count(),
+  ["product-count-all"],
+  { revalidate: 60, tags: ["products"] }
+);
+
+const getCachedCountActive = unstable_cache(
+  () => prisma.product.count({ where: { isActive: true } }),
+  ["product-count-active"],
+  { revalidate: 60, tags: ["products"] }
+);
 
 const PAGE_SIZE_ADMIN = 25;
 const PAGE_SIZE_PRICELIST = 50;
@@ -29,6 +37,14 @@ export async function getProducts(
   if (!filters.showInactive) {
     andConditions.push({ isActive: true });
   }
+
+  const hasUserFilters = !!(
+    search ||
+    filters.brand ||
+    filters.supplier ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined
+  );
 
   // Full-text / multi-field search (benefits from pg_trgm GIN indexes)
   if (search) {
@@ -62,8 +78,13 @@ export async function getProducts(
   const where: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  // Approximate count is only accurate when there is no WHERE clause (admin, no filters)
-  const useApproxCount = andConditions.length === 0;
+  // For default views (no user-facing filters), use a cached count to avoid
+  // a full COUNT(*) on every page load with 1M+ rows.
+  const getCount = hasUserFilters
+    ? () => prisma.product.count({ where })
+    : filters.showInactive
+      ? getCachedCountAll
+      : getCachedCountActive;
 
   const [rawProducts, total, priceRules] = await Promise.all([
     prisma.product.findMany({
@@ -86,7 +107,7 @@ export async function getProducts(
         isActive: true,
       },
     }),
-    useApproxCount ? getApproximateCount() : prisma.product.count({ where }),
+    getCount(),
     getActivePriceRules(),
   ]);
 

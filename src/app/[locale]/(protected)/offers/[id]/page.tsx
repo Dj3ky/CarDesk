@@ -258,6 +258,12 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                   {formatCurrency(totals.subtotalExVat, offer.currency)}
                 </span>
               </div>
+              {totals.totalDiscount > 0 && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{t("totals.discount")}</span>
+                  <span className="text-emerald-600">−{formatCurrency(totals.totalDiscount, offer.currency)}</span>
+                </div>
+              )}
               {totals.vatBreakdown.map(({ rate, amount }) => (
                 <div key={rate} className="flex justify-between text-muted-foreground">
                   <span>{t("totals.vat", { rate })}</span>

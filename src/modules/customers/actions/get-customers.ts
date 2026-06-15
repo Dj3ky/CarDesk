@@ -23,7 +23,12 @@ export async function getCustomers(params: {
         { phone: { contains: search, mode: "insensitive" as const } },
         { mobile: { contains: search, mode: "insensitive" as const } },
         { companyName: { contains: search, mode: "insensitive" as const } },
+        { taxNumber: { contains: search, mode: "insensitive" as const } },
         { city: { contains: search, mode: "insensitive" as const } },
+        { vehicles: { some: { make: { contains: search, mode: "insensitive" as const } } } },
+        { vehicles: { some: { model: { contains: search, mode: "insensitive" as const } } } },
+        { vehicles: { some: { registrationPlate: { contains: search, mode: "insensitive" as const } } } },
+        { vehicles: { some: { vin: { contains: search, mode: "insensitive" as const } } } },
       ],
     }),
   };

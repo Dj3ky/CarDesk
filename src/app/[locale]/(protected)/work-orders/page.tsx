@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Wrench, PlusCircle } from "lucide-react";
@@ -9,6 +10,7 @@ import { canAccess } from "@/lib/permissions";
 import { WorkOrderTable } from "@/modules/work-orders/components/work-order-table";
 import { getWorkOrders } from "@/modules/work-orders/actions/get-work-orders";
 import { Pagination } from "@/modules/customers/components/pagination";
+import { CustomerSearch } from "@/modules/customers/components/customer-search";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("workOrders");
@@ -69,6 +71,11 @@ export default async function WorkOrdersPage({ params, searchParams }: WorkOrder
           </Link>
         </Button>
       </div>
+
+      {/* Search */}
+      <Suspense>
+        <CustomerSearch defaultValue={sp.search ?? ""} />
+      </Suspense>
 
       {/* Status filter tabs */}
       <div className="flex flex-wrap gap-1">

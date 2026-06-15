@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { writeFile, unlink } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
 import { randomUUID } from "crypto";
@@ -32,6 +32,18 @@ export async function POST(req: NextRequest) {
       { error: "Only CSV and XLSX files are supported" },
       { status: 400 }
     );
+  }
+
+  // Clean up any abandoned PENDING jobs from this user (uploaded but never started).
+  const staleJobs = await prisma.importJob.findMany({
+    where: { createdById: session.user.id, status: "PENDING" },
+    select: { id: true, filePath: true },
+  });
+  if (staleJobs.length > 0) {
+    await prisma.importJob.deleteMany({
+      where: { id: { in: staleJobs.map((j) => j.id) } },
+    });
+    await Promise.all(staleJobs.map((j) => unlink(j.filePath).catch(() => {})));
   }
 
   // Save to temp file

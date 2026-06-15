@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import type { UploadResult } from "../types";
 
 type Step = "upload" | "mapping" | "processing";
 
+const SESSION_KEY = "cardesk-import-wizard";
+
 interface ImportWizardProps {
   locale: string;
 }
@@ -19,6 +21,35 @@ export function ImportWizard({ locale }: ImportWizardProps) {
   const t = useTranslations();
   const [step, setStep] = useState<Step>("upload");
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
+
+  // Restore state after locale navigation (language switch unmounts/remounts the page).
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      if (saved) {
+        const { step: savedStep, uploadResult: savedResult } = JSON.parse(saved);
+        if (savedStep && savedResult) {
+          setStep(savedStep);
+          setUploadResult(savedResult);
+        }
+      }
+    } catch {
+      // Ignore parse errors.
+    }
+  }, []);
+
+  // Persist whenever step or uploadResult changes.
+  useEffect(() => {
+    if (step === "upload" && !uploadResult) {
+      sessionStorage.removeItem(SESSION_KEY);
+    } else {
+      try {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ step, uploadResult }));
+      } catch {
+        // Ignore quota errors.
+      }
+    }
+  }, [step, uploadResult]);
 
   const steps: { key: Step; label: string }[] = [
     { key: "upload", label: t("import.steps.upload") },
@@ -30,6 +61,7 @@ export function ImportWizard({ locale }: ImportWizardProps) {
   const currentIndex = stepIndex[step];
 
   function reset() {
+    sessionStorage.removeItem(SESSION_KEY);
     setStep("upload");
     setUploadResult(null);
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuickCreateDialog } from "@/modules/offers/components/quick-create-dialog";
 import { workOrderSchema } from "../schemas/work-order.schema";
 import { createWorkOrder } from "../actions/create-work-order";
 import { updateWorkOrder } from "../actions/update-work-order";
@@ -91,9 +92,14 @@ export function WorkOrderForm({
   const router = useRouter();
   const t = useTranslations("workOrders");
   const tc = useTranslations("common");
+  const tOffer = useTranslations("offers");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [customerList, setCustomerList] = useState<CustomerOption[]>(customers);
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
+  const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+  const [quickAddVehicleOpen, setQuickAddVehicleOpen] = useState(false);
+  const pendingVehicleIdRef = useRef<string | null>(null);
   const isEdit = !!workOrder;
 
   const form = useForm<WorkOrderFormValues>({
@@ -108,16 +114,38 @@ export function WorkOrderForm({
   const laborItems = watch("laborItems") ?? [];
   const totals = calcTotals(items, laborItems);
 
+  const selectedCustomer = customerList.find((c) => c.id === customerId) ?? null;
+
   useEffect(() => {
     if (!customerId) { setVehicles([]); return; }
     getVehiclesForWorkOrder(customerId).then((v) => {
       setVehicles(v);
-      if (!workOrder || workOrder.customerId !== customerId) {
+      const pending = pendingVehicleIdRef.current;
+      pendingVehicleIdRef.current = null;
+      if (pending && v.some((x) => x.id === pending)) {
+        setValue("vehicleId", pending);
+      } else if (!workOrder || workOrder.customerId !== customerId) {
         setValue("vehicleId", "");
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerId]);
+
+  function handleQuickCreated(customer: CustomerOption, vehicle: VehicleOption | null) {
+    const alreadyInList = customerList.some((c) => c.id === customer.id);
+    if (!alreadyInList) {
+      setCustomerList((prev) => [customer, ...prev]);
+    }
+    if (vehicle) {
+      pendingVehicleIdRef.current = vehicle.id;
+      if (alreadyInList) {
+        setVehicles((prev) => [...prev, vehicle]);
+        setValue("vehicleId", vehicle.id);
+        return;
+      }
+    }
+    setValue("customerId", customer.id);
+  }
 
   function onSubmit(values: WorkOrderFormValues) {
     startTransition(async () => {
@@ -153,18 +181,30 @@ export function WorkOrderForm({
             <Label htmlFor="customerId">
               {t("fields.customer")} <span className="text-destructive">*</span>
             </Label>
-            <select
-              id="customerId"
-              {...register("customerId")}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              <option value="">{t("form.selectCustomer")}</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.companyName ?? `${c.firstName} ${c.lastName}`}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="customerId"
+                {...register("customerId")}
+                className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="">{t("form.selectCustomer")}</option>
+                {customerList.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.companyName ?? `${c.firstName} ${c.lastName}`}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setQuickCreateOpen(true)}
+                title={tOffer("form.quickCreate")}
+                className="shrink-0"
+              >
+                <UserPlus className="h-4 w-4" />
+              </Button>
+            </div>
             {errors.customerId && (
               <p className="text-xs text-destructive">{errors.customerId.message}</p>
             )}
@@ -173,19 +213,32 @@ export function WorkOrderForm({
           {/* Vehicle */}
           <div className="space-y-1.5">
             <Label htmlFor="vehicleId">{t("fields.vehicle")}</Label>
-            <select
-              id="vehicleId"
-              {...register("vehicleId")}
-              disabled={!customerId}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
-            >
-              <option value="">{t("form.noVehicle")}</option>
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.make} {v.model} ({v.year}){v.registrationPlate ? ` — ${v.registrationPlate}` : ""}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="vehicleId"
+                {...register("vehicleId")}
+                disabled={!customerId}
+                className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
+              >
+                <option value="">{t("form.noVehicle")}</option>
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.make} {v.model}{v.registrationPlate ? ` — ${v.registrationPlate}` : ""}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                disabled={!customerId}
+                onClick={() => setQuickAddVehicleOpen(true)}
+                title={tOffer("form.quickAddVehicle")}
+                className="shrink-0"
+              >
+                <Car className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Technician */}
@@ -220,7 +273,7 @@ export function WorkOrderForm({
             </div>
           )}
 
-          {/* Mileage out - only on edit */}
+          {/* Mileage out — only on edit */}
           {isEdit && vehicleId && (
             <div className="space-y-1.5">
               <Label htmlFor="mileageOut">{t("fields.mileageOut")}</Label>
@@ -321,6 +374,18 @@ export function WorkOrderForm({
           {isEdit ? t("actions.saveChanges") : t("actions.createWorkOrder")}
         </Button>
       </div>
+
+      <QuickCreateDialog
+        open={quickCreateOpen}
+        onClose={() => setQuickCreateOpen(false)}
+        onCreated={handleQuickCreated}
+      />
+      <QuickCreateDialog
+        open={quickAddVehicleOpen}
+        onClose={() => setQuickAddVehicleOpen(false)}
+        onCreated={handleQuickCreated}
+        existingCustomer={selectedCustomer ?? undefined}
+      />
     </form>
   );
 }

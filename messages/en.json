@@ -618,7 +618,8 @@
       "reopen": "Reopen",
       "cancel": "Cancel",
       "saveChanges": "Save Changes",
-      "createWorkOrder": "Create Work Order"
+      "createWorkOrder": "Create Work Order",
+      "printPdf": "Print PDF"
     },
     "fields": {
       "number": "Number",

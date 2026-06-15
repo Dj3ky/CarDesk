@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft, Pencil, Calendar, Car, User, FileText } from "lucide-react";
+import { ChevronLeft, Pencil, Calendar, Car, User, FileText, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
@@ -62,6 +62,12 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <a href={`/api/work-orders/${wo.id}/pdf`} target="_blank" rel="noopener noreferrer">
+              <Printer className="mr-1.5 h-3.5 w-3.5" />
+              {t("actions.printPdf")}
+            </a>
+          </Button>
           {canEdit && (
             <Button variant="outline" size="sm" asChild>
               <Link href={`/${locale}/work-orders/${wo.id}/edit`}>

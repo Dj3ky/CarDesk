@@ -618,7 +618,8 @@
       "reopen": "Znova odpri",
       "cancel": "Prekliči",
       "saveChanges": "Shrani spremembe",
-      "createWorkOrder": "Ustvari delovni nalog"
+      "createWorkOrder": "Ustvari delovni nalog",
+      "printPdf": "Natisni PDF"
     },
     "fields": {
       "number": "Številka",

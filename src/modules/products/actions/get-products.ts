@@ -13,13 +13,13 @@ import type { ProductFilters, ProductListItem, ProductListResult } from "../type
 export const getCachedCountAll = unstable_cache(
   () => prisma.product.count(),
   ["product-count-all"],
-  { revalidate: 60, tags: ["products"] }
+  { revalidate: false, tags: ["products"] }
 );
 
 export const getCachedCountActive = unstable_cache(
   () => prisma.product.count({ where: { isActive: true } }),
   ["product-count-active"],
-  { revalidate: 60, tags: ["products"] }
+  { revalidate: false, tags: ["products"] }
 );
 
 const PAGE_SIZE_ADMIN = 25;

@@ -29,6 +29,6 @@ async function fetchFilterOptions(): Promise<FilterOptions> {
 }
 
 export const getFilterOptions = unstable_cache(fetchFilterOptions, ["product-filter-options"], {
-  revalidate: 3600,
+  revalidate: false,
   tags: ["products"],
 });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { UserForm } from "@/modules/users/components/user-form";
 import { getUser } from "@/modules/users/actions/get-user";
 
@@ -27,7 +28,7 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
     getUser(id),
   ]);
 
-  if (session?.user?.role !== "ADMIN") {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "users")) {
     redirect(`/${locale}/dashboard`);
   }
 

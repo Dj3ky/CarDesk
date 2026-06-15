@@ -38,6 +38,12 @@ export const settingsSchema = z.object({
     .max(10)
     .default("INV")
     .transform((v) => v.trim()),
+  workOrderPrefix: z
+    .string()
+    .min(1, "Required")
+    .max(10)
+    .default("WO")
+    .transform((v) => v.trim()),
   pdfFooterText: optStr(1000),
   termsAndConditions: optStr(5000),
 });

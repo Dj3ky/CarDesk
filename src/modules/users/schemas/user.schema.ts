@@ -6,6 +6,7 @@ export const createUserSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum(["ADMIN", "EMPLOYEE"]),
   isActive: z.boolean().default(true),
+  permissions: z.array(z.string()).default([]),
 });
 
 export const updateUserSchema = z.object({
@@ -19,6 +20,7 @@ export const updateUserSchema = z.object({
     .transform((v) => v || undefined),
   role: z.enum(["ADMIN", "EMPLOYEE"]),
   isActive: z.boolean().default(true),
+  permissions: z.array(z.string()).default([]),
 });
 
 export const updateProfileSchema = z.object({

@@ -18,7 +18,7 @@ export async function createUser(data: unknown): Promise<ActionResult<{ id: stri
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const { name, email, password, role, isActive } = parsed.data;
+  const { name, email, password, role, isActive, permissions } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -27,7 +27,7 @@ export async function createUser(data: unknown): Promise<ActionResult<{ id: stri
 
   const hashed = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({
-    data: { name, email, password: hashed, role, isActive },
+    data: { name, email, password: hashed, role, isActive, permissions: role === "ADMIN" ? [] : permissions },
     select: { id: true },
   });
 

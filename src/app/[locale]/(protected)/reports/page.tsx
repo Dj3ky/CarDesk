@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +44,10 @@ function periodStart(period: Period): Date {
 }
 
 export default async function ReportsPage({ searchParams }: ReportsPageProps) {
-  const [t, locale] = await Promise.all([getTranslations("reports"), getLocale()]);
+  const [t, locale, session] = await Promise.all([getTranslations("reports"), getLocale(), auth()]);
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "reports")) {
+    redirect(`/${locale}/dashboard`);
+  }
 
   const { period: periodParam } = await searchParams;
   const period: Period =

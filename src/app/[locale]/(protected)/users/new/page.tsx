@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { UserForm } from "@/modules/users/components/user-form";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +18,7 @@ export default async function NewUserPage({ params }: NewUserPageProps) {
   const { locale } = await params;
   const [session, t] = await Promise.all([auth(), getTranslations("users")]);
 
-  if (session?.user?.role !== "ADMIN") {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "users")) {
     redirect(`/${locale}/dashboard`);
   }
 

@@ -18,32 +18,46 @@ import {
   BarChart2,
   ShieldCheck,
   Gauge,
+  Wrench,
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
+import { canAccess } from "@/lib/permissions";
+import type { Module } from "@/lib/permissions";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard, adminOnly: false },
-  { href: "/customers", labelKey: "customers", icon: Users,           adminOnly: false },
-  { href: "/products",  labelKey: "products",  icon: Package,         adminOnly: false },
-  { href: "/pricelist", labelKey: "pricelist", icon: Tag,             adminOnly: false },
-  { href: "/offers",    labelKey: "offers",    icon: FileText,        adminOnly: false },
-  { href: "/reports",   labelKey: "reports",   icon: BarChart2,       adminOnly: false },
-  { href: "/users",     labelKey: "users",     icon: UserCog,         adminOnly: true  },
-  { href: "/audit",     labelKey: "audit",     icon: ShieldCheck,     adminOnly: true  },
-  { href: "/profile",   labelKey: "profile",   icon: User,            adminOnly: false },
-  { href: "/settings",  labelKey: "settings",  icon: Settings,        adminOnly: true  },
-] as const;
+const NAV_ITEMS: {
+  href: string;
+  labelKey: string;
+  icon: React.ElementType;
+  module?: Module;
+}[] = [
+  { href: "/dashboard",    labelKey: "dashboard",   icon: LayoutDashboard },
+  { href: "/customers",    labelKey: "customers",   icon: Users,       module: "customers"   },
+  { href: "/products",     labelKey: "products",    icon: Package,     module: "products"    },
+  { href: "/pricelist",    labelKey: "pricelist",   icon: Tag,         module: "products"    },
+  { href: "/offers",       labelKey: "offers",      icon: FileText,    module: "offers"      },
+  { href: "/work-orders",  labelKey: "workOrders",  icon: Wrench,      module: "work_orders" },
+  { href: "/reports",      labelKey: "reports",     icon: BarChart2,   module: "reports"     },
+  { href: "/users",        labelKey: "users",       icon: UserCog,     module: "users"       },
+  { href: "/audit",        labelKey: "audit",       icon: ShieldCheck, module: "audit"       },
+  { href: "/profile",      labelKey: "profile",     icon: User                               },
+  { href: "/settings",     labelKey: "settings",    icon: Settings,    module: "settings"    },
+];
 
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("nav");
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === "ADMIN";
+
+  const user = session?.user;
 
   return (
     <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-      {NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin).map(({ href, labelKey, icon: Icon }) => {
+      {NAV_ITEMS.filter((item) => {
+        if (!item.module) return true;
+        if (!user) return false;
+        return canAccess(user, item.module);
+      }).map(({ href, labelKey, icon: Icon }) => {
         const fullPath = `/${locale}${href}`;
         const isActive =
           pathname === fullPath || pathname.startsWith(`${fullPath}/`);

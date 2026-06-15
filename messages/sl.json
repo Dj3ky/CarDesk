@@ -20,7 +20,8 @@
     "audit": "Revizijska sled",
     "settings": "Nastavitve",
     "profile": "Profil",
-    "users": "Uporabniki"
+    "users": "Uporabniki",
+    "workOrders": "Delovni nalogi"
   },
   "dashboard": {
     "title": "Nadzorna plošča",
@@ -397,6 +398,8 @@
       "offerPrefixHint": "npr. PON → PON-2024-001",
       "invoicePrefix": "Predpona računa",
       "invoicePrefixHint": "npr. RAČ → RAČ-2024-001",
+      "workOrderPrefix": "Predpona delovnega naloga",
+      "workOrderPrefixHint": "npr. DN → DN-2024-001",
       "pdfFooterText": "Besedilo v nogi PDF",
       "pdfFooterTextHint": "Besedilo na dnu vsakega generiranega dokumenta",
       "termsAndConditions": "Splošni pogoji poslovanja",
@@ -575,6 +578,8 @@
       "saveProfile": "Shrani spremembe",
       "sessionNote": "Spremembe imena začnejo veljati po naslednji prijavi."
     },
+    "moduleAccess": "Dostop do modulov",
+    "moduleAccessHint": "Izberite, do katerih modulov ima dostop ta uslužbenec. Administratorji imajo vedno poln dostop.",
     "selfDeleteError": "Ne morete izbrisati lastnega računa",
     "lastAdminError": "Ni mogoče izbrisati zadnjega administratorskega računa",
     "selfDeactivateError": "Ne morete deaktivirati lastnega računa",

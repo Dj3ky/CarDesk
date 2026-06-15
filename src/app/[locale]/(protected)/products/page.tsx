@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { canAccess } from "@/lib/permissions";
 import { Package, PackagePlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductTable } from "@/modules/products/components/product-table";
@@ -31,9 +33,13 @@ interface ProductsPageProps {
 
 export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
   const { locale } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "products")) {
+    redirect(`/${locale}/dashboard`);
+  }
+
   const sp = await searchParams;
   const t = await getTranslations();
-  const session = await auth();
   const isAdmin = session?.user?.role === "ADMIN";
 
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);

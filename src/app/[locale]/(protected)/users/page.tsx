@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { Button } from "@/components/ui/button";
 import { UserCog, UserPlus } from "lucide-react";
 import { UserTable } from "@/modules/users/components/user-table";
@@ -25,7 +26,7 @@ export default async function UsersPage({ params }: UsersPageProps) {
     getUsers(),
   ]);
 
-  if (session?.user?.role !== "ADMIN") {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "users")) {
     redirect(`/${locale}/dashboard`);
   }
 

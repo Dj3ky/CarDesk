@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { Tag } from "lucide-react";
 import { ProductTable } from "@/modules/products/components/product-table";
 import { ProductSearchBar } from "@/modules/products/components/product-search-bar";
@@ -28,6 +31,11 @@ interface PricelistPageProps {
 
 export default async function PricelistPage({ params, searchParams }: PricelistPageProps) {
   const { locale } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "products")) {
+    redirect(`/${locale}/dashboard`);
+  }
+
   const sp = await searchParams;
   const t = await getTranslations();
 

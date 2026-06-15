@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { WorkOrderStatusBadge } from "@/modules/work-orders/components/work-order-status-badge";
 import {
   ChevronLeft,
   Pencil,
@@ -35,8 +37,24 @@ export async function generateMetadata({ params }: VehicleDetailPageProps): Prom
 export default async function VehicleDetailPage({ params }: VehicleDetailPageProps) {
   const { locale, id, vehicleId } = await params;
   const t = await getTranslations();
-  const session = await auth();
-  const vehicle = await getVehicle(vehicleId);
+  const [session, vehicle, vehicleWorkOrders] = await Promise.all([
+    auth(),
+    getVehicle(vehicleId),
+    prisma.workOrder.findMany({
+      where: { vehicleId },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        number: true,
+        status: true,
+        createdAt: true,
+        completedAt: true,
+        technician: { select: { name: true } },
+        reportedProblem: true,
+      },
+    }),
+  ]);
 
   if (!vehicle || vehicle.customerId !== id) notFound();
 
@@ -155,6 +173,57 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">{vehicle.notes}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Work Order History */}
+        {vehicleWorkOrders.length > 0 && (
+          <Card className="md:col-span-2">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle className="text-base">Service History</CardTitle>
+              <Link
+                href={`/${locale}/work-orders/new?customerId=${id}`}
+                className="text-xs text-primary hover:underline"
+              >
+                + New Work Order
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <table className="w-full text-sm">
+                <thead className="border-b bg-muted/40">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Number</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden sm:table-cell">Problem</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden md:table-cell">Technician</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {vehicleWorkOrders.map((wo) => (
+                    <tr key={wo.id} className="hover:bg-muted/30">
+                      <td className="px-4 py-2.5">
+                        <Link href={`/${locale}/work-orders/${wo.id}`} className="font-mono text-primary hover:underline text-xs">
+                          {wo.number}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <WorkOrderStatusBadge status={wo.status as import("@/modules/work-orders/types").WorkOrderStatus} />
+                      </td>
+                      <td className="px-4 py-2.5 hidden sm:table-cell text-muted-foreground max-w-xs truncate">
+                        {wo.reportedProblem ?? "—"}
+                      </td>
+                      <td className="px-4 py-2.5 hidden md:table-cell text-muted-foreground">
+                        {wo.technician?.name ?? "—"}
+                      </td>
+                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
+                        {new Date(wo.createdAt).toLocaleDateString("sl-SI")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </CardContent>
           </Card>
         )}

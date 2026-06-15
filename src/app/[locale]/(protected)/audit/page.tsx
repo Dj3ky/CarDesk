@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const PAGE_SIZE = 50;
 
 interface AuditPageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ page?: string; entity?: string; action?: string }>;
 }
 
@@ -33,10 +35,13 @@ const ACTION_COLORS: Record<string, string> = {
   STATUS_CHANGE: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
 };
 
-export default async function AuditPage({ searchParams }: AuditPageProps) {
+export default async function AuditPage({ params, searchParams }: AuditPageProps) {
+  const { locale } = await params;
   const [t, session] = await Promise.all([getTranslations("audit"), auth()]);
 
-  if (session?.user?.role !== "ADMIN") notFound();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "audit")) {
+    redirect(`/${locale}/dashboard`);
+  }
 
   const { page: pageParam, entity: entityFilter, action: actionFilter } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10));

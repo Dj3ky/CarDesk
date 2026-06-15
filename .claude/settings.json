@@ -103,7 +103,8 @@
       "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({offers: Object.keys\\(m.offers || {}\\), common: Object.keys\\(m.common || {}\\)}, null, 2\\)\\)\")",
       "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({actions: m.offers.actions, statuses: m.offers.statuses}, null, 2\\)\\)\")",
       "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({offersForm: m.offers?.form, customers: {created: m.customers?.created, updated: m.customers?.updated}, products: {created: m.products?.created, updated: m.products?.updated}, users: {created: m.users?.created, updated: m.users?.updated}}, null, 2\\)\\)\")",
-      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({customers: m.customers, products: m.products, users: m.users}, null, 2\\)\\)\")"
+      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({customers: m.customers, products: m.products, users: m.users}, null, 2\\)\\)\")",
+      "PowerShell(git commit -m \"fix: use git fetch + reset --hard instead of pull to skip local change conflicts\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

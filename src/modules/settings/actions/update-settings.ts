@@ -37,6 +37,7 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     currency: d.currency,
     offerPrefix: d.offerPrefix,
     invoicePrefix: d.invoicePrefix,
+    workOrderPrefix: d.workOrderPrefix,
     pdfFooterText: d.pdfFooterText ?? null,
     termsAndConditions: d.termsAndConditions ?? null,
   };

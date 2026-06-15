@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { canAccess } from "@/lib/permissions";
 import { Upload } from "lucide-react";
 import { ImportWizard } from "@/modules/import/components/import-wizard";
 
@@ -18,7 +19,7 @@ export default async function ProductImportPage({ params }: PageProps) {
   const { locale } = await params;
   const session = await auth();
 
-  if (session?.user?.role !== "ADMIN") {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "import")) {
     redirect(`/${locale}/products`);
   }
 

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomerForm } from "@/modules/customers/components/customer-form";
@@ -16,6 +19,11 @@ interface NewCustomerPageProps {
 
 export default async function NewCustomerPage({ params }: NewCustomerPageProps) {
   const { locale } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "customers")) {
+    redirect(`/${locale}/dashboard`);
+  }
+
   const t = await getTranslations();
 
   return (

@@ -12,6 +12,7 @@ export async function getUser(id: string): Promise<UserListItem | null> {
       email: true,
       role: true,
       isActive: true,
+      permissions: true,
       createdAt: true,
     },
   });

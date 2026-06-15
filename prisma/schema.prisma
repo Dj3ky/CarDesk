@@ -29,17 +29,20 @@ model User {
   password      String?
   role          Role      @default(EMPLOYEE)
   isActive      Boolean   @default(true)
+  permissions   String[]  @default([])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts   Account[]
-  sessions   Session[]
-  customers  Customer[]
-  vehicles   Vehicle[]
-  products   Product[]
-  importJobs ImportJob[]
-  offers     Offer[]
-  auditLogs  AuditLog[]
+  accounts           Account[]
+  sessions           Session[]
+  customers          Customer[]
+  vehicles           Vehicle[]
+  products           Product[]
+  importJobs         ImportJob[]
+  offers             Offer[]
+  auditLogs          AuditLog[]
+  assignedWorkOrders WorkOrder[] @relation("WorkOrderTechnician")
+  createdWorkOrders  WorkOrder[] @relation("WorkOrderCreatedBy")
 
   @@index([email])
   @@index([role])
@@ -65,9 +68,10 @@ model Customer {
   updatedAt       DateTime @updatedAt
   createdById     String?
 
-  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  vehicles  Vehicle[]
-  offers    Offer[]
+  createdBy   User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  vehicles    Vehicle[]
+  offers      Offer[]
+  workOrders  WorkOrder[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -94,9 +98,10 @@ model Vehicle {
   updatedAt         DateTime @updatedAt
   createdById       String?
 
-  customer  Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  offers    Offer[]
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdBy   User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  offers      Offer[]
+  workOrders  WorkOrder[]
 
   @@index([customerId])
   @@index([vin])
@@ -124,8 +129,9 @@ model Product {
   updatedAt     DateTime @updatedAt
   createdById   String?
 
-  createdBy  User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  offerItems OfferItem[]
+  createdBy      User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  offerItems     OfferItem[]
+  workOrderItems WorkOrderItem[]
 
   @@index([productNumber])
   @@index([barcode])
@@ -163,10 +169,11 @@ model Offer {
   updatedAt   DateTime    @updatedAt
   createdById String?
 
-  customer  Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
-  vehicle   Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
-  createdBy User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  items     OfferItem[]
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle     Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  createdBy   User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  items       OfferItem[]
+  workOrders  WorkOrder[]
 
   @@index([customerId])
   @@index([vehicleId])
@@ -307,7 +314,86 @@ model Settings {
   currency           String   @default("EUR")
   offerPrefix        String   @default("OFF")
   invoicePrefix      String   @default("INV")
+  workOrderPrefix    String   @default("WO")
   pdfFooterText      String?  @db.Text
   termsAndConditions String?  @db.Text
   updatedAt          DateTime @updatedAt
+}
+
+enum WorkOrderStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_PARTS
+  DONE
+  INVOICED
+  CANCELLED
+}
+
+model WorkOrder {
+  id              String          @id @default(cuid())
+  number          String          @unique
+  status          WorkOrderStatus @default(OPEN)
+  customerId      String
+  vehicleId       String?
+  technicianId    String?
+  reportedProblem String?         @db.Text
+  internalNotes   String?         @db.Text
+  mileageIn       Int?
+  mileageOut      Int?
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  offerId         String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  createdById     String?
+
+  customer   Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  vehicle    Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  technician User?           @relation("WorkOrderTechnician", fields: [technicianId], references: [id], onDelete: SetNull)
+  createdBy  User?           @relation("WorkOrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  offer      Offer?          @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  items      WorkOrderItem[]
+  laborItems LaborItem[]
+
+  @@index([customerId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([technicianId])
+  @@index([createdAt])
+}
+
+model WorkOrderItem {
+  id            String    @id @default(cuid())
+  workOrderId   String
+  position      Int
+  productId     String?
+  productNumber String?
+  description   String
+  quantity      Decimal   @db.Decimal(10, 3)
+  unit          String    @default("pcs")
+  pricePerUnit  Decimal   @db.Decimal(10, 2)
+  vatRate       Decimal   @db.Decimal(5, 2)
+  discount      Decimal   @db.Decimal(5, 2) @default(0)
+  createdAt     DateTime  @default(now())
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([workOrderId])
+}
+
+model LaborItem {
+  id          String    @id @default(cuid())
+  workOrderId String
+  position    Int
+  description String
+  hours       Decimal   @db.Decimal(8, 2)
+  hourlyRate  Decimal   @db.Decimal(10, 2)
+  vatRate     Decimal   @db.Decimal(5, 2) @default(0)
+  createdAt   DateTime  @default(now())
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  @@index([workOrderId])
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { canAccess } from "@/lib/permissions";
 import { Settings } from "lucide-react";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 import { SettingsForm } from "@/modules/settings/components/settings-form";
@@ -28,7 +29,7 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
   const { tab } = await searchParams;
   const session = await auth();
 
-  if (session?.user?.role !== "ADMIN") {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "settings")) {
     redirect(`/${locale}/dashboard`);
   }
 

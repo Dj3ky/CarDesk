@@ -11,6 +11,7 @@ export type SettingsData = {
   currency: string;
   offerPrefix: string;
   invoicePrefix: string;
+  workOrderPrefix: string;
   pdfFooterText: string | null;
   termsAndConditions: string | null;
   updatedAt: Date;

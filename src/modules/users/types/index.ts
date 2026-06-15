@@ -6,6 +6,7 @@ export type UserListItem = {
   email: string;
   role: UserRole;
   isActive: boolean;
+  permissions: string[];
   createdAt: Date;
 };
 

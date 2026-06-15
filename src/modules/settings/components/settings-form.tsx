@@ -70,6 +70,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       currency: settings.currency as "EUR" | "USD" | "GBP" | "CHF",
       offerPrefix: settings.offerPrefix,
       invoicePrefix: settings.invoicePrefix,
+      workOrderPrefix: settings.workOrderPrefix ?? "WO",
       pdfFooterText: settings.pdfFooterText ?? "",
       termsAndConditions: settings.termsAndConditions ?? "",
     },
@@ -309,6 +310,27 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                       </FormControl>
                       <FormDescription>
                         {t("settings.fields.invoicePrefixHint")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="workOrderPrefix"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("settings.fields.workOrderPrefix")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="font-mono uppercase"
+                          maxLength={10}
+                          placeholder="WO"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t("settings.fields.workOrderPrefixHint")}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

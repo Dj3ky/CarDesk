@@ -1,61 +1,54 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Wrench, PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { canAccess } from "@/lib/permissions";
-import { FilePlus2, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { WorkOrderTable } from "@/modules/work-orders/components/work-order-table";
+import { getWorkOrders } from "@/modules/work-orders/actions/get-work-orders";
 import { Pagination } from "@/modules/customers/components/pagination";
-import { OfferTable } from "@/modules/offers/components/offer-table";
-import { getOffers } from "@/modules/offers/actions/get-offers";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("offers");
-  return { title: t("title") };
+  return { title: "Work Orders" };
 }
 
-const STATUSES: { value: string; label: string }[] = [
-  { value: "ALL", label: "All" },
-  { value: "DRAFT", label: "Draft" },
-  { value: "SENT", label: "Sent" },
-  { value: "APPROVED", label: "Approved" },
-  { value: "REJECTED", label: "Rejected" },
-  { value: "COMPLETED", label: "Completed" },
+const STATUSES = [
+  { value: "ALL",           label: "All" },
+  { value: "OPEN",          label: "Open" },
+  { value: "IN_PROGRESS",   label: "In Progress" },
+  { value: "WAITING_PARTS", label: "Waiting Parts" },
+  { value: "DONE",          label: "Done" },
+  { value: "INVOICED",      label: "Invoiced" },
+  { value: "CANCELLED",     label: "Cancelled" },
 ];
 
-interface OffersPageProps {
+interface WorkOrdersPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ page?: string; status?: string; search?: string }>;
 }
 
-export default async function OffersPage({ params, searchParams }: OffersPageProps) {
+export default async function WorkOrdersPage({ params, searchParams }: WorkOrdersPageProps) {
   const { locale } = await params;
   const session = await auth();
-  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "offers")) {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "work_orders")) {
     redirect(`/${locale}/dashboard`);
   }
 
   const sp = await searchParams;
-  const t = await getTranslations("offers");
-
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const status = sp.status ?? "ALL";
 
-  const { offers, total, totalPages } = await getOffers({
-    page,
-    status,
-    search: sp.search,
-  });
+  const { workOrders, total, totalPages } = await getWorkOrders({ page, status, search: sp.search });
 
-  const basePath = `/${locale}/offers`;
+  const basePath = `/${locale}/work-orders`;
 
   function statusHref(s: string) {
-    const params = new URLSearchParams();
-    if (s !== "ALL") params.set("status", s);
-    if (sp.search) params.set("search", sp.search);
-    const qs = params.toString();
+    const p = new URLSearchParams();
+    if (s !== "ALL") p.set("status", s);
+    if (sp.search) p.set("search", sp.search);
+    const qs = p.toString();
     return `${basePath}${qs ? `?${qs}` : ""}`;
   }
 
@@ -64,19 +57,19 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <FileText className="h-5 w-5 text-primary" />
+            <Wrench className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Work Orders</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {total} {total === 1 ? "offer" : "offers"}
+              {total} {total === 1 ? "work order" : "work orders"}
             </p>
           </div>
         </div>
         <Button asChild>
           <Link href={`${basePath}/new`}>
-            <FilePlus2 className="mr-2 h-4 w-4" />
-            {t("addNew")}
+            <PlusCircle className="mr-2 h-4 w-4" />
+            New Work Order
           </Link>
         </Button>
       </div>
@@ -98,9 +91,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
         ))}
       </div>
 
-      <Suspense>
-        <OfferTable offers={offers} locale={locale} />
-      </Suspense>
+      <WorkOrderTable workOrders={workOrders} />
 
       {totalPages > 1 && (
         <Pagination

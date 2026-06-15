@@ -1,13 +1,12 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +17,8 @@ import { createUser } from "../actions/create-user";
 import { updateUser } from "../actions/update-user";
 import type { CreateUserFormValues, UpdateUserFormValues } from "../schemas/user.schema";
 import type { UserListItem } from "../types";
+import { MODULES, MODULE_LABELS, DEFAULT_EMPLOYEE_PERMISSIONS } from "@/lib/permissions";
+import type { Module } from "@/lib/permissions";
 
 interface UserFormProps {
   user?: UserListItem;
@@ -42,11 +43,22 @@ export function UserForm({ user }: UserFormProps) {
       password: "",
       role: user?.role ?? "EMPLOYEE",
       isActive: user?.isActive ?? true,
+      permissions: user?.permissions ?? DEFAULT_EMPLOYEE_PERMISSIONS,
     },
   });
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = form;
   const isActive = watch("isActive");
+  const role = watch("role");
+  const permissions = watch("permissions") as string[];
+
+  function togglePermission(module: Module) {
+    const current = permissions ?? [];
+    const next = current.includes(module)
+      ? current.filter((m) => m !== module)
+      : [...current, module];
+    setValue("permissions", next);
+  }
 
   function onSubmit(values: CreateUserFormValues | UpdateUserFormValues) {
     startTransition(async () => {
@@ -104,7 +116,7 @@ export function UserForm({ user }: UserFormProps) {
               id="password"
               type="password"
               {...register("password")}
-              autoComplete={isEdit ? "new-password" : "new-password"}
+              autoComplete="new-password"
             />
             {isEdit && (
               <p className="text-xs text-muted-foreground">{t("fields.passwordHint")}</p>
@@ -142,6 +154,34 @@ export function UserForm({ user }: UserFormProps) {
           </div>
         </CardContent>
       </Card>
+
+      {role === "EMPLOYEE" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">{t("moduleAccess")}</CardTitle>
+            <p className="text-sm text-muted-foreground">{t("moduleAccessHint")}</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {MODULES.map((module) => (
+                <div key={module} className="flex items-center gap-3 rounded-lg border p-3">
+                  <Checkbox
+                    id={`perm-${module}`}
+                    checked={permissions?.includes(module) ?? false}
+                    onCheckedChange={() => togglePermission(module)}
+                  />
+                  <label
+                    htmlFor={`perm-${module}`}
+                    className="text-sm font-medium cursor-pointer select-none"
+                  >
+                    {MODULE_LABELS[module]}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {error && (
         <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">

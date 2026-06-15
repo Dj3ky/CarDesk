@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { CustomerTable } from "@/modules/customers/components/customer-table";
 import { CustomerSearch } from "@/modules/customers/components/customer-search";
 import { Pagination } from "@/modules/customers/components/pagination";
 import { getCustomers } from "@/modules/customers/actions/get-customers";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("customers");
@@ -21,6 +24,11 @@ interface CustomersPageProps {
 
 export default async function CustomersPage({ params, searchParams }: CustomersPageProps) {
   const { locale } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "customers")) {
+    redirect(`/${locale}/dashboard`);
+  }
+
   const { search, page: pageParam } = await searchParams;
 
   const t = await getTranslations();

@@ -39,7 +39,8 @@ if [[ "${_CARDESK_REEXEC:-}" != "1" ]]; then
   section "Pulling latest code"
   if git rev-parse --is-inside-work-tree &>/dev/null; then
     info "Fetching from git …"
-    git pull
+    git fetch origin master
+    git reset --hard origin/master
     success "Code updated"
   else
     warn "Not a git repository — skipping git pull"

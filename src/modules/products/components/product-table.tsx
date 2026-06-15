@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { Pencil } from "lucide-react";
+import { Pencil, TriangleAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,7 +74,14 @@ export async function ProductTable({
             return (
               <TableRow key={p.id}>
                 <TableCell>
-                  <div className="font-mono text-sm font-medium">{p.productNumber}</div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-mono text-sm font-medium">{p.productNumber}</span>
+                    {p.substitutionPart && (
+                      <span title={`${t("products.fields.substitutionPart")}: ${p.substitutionPart}`}>
+                        <TriangleAlert className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                      </span>
+                    )}
+                  </div>
                   {p.barcode && (
                     <div className="text-xs text-muted-foreground font-mono">{p.barcode}</div>
                   )}

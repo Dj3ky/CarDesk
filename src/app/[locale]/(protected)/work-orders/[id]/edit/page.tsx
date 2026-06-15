@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { canAccess } from "@/lib/permissions";
 import { getWorkOrder } from "@/modules/work-orders/actions/get-work-order";
@@ -44,16 +41,7 @@ export default async function EditWorkOrderPage({ params }: EditWorkOrderPagePro
   ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={`/${locale}/work-orders/${id}`}>
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            {wo.number}
-          </Link>
-        </Button>
-      </div>
-
+    <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{t("editTitle")}</h1>
         <p className="text-sm text-muted-foreground mt-1 font-mono">{wo.number}</p>

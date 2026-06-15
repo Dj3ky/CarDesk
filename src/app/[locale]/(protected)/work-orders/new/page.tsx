@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { canAccess } from "@/lib/permissions";
 import { WorkOrderForm } from "@/modules/work-orders/components/work-order-form";
@@ -37,16 +34,7 @@ export default async function NewWorkOrderPage({ params, searchParams }: NewWork
   ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={`/${locale}/work-orders`}>
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            {t("title")}
-          </Link>
-        </Button>
-      </div>
-
+    <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{t("newTitle")}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t("newSubtitle")}</p>

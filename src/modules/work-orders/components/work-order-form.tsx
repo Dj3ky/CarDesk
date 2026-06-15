@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, UserPlus, Car } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,15 +101,22 @@ export function WorkOrderForm({
     defaultValues: buildDefaults(workOrder, defaultCustomerId),
   });
 
-  const { register, handleSubmit, watch, formState: { errors } } = form;
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = form;
   const customerId = watch("customerId");
+  const vehicleId = watch("vehicleId");
   const items = watch("items") ?? [];
   const laborItems = watch("laborItems") ?? [];
   const totals = calcTotals(items, laborItems);
 
   useEffect(() => {
     if (!customerId) { setVehicles([]); return; }
-    getVehiclesForWorkOrder(customerId).then(setVehicles);
+    getVehiclesForWorkOrder(customerId).then((v) => {
+      setVehicles(v);
+      if (!workOrder || workOrder.customerId !== customerId) {
+        setValue("vehicleId", "");
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerId]);
 
   function onSubmit(values: WorkOrderFormValues) {
@@ -135,6 +142,7 @@ export function WorkOrderForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Header info */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{t("form.title")}</CardTitle>
@@ -142,7 +150,9 @@ export function WorkOrderForm({
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Customer */}
           <div className="space-y-1.5">
-            <Label htmlFor="customerId">{t("fields.customer")} <span className="text-destructive">*</span></Label>
+            <Label htmlFor="customerId">
+              {t("fields.customer")} <span className="text-destructive">*</span>
+            </Label>
             <select
               id="customerId"
               {...register("customerId")}
@@ -155,7 +165,9 @@ export function WorkOrderForm({
                 </option>
               ))}
             </select>
-            {errors.customerId && <p className="text-xs text-destructive">{errors.customerId.message}</p>}
+            {errors.customerId && (
+              <p className="text-xs text-destructive">{errors.customerId.message}</p>
+            )}
           </div>
 
           {/* Vehicle */}
@@ -164,17 +176,13 @@ export function WorkOrderForm({
             <select
               id="vehicleId"
               {...register("vehicleId")}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-              disabled={!customerId || vehicles.length === 0}
+              disabled={!customerId}
+              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
             >
-              <option value="">
-                {customerId
-                  ? vehicles.length === 0 ? t("form.noVehicle") : t("form.selectVehicle")
-                  : t("form.selectCustomerFirst")}
-              </option>
+              <option value="">{t("form.noVehicle")}</option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>
-                  {v.make} {v.model} {v.year}{v.registrationPlate ? ` · ${v.registrationPlate}` : ""}
+                  {v.make} {v.model} ({v.year}){v.registrationPlate ? ` — ${v.registrationPlate}` : ""}
                 </option>
               ))}
             </select>
@@ -202,16 +210,24 @@ export function WorkOrderForm({
           </div>
 
           {/* Mileage in */}
-          <div className="space-y-1.5">
-            <Label htmlFor="mileageIn">{t("fields.mileageIn")}</Label>
-            <Input id="mileageIn" type="number" min="0" placeholder="0" {...register("mileageIn")} />
-          </div>
+          {vehicleId && (
+            <div className="space-y-1.5">
+              <Label htmlFor="mileageIn">{t("fields.mileageIn")}</Label>
+              <div className="relative">
+                <Input id="mileageIn" type="number" min="0" placeholder="0" className="pr-10" {...register("mileageIn")} />
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-muted-foreground">km</span>
+              </div>
+            </div>
+          )}
 
           {/* Mileage out - only on edit */}
-          {isEdit && (
+          {isEdit && vehicleId && (
             <div className="space-y-1.5">
               <Label htmlFor="mileageOut">{t("fields.mileageOut")}</Label>
-              <Input id="mileageOut" type="number" min="0" placeholder="0" {...register("mileageOut")} />
+              <div className="relative">
+                <Input id="mileageOut" type="number" min="0" placeholder="0" className="pr-10" {...register("mileageOut")} />
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-muted-foreground">km</span>
+              </div>
             </div>
           )}
 
@@ -231,7 +247,7 @@ export function WorkOrderForm({
             <Label htmlFor="internalNotes">{t("fields.internalNotes")}</Label>
             <Textarea
               id="internalNotes"
-              rows={3}
+              rows={2}
               placeholder={t("form.internalNotesPlaceholder")}
               {...register("internalNotes")}
             />
@@ -241,48 +257,52 @@ export function WorkOrderForm({
 
       {/* Parts */}
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader>
+          <CardTitle className="text-base">{t("parts.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
           <PartsEditor form={form} currency={currency} defaultVATRate={defaultVATRate} />
         </CardContent>
       </Card>
 
       {/* Labor */}
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader>
+          <CardTitle className="text-base">{t("labor.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
           <LaborEditor form={form} currency={currency} defaultVATRate={defaultVATRate} />
         </CardContent>
       </Card>
 
       {/* Totals */}
       {(items.length > 0 || laborItems.length > 0) && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="ml-auto max-w-xs space-y-1 text-sm">
-              {totals.partsSubtotalExVat > 0 && (
-                <div className="flex justify-between text-muted-foreground">
-                  <span>{t("totals.partsExVat")}</span>
-                  <span>{formatCurrency(totals.partsSubtotalExVat, currency)}</span>
-                </div>
-              )}
-              {totals.laborSubtotalExVat > 0 && (
-                <div className="flex justify-between text-muted-foreground">
-                  <span>{t("totals.laborExVat")}</span>
-                  <span>{formatCurrency(totals.laborSubtotalExVat, currency)}</span>
-                </div>
-              )}
-              {totals.vatBreakdown.map(({ rate, amount }) => (
-                <div key={rate} className="flex justify-between text-muted-foreground">
-                  <span>{t("totals.vat", { rate })}</span>
-                  <span>{formatCurrency(amount, currency)}</span>
-                </div>
-              ))}
-              <div className="flex justify-between font-semibold text-base border-t pt-1">
-                <span>{t("totals.grandTotal")}</span>
-                <span>{formatCurrency(totals.grandTotal, currency)}</span>
+        <div className="flex justify-end">
+          <div className="space-y-1 text-sm min-w-[220px]">
+            {totals.partsSubtotalExVat > 0 && (
+              <div className="flex justify-between gap-8 text-muted-foreground">
+                <span>{t("totals.partsExVat")}</span>
+                <span className="font-medium text-foreground">{formatCurrency(totals.partsSubtotalExVat, currency)}</span>
               </div>
+            )}
+            {totals.laborSubtotalExVat > 0 && (
+              <div className="flex justify-between gap-8 text-muted-foreground">
+                <span>{t("totals.laborExVat")}</span>
+                <span className="font-medium text-foreground">{formatCurrency(totals.laborSubtotalExVat, currency)}</span>
+              </div>
+            )}
+            {totals.vatBreakdown.map(({ rate, amount }) => (
+              <div key={rate} className="flex justify-between gap-8 text-muted-foreground">
+                <span>{t("totals.vat", { rate })}</span>
+                <span>{formatCurrency(amount, currency)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between gap-8 border-t pt-1 font-semibold">
+              <span>{t("totals.grandTotal")}</span>
+              <span>{formatCurrency(totals.grandTotal, currency)}</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {error && (

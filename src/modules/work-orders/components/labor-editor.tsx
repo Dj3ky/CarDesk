@@ -3,7 +3,7 @@
 import { useFieldArray } from "react-hook-form";
 import type { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCurrency, calcLaborItem } from "../lib/calculations";
@@ -22,7 +22,7 @@ export function LaborEditor({ form, currency = "EUR", defaultVATRate = 22 }: Lab
   const { fields, append, remove } = useFieldArray({ control: form.control, name: "laborItems" });
   const { register, watch, formState: { errors } } = form;
 
-  const laborItems = watch("laborItems");
+  const laborItems = watch("laborItems") ?? [];
 
   function addLaborLine() {
     append({ description: "", hours: 1, hourlyRate: 0, vatRate: defaultVATRate });
@@ -30,90 +30,99 @@ export function LaborEditor({ form, currency = "EUR", defaultVATRate = 22 }: Lab
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">{t("labor.title")}</h3>
+      {fields.length === 0 ? (
+        <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
+          {t("labor.noLabor")}
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b text-xs text-muted-foreground">
+                <th className="py-2 px-2 text-left font-medium min-w-[200px]">{t("parts.description")}</th>
+                <th className="py-2 px-2 text-right font-medium w-24">{t("labor.hours")}</th>
+                <th className="py-2 px-2 text-right font-medium w-28">{t("labor.ratePerHour")}</th>
+                <th className="py-2 px-2 text-right font-medium w-20">{t("parts.vatRate")}</th>
+                <th className="py-2 px-2 text-right font-medium w-24">{t("detail.total")}</th>
+                <th className="py-2 pl-2 pr-1 w-8" />
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field, index) => {
+                const item = laborItems[index];
+                const calc = item ? calcLaborItem(item) : null;
+                const errs = errors.laborItems?.[index];
+
+                return (
+                  <tr key={field.id} className="border-b hover:bg-muted/30">
+                    <td className="py-1.5 px-2 align-top">
+                      <Input
+                        placeholder={t("form.laborDescriptionPlaceholder")}
+                        {...register(`laborItems.${index}.description`)}
+                        className={`h-8 ${errs?.description ? "border-destructive" : ""}`}
+                      />
+                      {errs?.description && (
+                        <p className="text-xs text-destructive mt-0.5">{errs.description.message}</p>
+                      )}
+                    </td>
+                    <td className="py-1.5 px-2 align-top">
+                      <Input
+                        type="number"
+                        step="0.25"
+                        min="0"
+                        placeholder="0.00"
+                        className="h-8 text-right w-24"
+                        {...register(`laborItems.${index}.hours`)}
+                      />
+                    </td>
+                    <td className="py-1.5 px-2 align-top">
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        className="h-8 text-right w-28"
+                        {...register(`laborItems.${index}.hourlyRate`)}
+                      />
+                    </td>
+                    <td className="py-1.5 px-2 align-top">
+                      <select
+                        {...register(`laborItems.${index}.vatRate`)}
+                        className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      >
+                        {VAT_PRESETS.map((v) => (
+                          <option key={v} value={v}>{v}%</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-1.5 px-2 text-right font-medium align-top whitespace-nowrap">
+                      {calc ? formatCurrency(calc.lineTotal, currency) : "—"}
+                    </td>
+                    <td className="py-1.5 pl-2 pr-1 align-top">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <div className="pt-1">
         <Button type="button" variant="outline" size="sm" onClick={addLaborLine}>
-          <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
+          <Plus className="mr-1.5 h-4 w-4" />
           {t("labor.addLabor")}
         </Button>
       </div>
-
-      {fields.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-2">{t("labor.noLabor")}</p>
-      ) : (
-        <div className="space-y-2">
-          {fields.map((field, index) => {
-            const item = laborItems?.[index];
-            const { lineTotal } = calcLaborItem(item ?? {});
-            const errs = errors.laborItems?.[index];
-
-            return (
-              <div key={field.id} className="rounded-lg border p-3 space-y-2">
-                <div className="flex items-start gap-2">
-                  <div className="flex-1">
-                    <Input
-                      placeholder={t("form.laborDescriptionPlaceholder")}
-                      {...register(`laborItems.${index}.description`)}
-                      className={errs?.description ? "border-destructive" : ""}
-                    />
-                    {errs?.description && (
-                      <p className="text-xs text-destructive mt-0.5">{errs.description.message}</p>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-destructive shrink-0"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <div>
-                    <label className="text-xs text-muted-foreground">{t("labor.hours")}</label>
-                    <Input
-                      type="number"
-                      step="0.25"
-                      min="0"
-                      placeholder="0.00"
-                      {...register(`laborItems.${index}.hours`)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground">{t("labor.ratePerHour")}</label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="0.00"
-                      {...register(`laborItems.${index}.hourlyRate`)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground">{t("parts.vatRate")}</label>
-                    <select
-                      {...register(`laborItems.${index}.vatRate`)}
-                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                    >
-                      {VAT_PRESETS.map((v) => (
-                        <option key={v} value={v}>{v}%</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex items-end">
-                    <span className="text-sm font-medium tabular-nums">
-                      {formatCurrency(lineTotal, currency)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }

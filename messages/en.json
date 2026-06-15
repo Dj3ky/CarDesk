@@ -661,7 +661,8 @@
       "searchTitle": "Search Products",
       "searchPlaceholder": "Search by part number or description...",
       "searching": "Searching...",
-      "noResults": "No products found."
+      "noResults": "No products found.",
+      "browseButton": "Select from Pricelist"
     },
     "labor": {
       "title": "Labor",

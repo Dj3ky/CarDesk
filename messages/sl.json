@@ -661,7 +661,8 @@
       "searchTitle": "Iskanje izdelkov",
       "searchPlaceholder": "Iskanje po šifri ali opisu...",
       "searching": "Iščem...",
-      "noResults": "Ni najdenih izdelkov."
+      "noResults": "Ni najdenih izdelkov.",
+      "browseButton": "Izberi iz cenika"
     },
     "labor": {
       "title": "Delo",

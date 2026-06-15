@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2, AlertCircle, UserPlus, Car } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -187,6 +188,7 @@ export function OfferForm({
       }
 
       const id = (result as { data?: { id: string } }).data?.id ?? offer?.id;
+      toast.success(offer ? t("form.updated") : t("form.created"));
       router.push(`/${locale}/offers/${id}`);
     });
   }

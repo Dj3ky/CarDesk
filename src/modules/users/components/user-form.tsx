@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,11 +61,8 @@ export function UserForm({ user }: UserFormProps) {
         return;
       }
 
-      if (!isEdit && (result as { data?: { id: string } }).data?.id) {
-        router.push(`/${locale}/users`);
-      } else {
-        router.push(`/${locale}/users`);
-      }
+      toast.success(isEdit ? t("updated") : t("created"));
+      router.push(`/${locale}/users`);
     });
   }
 

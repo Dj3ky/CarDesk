@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,6 +90,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
     }
 
     const customerId = result.data?.id ?? customer?.id;
+    toast.success(isEdit ? t("customers.updated") : t("customers.created"));
     router.push(`/${locale}/customers/${customerId}`);
   }
 

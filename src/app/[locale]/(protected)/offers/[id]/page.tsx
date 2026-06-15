@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OfferStatusBadge } from "@/modules/offers/components/offer-status-badge";
+import { OfferStatusTimeline } from "@/modules/offers/components/offer-status-timeline";
 import { StatusActions } from "@/modules/offers/components/status-actions";
 import { DeleteOfferButton } from "@/modules/offers/components/delete-offer-button";
 import { getOffer } from "@/modules/offers/actions/get-offer";
@@ -113,6 +114,18 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
       </div>
 
       <Separator />
+
+      {/* Status timeline */}
+      <OfferStatusTimeline
+        status={offer.status}
+        labels={{
+          DRAFT: t("statuses.DRAFT"),
+          SENT: t("statuses.SENT"),
+          APPROVED: t("statuses.APPROVED"),
+          REJECTED: t("statuses.REJECTED"),
+          COMPLETED: t("statuses.COMPLETED"),
+        }}
+      />
 
       {/* Customer + Vehicle */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

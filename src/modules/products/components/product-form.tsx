@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -72,6 +73,7 @@ export function ProductForm({ product }: ProductFormProps) {
       return;
     }
 
+    toast.success(isEdit ? t("products.updated") : t("products.created"));
     router.push(`/${locale}/products`);
   }
 

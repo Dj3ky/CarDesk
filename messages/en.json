@@ -51,6 +51,8 @@
     "newTitle": "New Product",
     "newSubtitle": "Add a product to the catalog",
     "editTitle": "Edit Product",
+    "created": "Product created",
+    "updated": "Product saved",
     "noResults": "No products found. Try adjusting your search or filters.",
     "create": "Create Product",
     "deleteTitle": "Delete Product",
@@ -149,6 +151,8 @@
     "newTitle": "New Customer",
     "newSubtitle": "Create a new customer record",
     "editTitle": "Edit Customer",
+    "created": "Customer created",
+    "updated": "Customer saved",
     "noResults": "No customers found. Try a different search.",
     "create": "Create Customer",
     "deleteTitle": "Delete Customer",
@@ -501,7 +505,9 @@
       "unsavedLeave": "Leave",
       "unsavedStay": "Stay on Page",
       "hideCatalogNumber": "Hide catalog number in PDF",
-      "hideCatalogNumberHint": "Product catalog numbers will not appear on the printed offer"
+      "hideCatalogNumberHint": "Product catalog numbers will not appear on the printed offer",
+      "created": "Offer created",
+      "updated": "Offer saved"
     },
     "quickCreate": {
       "newCustomer": "New Customer",
@@ -541,6 +547,8 @@
     "newTitle": "New user",
     "newSubtitle": "Create a new user account",
     "editTitle": "Edit user",
+    "created": "User created",
+    "updated": "User saved",
     "deleteTitle": "Delete user",
     "deleteConfirm": "Are you sure you want to permanently delete {name}? This cannot be undone.",
     "noUsers": "No users found.",

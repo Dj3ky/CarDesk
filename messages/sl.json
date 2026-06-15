@@ -51,6 +51,8 @@
     "newTitle": "Nov izdelek",
     "newSubtitle": "Dodajte izdelek v katalog",
     "editTitle": "Uredi izdelek",
+    "created": "Izdelek ustvarjen",
+    "updated": "Izdelek shranjen",
     "noResults": "Ni najdenih izdelkov. Poskusite z drugačnim iskanjem ali filtri.",
     "create": "Ustvari izdelek",
     "deleteTitle": "Izbriši izdelek",
@@ -149,6 +151,8 @@
     "newTitle": "Nova stranka",
     "newSubtitle": "Ustvari nov zapis stranke",
     "editTitle": "Uredi stranko",
+    "created": "Stranka ustvarjena",
+    "updated": "Stranka shranjena",
     "noResults": "Nobene stranke ni bilo najdeno. Poskusite z drugačnim iskanjem.",
     "create": "Ustvari stranko",
     "deleteTitle": "Izbriši stranko",
@@ -501,7 +505,9 @@
       "unsavedLeave": "Zapusti",
       "unsavedStay": "Ostani na strani",
       "hideCatalogNumber": "Skrij kataloško številko v PDF",
-      "hideCatalogNumberHint": "Kataloške številke ne bodo prikazane na tiskani ponudbi"
+      "hideCatalogNumberHint": "Kataloške številke ne bodo prikazane na tiskani ponudbi",
+      "created": "Ponudba ustvarjena",
+      "updated": "Ponudba shranjena"
     },
     "quickCreate": {
       "newCustomer": "Nova stranka",
@@ -541,6 +547,8 @@
     "newTitle": "Nov uporabnik",
     "newSubtitle": "Ustvari nov uporabniški račun",
     "editTitle": "Uredi uporabnika",
+    "created": "Uporabnik ustvarjen",
+    "updated": "Uporabnik shranjen",
     "deleteTitle": "Izbriši uporabnika",
     "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
     "noUsers": "Ni najdenih uporabnikov.",

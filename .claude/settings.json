@@ -97,7 +97,13 @@
       "Bash(grep -v \"//\")",
       "Bash(python3 -c ' *)",
       "Bash(python -c ' *)",
-      "Bash(node -e \"const p = require\\('d:/GitHub/CarDesk/package.json'\\); console.log\\(JSON.stringify\\(p.scripts, null, 2\\)\\)\")"
+      "Bash(node -e \"const p = require\\('d:/GitHub/CarDesk/package.json'\\); console.log\\(JSON.stringify\\(p.scripts, null, 2\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\({deps: p.dependencies, devDeps: p.devDependencies}, null, 2\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(p.dependencies['sonner'] || 'not installed'\\)\")",
+      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({offers: Object.keys\\(m.offers || {}\\), common: Object.keys\\(m.common || {}\\)}, null, 2\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({actions: m.offers.actions, statuses: m.offers.statuses}, null, 2\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({offersForm: m.offers?.form, customers: {created: m.customers?.created, updated: m.customers?.updated}, products: {created: m.products?.created, updated: m.products?.updated}, users: {created: m.users?.created, updated: m.users?.updated}}, null, 2\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({customers: m.customers, products: m.products, users: m.users}, null, 2\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

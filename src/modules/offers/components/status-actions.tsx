@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { updateOfferStatus } from "../actions/update-offer-status";
 import type { OfferStatus } from "../types";
@@ -36,6 +37,7 @@ interface StatusActionsProps {
 
 export function StatusActions({ offerId, status }: StatusActionsProps) {
   const t = useTranslations("offers.actions");
+  const tStatuses = useTranslations("offers.statuses");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const actions = ACTIONS_BY_STATUS[status] ?? [];
@@ -44,7 +46,12 @@ export function StatusActions({ offerId, status }: StatusActionsProps) {
 
   function handleAction(to: OfferStatus) {
     startTransition(async () => {
-      await updateOfferStatus(offerId, to);
+      const result = await updateOfferStatus(offerId, to);
+      if (result.success) {
+        toast.success(tStatuses(to));
+      } else {
+        toast.error(result.error);
+      }
       router.refresh();
     });
   }

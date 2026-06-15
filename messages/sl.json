@@ -277,7 +277,8 @@
       "vatRate": "DDV %",
       "stock": "Zaloga",
       "unit": "Enota",
-      "substitutionPart": "Nadomestna šifra"
+      "substitutionPart": "Nadomestna šifra",
+      "notes": "Opomba"
     }
   },
   "settings": {

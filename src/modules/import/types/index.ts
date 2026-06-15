@@ -39,6 +39,7 @@ export const PRODUCT_FIELDS = [
   { key: "stock", required: false },
   { key: "unit", required: false },
   { key: "substitutionPart", required: false },
+  { key: "notes", required: false },
 ] as const;
 
 export type ProductFieldKey = (typeof PRODUCT_FIELDS)[number]["key"];
@@ -53,6 +54,7 @@ export type ValidatedProduct = {
   brand: string | null;
   supplier: string | null;
   substitutionPart: string | null;
+  notes: string | null;
   price: number;
   vatRate: number;
   stock: number;

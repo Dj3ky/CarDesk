@@ -34,6 +34,7 @@ async function upsertProductBatch(
       ${p.brand},
       ${p.supplier},
       ${p.substitutionPart},
+      ${p.notes},
       ${new Prisma.Decimal(p.price)},
       ${new Prisma.Decimal(p.vatRate)},
       ${p.stock},
@@ -48,7 +49,7 @@ async function upsertProductBatch(
   const result = await prisma.$queryRaw<{ inserted: boolean }[]>(Prisma.sql`
     INSERT INTO "Product" (
       "id", "productNumber", "barcode", "description",
-      "brand", "supplier", "substitutionPart", "price", "vatRate",
+      "brand", "supplier", "substitutionPart", "notes", "price", "vatRate",
       "stock", "unit", "isActive", "createdAt", "updatedAt", "createdById"
     )
     VALUES ${Prisma.join(values)}
@@ -58,6 +59,7 @@ async function upsertProductBatch(
       "brand"            = COALESCE(EXCLUDED."brand", "Product"."brand"),
       "supplier"         = COALESCE(EXCLUDED."supplier", "Product"."supplier"),
       "substitutionPart" = COALESCE(EXCLUDED."substitutionPart", "Product"."substitutionPart"),
+      "notes"            = COALESCE(EXCLUDED."notes", "Product"."notes"),
       "price"            = EXCLUDED."price",
       "vatRate"          = EXCLUDED."vatRate",
       "stock"            = EXCLUDED."stock",

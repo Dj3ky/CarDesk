@@ -46,6 +46,7 @@ export async function ProductTable({
           <TableRow>
             <TableHead className="w-[140px]">{t("products.fields.productNumber")}</TableHead>
             <TableHead>{t("products.fields.description")}</TableHead>
+            <TableHead className="hidden lg:table-cell">{t("products.fields.notes")}</TableHead>
             <TableHead className="hidden md:table-cell">{t("products.fields.brand")}</TableHead>
             <TableHead className="hidden lg:table-cell">{t("products.fields.supplier")}</TableHead>
             <TableHead className="hidden xl:table-cell w-[130px]">{t("products.fields.substitutionPart")}</TableHead>
@@ -93,11 +94,17 @@ export async function ProductTable({
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">{p.description}</div>
+                  {p.notes && (
+                    <div className="lg:hidden text-xs text-muted-foreground">{p.notes}</div>
+                  )}
                   {!p.isActive && (
                     <Badge variant="secondary" className="mt-0.5 text-xs">
                       {t("common.inactive")}
                     </Badge>
                   )}
+                </TableCell>
+                <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
+                  {p.notes ?? "—"}
                 </TableCell>
                 <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                   {p.brand ?? "—"}

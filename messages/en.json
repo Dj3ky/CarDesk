@@ -277,7 +277,8 @@
       "vatRate": "VAT %",
       "stock": "Stock",
       "unit": "Unit",
-      "substitutionPart": "Substitution Part No."
+      "substitutionPart": "Substitution Part No.",
+      "notes": "Note"
     }
   },
   "settings": {

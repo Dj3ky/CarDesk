@@ -13,6 +13,7 @@ export function autoMapColumns(headers: string[]): ColumnMapping {
     stock: /stock|zaloga|qty|quantity|koli[cč]/i,
     unit: /^unit$|enota|^um$|^uom$/i,
     substitutionPart: /substit|nadomest|replacement|repl[._-]?part|alt[._-]?part/i,
+    notes: /^notes?$|^opomba$|^opombe$|remark|comment|intern/i,
   };
 
   const mapping: ColumnMapping = {};
@@ -81,6 +82,7 @@ export function mapAndValidateRow(
   const supplier = get("supplier") || null;
   const unit = (get("unit") || "pcs").substring(0, 10);
   const substitutionPart = get("substitutionPart") || null;
+  const notes = get("notes") || null;
 
   return {
     product: {
@@ -93,6 +95,7 @@ export function mapAndValidateRow(
         substitutionPart && substitutionPart.length <= 100
           ? substitutionPart
           : null,
+      notes: notes || null,
       price,
       vatRate,
       stock: isNaN(stock) ? 0 : Math.max(0, stock),

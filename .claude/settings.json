@@ -105,7 +105,9 @@
       "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({offersForm: m.offers?.form, customers: {created: m.customers?.created, updated: m.customers?.updated}, products: {created: m.products?.created, updated: m.products?.updated}, users: {created: m.users?.created, updated: m.users?.updated}}, null, 2\\)\\)\")",
       "Bash(node -e \"const m=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\({customers: m.customers, products: m.products, users: m.users}, null, 2\\)\\)\")",
       "PowerShell(git commit -m \"fix: use git fetch + reset --hard instead of pull to skip local change conflicts\")",
-      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/work-orders/[workOrderId]/pdf\")"
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/work-orders/[workOrderId]/pdf\")",
+      "Bash(xargs grep -l \"phone\\\\|mobile\\\\|pwa\\\\|PWA\")",
+      "Bash(xargs grep -l \"scan\\\\|barcode\\\\|QR\\\\|scanner\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

@@ -86,8 +86,8 @@ export async function ProductTable({
                     <div className="text-xs text-muted-foreground font-mono">{p.barcode}</div>
                   )}
                   {p.substitutionPart && (
-                    <div className="text-xs font-mono text-amber-600 dark:text-amber-400 xl:hidden">
-                      → {p.substitutionPart}
+                    <div className="xl:hidden">
+                      <SubstitutionPartCell substitutionPart={p.substitutionPart} />
                     </div>
                   )}
                 </TableCell>

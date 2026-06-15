@@ -17,7 +17,7 @@ import { createUser } from "../actions/create-user";
 import { updateUser } from "../actions/update-user";
 import type { CreateUserFormValues, UpdateUserFormValues } from "../schemas/user.schema";
 import type { UserListItem } from "../types";
-import { MODULES, MODULE_LABELS, DEFAULT_EMPLOYEE_PERMISSIONS } from "@/lib/permissions";
+import { MODULES, DEFAULT_EMPLOYEE_PERMISSIONS } from "@/lib/permissions";
 import type { Module } from "@/lib/permissions";
 
 interface UserFormProps {
@@ -174,7 +174,7 @@ export function UserForm({ user }: UserFormProps) {
                     htmlFor={`perm-${module}`}
                     className="text-sm font-medium cursor-pointer select-none"
                   >
-                    {MODULE_LABELS[module]}
+                    {t(`modules.${module}`)}
                   </label>
                 </div>
               ))}

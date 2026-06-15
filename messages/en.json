@@ -580,6 +580,18 @@
     },
     "moduleAccess": "Module Access",
     "moduleAccessHint": "Select which modules this employee can access. Admins always have full access.",
+    "modules": {
+      "customers": "Customers & Vehicles",
+      "products": "Products & Pricelist",
+      "offers": "Offers",
+      "work_orders": "Work Orders",
+      "import": "Import",
+      "reports": "Reports",
+      "audit": "Audit Log",
+      "settings": "Settings",
+      "users": "Users",
+      "backup": "Backup"
+    },
     "selfDeleteError": "You cannot delete your own account",
     "lastAdminError": "Cannot delete the last admin account",
     "selfDeactivateError": "You cannot deactivate your own account",

@@ -580,6 +580,18 @@
     },
     "moduleAccess": "Dostop do modulov",
     "moduleAccessHint": "Izberite, do katerih modulov ima dostop ta uslužbenec. Administratorji imajo vedno poln dostop.",
+    "modules": {
+      "customers": "Stranke in vozila",
+      "products": "Artikli in cenik",
+      "offers": "Ponudbe",
+      "work_orders": "Delovni nalogi",
+      "import": "Uvoz",
+      "reports": "Poročila",
+      "audit": "Revizijska sled",
+      "settings": "Nastavitve",
+      "users": "Uporabniki",
+      "backup": "Varnostna kopija"
+    },
     "selfDeleteError": "Ne morete izbrisati lastnega računa",
     "lastAdminError": "Ni mogoče izbrisati zadnjega administratorskega računa",
     "selfDeactivateError": "Ne morete deaktivirati lastnega računa",

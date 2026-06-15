@@ -85,6 +85,11 @@ export async function ProductTable({
                   {p.barcode && (
                     <div className="text-xs text-muted-foreground font-mono">{p.barcode}</div>
                   )}
+                  {p.substitutionPart && (
+                    <div className="text-xs font-mono text-amber-600 dark:text-amber-400 xl:hidden">
+                      → {p.substitutionPart}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">{p.description}</div>

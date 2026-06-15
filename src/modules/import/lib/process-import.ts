@@ -81,6 +81,8 @@ interface ProcessState {
   errorRows: number;
   errors: ImportError[];
   lastProgressUpdate: number;
+  // Sync: collect every imported productNumber so we can delete the rest.
+  importedProductNumbers: Set<string> | null;
 }
 
 async function flushBatch(
@@ -130,6 +132,11 @@ async function processRows(
   let validProducts: ValidatedProduct[] = [];
   let batchStartRow = 2; // 1-based, row 1 is the header
 
+  // Find which CSV header maps to productNumber for sync tracking.
+  const productNumberHeader = Object.entries(state.mapping).find(
+    ([, v]) => v === "productNumber"
+  )?.[0];
+
   const handleRow = async (rawRow: Record<string, string>) => {
     const rowNumber = state.processedRows + 2;
     const result = mapAndValidateRow(rawRow, state.mapping, rowNumber);
@@ -143,6 +150,13 @@ async function processRows(
     }
 
     state.processedRows++;
+
+    // Track every product number present in the file (even rows with other
+    // errors) so we don't delete a product that merely had a bad price field.
+    if (state.importedProductNumbers !== null && productNumberHeader) {
+      const pn = (rawRow[productNumberHeader] ?? "").trim();
+      if (pn) state.importedProductNumbers.add(pn);
+    }
 
     if (validProducts.length >= BATCH_SIZE) {
       await flushBatch(validProducts, batchStartRow, state);
@@ -194,6 +208,7 @@ export async function processImportJob(jobId: string): Promise<void> {
       errorRows: 0,
       errors: [],
       lastProgressUpdate: 0,
+      importedProductNumbers: job.syncMode ? new Set<string>() : null,
     };
 
     if (isCsv) {
@@ -220,6 +235,23 @@ export async function processImportJob(jobId: string): Promise<void> {
 
     await unlink(job.filePath).catch(() => {});
 
+    // Sync delete: remove products with matching supplier that were NOT in the file.
+    // Guard: only run if we actually collected product numbers to avoid deleting everything.
+    let deletedRows = 0;
+    if (
+      job.syncMode &&
+      job.syncSupplier &&
+      state.importedProductNumbers &&
+      state.importedProductNumbers.size > 0
+    ) {
+      const importedList = Array.from(state.importedProductNumbers);
+      deletedRows = await prisma.$executeRaw`
+        DELETE FROM "Product"
+        WHERE supplier = ${job.syncSupplier}
+        AND "productNumber" != ALL(${importedList}::text[])
+      `;
+    }
+
     await prisma.importJob.update({
       where: { id: jobId },
       data: {
@@ -227,6 +259,7 @@ export async function processImportJob(jobId: string): Promise<void> {
         processedRows: state.processedRows,
         insertedRows: state.insertedRows,
         updatedRows: state.updatedRows,
+        deletedRows,
         errorRows: state.errorRows,
         errors: state.errors as unknown as Prisma.JsonArray,
         completedAt: new Date(),

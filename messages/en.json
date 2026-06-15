@@ -241,7 +241,12 @@
       "missingFields": "Please map required fields: {fields}",
       "startImport": "Start Import",
       "starting": "Starting...",
-      "startError": "Failed to start import. Please try again."
+      "startError": "Failed to start import. Please try again.",
+      "syncMode": "Sync mode — delete removed products",
+      "syncModeDesc": "Products from this supplier not present in the file will be permanently deleted.",
+      "syncSupplier": "Supplier scope",
+      "syncSupplierPlaceholder": "e.g. VAG",
+      "syncSupplierHint": "Only products with this exact supplier value will be removed."
     },
     "progress": {
       "processing": "Processing {processed} of {total} rows…",
@@ -249,6 +254,7 @@
       "failed": "Import Failed",
       "inserted": "Inserted",
       "updated": "Updated",
+      "deleted": "Deleted",
       "errors": "Errors",
       "errorsTable": "Row errors (showing {count})",
       "rowCol": "Row",

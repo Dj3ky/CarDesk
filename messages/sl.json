@@ -241,7 +241,12 @@
       "missingFields": "Prosimo, preslikajte obvezna polja: {fields}",
       "startImport": "Začni uvoz",
       "starting": "Zaganjam...",
-      "startError": "Uvoza ni bilo mogoče začeti. Prosimo, poskusite znova."
+      "startError": "Uvoza ni bilo mogoče začeti. Prosimo, poskusite znova.",
+      "syncMode": "Način sinhronizacije — izbriši odstranjene izdelke",
+      "syncModeDesc": "Izdelki tega dobavitelja, ki niso v datoteki, bodo trajno izbrisani.",
+      "syncSupplier": "Obseg dobavitelja",
+      "syncSupplierPlaceholder": "npr. VAG",
+      "syncSupplierHint": "Odstranjeni bodo le izdelki s točno to vrednostjo dobavitelja."
     },
     "progress": {
       "processing": "Obdelava {processed} od {total} vrstic…",
@@ -249,6 +254,7 @@
       "failed": "Uvoz ni uspel",
       "inserted": "Dodano",
       "updated": "Posodobljeno",
+      "deleted": "Izbrisano",
       "errors": "Napake",
       "errorsTable": "Napake v vrsticah (prikazujem {count})",
       "rowCol": "Vrstica",

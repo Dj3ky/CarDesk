@@ -95,7 +95,9 @@
       "Bash(mkdir -p \"d:\\\\GitHub\\\\CarDesk\\\\src\\\\app\\\\icons\\\\[name]\")",
       "Bash(xargs grep -l \"pricelist\\\\|priceRule\")",
       "Bash(grep -v \"//\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(python -c ' *)",
+      "Bash(node -e \"const p = require\\('d:/GitHub/CarDesk/package.json'\\); console.log\\(JSON.stringify\\(p.scripts, null, 2\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

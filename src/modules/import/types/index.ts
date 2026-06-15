@@ -11,8 +11,11 @@ export type ImportJobStatus = {
   processedRows: number;
   insertedRows: number;
   updatedRows: number;
+  deletedRows: number;
   errorRows: number;
   errors: ImportError[];
+  syncMode: boolean;
+  syncSupplier: string | null;
   createdAt: Date;
   completedAt: Date | null;
 };

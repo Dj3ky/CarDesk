@@ -29,7 +29,11 @@ export async function POST(
     );
   }
 
-  let body: { mapping?: Record<string, string> };
+  let body: {
+    mapping?: Record<string, string>;
+    syncMode?: boolean;
+    syncSupplier?: string;
+  };
   try {
     body = await req.json();
   } catch {
@@ -40,11 +44,25 @@ export async function POST(
     return Response.json({ error: "mapping is required" }, { status: 400 });
   }
 
+  const syncMode = body.syncMode === true;
+  const syncSupplier = syncMode && body.syncSupplier?.trim()
+    ? body.syncSupplier.trim()
+    : null;
+
+  if (syncMode && !syncSupplier) {
+    return Response.json(
+      { error: "syncSupplier is required when syncMode is enabled" },
+      { status: 400 }
+    );
+  }
+
   // Save mapping and mark as processing
   await prisma.importJob.update({
     where: { id: jobId },
     data: {
       mapping: body.mapping as Record<string, string>,
+      syncMode,
+      syncSupplier,
       status: "PROCESSING",
     },
   });

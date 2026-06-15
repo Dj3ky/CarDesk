@@ -95,7 +95,7 @@ export function ProgressStep({ jobId, totalRows, onReset }: ProgressStepProps) {
 
       {/* Stats */}
       {status && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className={`grid gap-4 ${status.syncMode ? "grid-cols-4" : "grid-cols-3"}`}>
           <div className="rounded-lg border p-4 text-center">
             <p className="text-2xl font-bold text-green-600">
               {status.insertedRows.toLocaleString()}
@@ -112,6 +112,16 @@ export function ProgressStep({ jobId, totalRows, onReset }: ProgressStepProps) {
               {t("import.progress.updated")}
             </p>
           </div>
+          {status.syncMode && (
+            <div className="rounded-lg border p-4 text-center">
+              <p className={`text-2xl font-bold ${status.deletedRows > 0 ? "text-orange-600" : "text-muted-foreground"}`}>
+                {status.deletedRows.toLocaleString()}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("import.progress.deleted")}
+              </p>
+            </div>
+          )}
           <div className="rounded-lg border p-4 text-center">
             <p className={`text-2xl font-bold ${status.errorRows > 0 ? "text-destructive" : "text-muted-foreground"}`}>
               {status.errorRows.toLocaleString()}

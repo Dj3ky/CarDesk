@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -35,12 +37,26 @@ export function MappingStep({
 }: MappingStepProps) {
   const t = useTranslations();
   const [mapping, setMapping] = useState<ColumnMapping>({});
+  const [syncMode, setSyncMode] = useState(false);
+  const [syncSupplier, setSyncSupplier] = useState("");
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMapping(autoMapColumns(headers));
   }, [headers]);
+
+  // When supplier column gets mapped or unmapped, auto-fill the supplier scope
+  // from the first preview row so the user doesn't have to type it.
+  useEffect(() => {
+    const supplierHeader = Object.entries(mapping).find(
+      ([, v]) => v === "supplier"
+    )?.[0];
+    if (supplierHeader) {
+      const sample = preview[0]?.[supplierHeader]?.trim();
+      if (sample) setSyncSupplier(sample);
+    }
+  }, [mapping, preview]);
 
   const requiredFields = PRODUCT_FIELDS.filter((f) => f.required).map(
     (f) => f.key
@@ -50,8 +66,12 @@ export function MappingStep({
     (f) => !mappedValues.includes(f)
   );
 
+  const canStart =
+    missingRequired.length === 0 &&
+    (!syncMode || syncSupplier.trim().length > 0);
+
   async function handleStartImport() {
-    if (missingRequired.length > 0) return;
+    if (!canStart) return;
     setIsStarting(true);
     setError(null);
 
@@ -59,7 +79,11 @@ export function MappingStep({
       const res = await fetch(`/api/import/start/${jobId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mapping }),
+        body: JSON.stringify({
+          mapping,
+          syncMode,
+          syncSupplier: syncMode ? syncSupplier.trim() : undefined,
+        }),
       });
       const data = await res.json();
 
@@ -154,6 +178,45 @@ export function MappingStep({
         </Table>
       </div>
 
+      {/* Sync mode */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <label className="flex cursor-pointer items-center gap-3">
+          <input
+            type="checkbox"
+            checked={syncMode}
+            onChange={(e) => setSyncMode(e.target.checked)}
+            className="h-4 w-4 rounded border-input accent-primary"
+          />
+          <div>
+            <span className="text-sm font-medium flex items-center gap-1.5">
+              <RefreshCw className="h-3.5 w-3.5" />
+              {t("import.mapping.syncMode")}
+            </span>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("import.mapping.syncModeDesc")}
+            </p>
+          </div>
+        </label>
+
+        {syncMode && (
+          <div className="ml-7 space-y-1.5">
+            <Label htmlFor="syncSupplier" className="text-xs">
+              {t("import.mapping.syncSupplier")}
+            </Label>
+            <Input
+              id="syncSupplier"
+              value={syncSupplier}
+              onChange={(e) => setSyncSupplier(e.target.value)}
+              placeholder={t("import.mapping.syncSupplierPlaceholder")}
+              className="h-8 text-sm"
+            />
+            <p className="text-xs text-muted-foreground">
+              {t("import.mapping.syncSupplierHint")}
+            </p>
+          </div>
+        )}
+      </div>
+
       {missingRequired.length > 0 && (
         <div className="flex items-center gap-2 rounded-md bg-amber-50 px-4 py-2 text-sm text-amber-700 dark:bg-amber-950 dark:text-amber-300">
           <AlertCircle className="h-4 w-4 shrink-0" />
@@ -177,7 +240,7 @@ export function MappingStep({
         </Button>
         <Button
           onClick={handleStartImport}
-          disabled={missingRequired.length > 0 || isStarting}
+          disabled={!canStart || isStarting}
         >
           {isStarting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isStarting

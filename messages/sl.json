@@ -634,6 +634,7 @@
       "internalNotes": "Interne opombe",
       "scheduledAtLabel": "Načrtovano",
       "technicianLabel": "Tehnik",
+      "createdAt": "Ustvarjeno",
       "completedAt": "Zaključeno",
       "linkedOffer": "Vezana ponudba"
     },

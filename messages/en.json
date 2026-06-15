@@ -634,6 +634,7 @@
       "internalNotes": "Internal Notes",
       "scheduledAtLabel": "Scheduled",
       "technicianLabel": "Technician",
+      "createdAt": "Created",
       "completedAt": "Completed",
       "linkedOffer": "Linked offer"
     },

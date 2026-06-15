@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -89,6 +89,8 @@ export function WorkOrderForm({
 }: WorkOrderFormProps) {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
@@ -99,7 +101,7 @@ export function WorkOrderForm({
     defaultValues: buildDefaults(workOrder, defaultCustomerId),
   });
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = form;
+  const { register, handleSubmit, watch, formState: { errors } } = form;
   const customerId = watch("customerId");
   const items = watch("items") ?? [];
   const laborItems = watch("laborItems") ?? [];
@@ -122,7 +124,7 @@ export function WorkOrderForm({
         return;
       }
 
-      toast.success(isEdit ? "Work order updated" : "Work order created");
+      toast.success(isEdit ? t("updated") : t("created"));
       if (!isEdit && result.data?.id) {
         router.push(`/${locale}/work-orders/${result.data.id}`);
       } else {
@@ -133,21 +135,20 @@ export function WorkOrderForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Header info */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Work Order Details</CardTitle>
+          <CardTitle className="text-base">{t("form.title")}</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Customer */}
           <div className="space-y-1.5">
-            <Label htmlFor="customerId">Customer <span className="text-destructive">*</span></Label>
+            <Label htmlFor="customerId">{t("fields.customer")} <span className="text-destructive">*</span></Label>
             <select
               id="customerId"
               {...register("customerId")}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="">Select customer…</option>
+              <option value="">{t("form.selectCustomer")}</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.companyName ?? `${c.firstName} ${c.lastName}`}
@@ -159,14 +160,18 @@ export function WorkOrderForm({
 
           {/* Vehicle */}
           <div className="space-y-1.5">
-            <Label htmlFor="vehicleId">Vehicle</Label>
+            <Label htmlFor="vehicleId">{t("fields.vehicle")}</Label>
             <select
               id="vehicleId"
               {...register("vehicleId")}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               disabled={!customerId || vehicles.length === 0}
             >
-              <option value="">{customerId ? (vehicles.length === 0 ? "No vehicles" : "Select vehicle…") : "Select customer first"}</option>
+              <option value="">
+                {customerId
+                  ? vehicles.length === 0 ? t("form.noVehicle") : t("form.selectVehicle")
+                  : t("form.selectCustomerFirst")}
+              </option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>
                   {v.make} {v.model} {v.year}{v.registrationPlate ? ` · ${v.registrationPlate}` : ""}
@@ -177,57 +182,57 @@ export function WorkOrderForm({
 
           {/* Technician */}
           <div className="space-y-1.5">
-            <Label htmlFor="technicianId">Technician</Label>
+            <Label htmlFor="technicianId">{t("fields.technician")}</Label>
             <select
               id="technicianId"
               {...register("technicianId")}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="">Unassigned</option>
-              {technicians.map((t) => (
-                <option key={t.id} value={t.id}>{t.name ?? t.email}</option>
+              <option value="">{t("form.unassigned")}</option>
+              {technicians.map((tech) => (
+                <option key={tech.id} value={tech.id}>{tech.name ?? tech.email}</option>
               ))}
             </select>
           </div>
 
           {/* Scheduled date */}
           <div className="space-y-1.5">
-            <Label htmlFor="scheduledAt">Scheduled Date</Label>
+            <Label htmlFor="scheduledAt">{t("fields.scheduledAt")}</Label>
             <Input id="scheduledAt" type="date" {...register("scheduledAt")} />
           </div>
 
           {/* Mileage in */}
           <div className="space-y-1.5">
-            <Label htmlFor="mileageIn">Mileage In (km)</Label>
+            <Label htmlFor="mileageIn">{t("fields.mileageIn")}</Label>
             <Input id="mileageIn" type="number" min="0" placeholder="0" {...register("mileageIn")} />
           </div>
 
           {/* Mileage out - only on edit */}
           {isEdit && (
             <div className="space-y-1.5">
-              <Label htmlFor="mileageOut">Mileage Out (km)</Label>
+              <Label htmlFor="mileageOut">{t("fields.mileageOut")}</Label>
               <Input id="mileageOut" type="number" min="0" placeholder="0" {...register("mileageOut")} />
             </div>
           )}
 
           {/* Reported problem */}
           <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="reportedProblem">Reported Problem</Label>
+            <Label htmlFor="reportedProblem">{t("fields.reportedProblem")}</Label>
             <Textarea
               id="reportedProblem"
               rows={3}
-              placeholder="What did the customer report?"
+              placeholder={t("form.reportedProblemPlaceholder")}
               {...register("reportedProblem")}
             />
           </div>
 
           {/* Internal notes */}
           <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="internalNotes">Internal Notes</Label>
+            <Label htmlFor="internalNotes">{t("fields.internalNotes")}</Label>
             <Textarea
               id="internalNotes"
               rows={3}
-              placeholder="Notes visible only to staff…"
+              placeholder={t("form.internalNotesPlaceholder")}
               {...register("internalNotes")}
             />
           </div>
@@ -255,24 +260,24 @@ export function WorkOrderForm({
             <div className="ml-auto max-w-xs space-y-1 text-sm">
               {totals.partsSubtotalExVat > 0 && (
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Parts (ex VAT)</span>
+                  <span>{t("totals.partsExVat")}</span>
                   <span>{formatCurrency(totals.partsSubtotalExVat, currency)}</span>
                 </div>
               )}
               {totals.laborSubtotalExVat > 0 && (
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Labor (ex VAT)</span>
+                  <span>{t("totals.laborExVat")}</span>
                   <span>{formatCurrency(totals.laborSubtotalExVat, currency)}</span>
                 </div>
               )}
               {totals.vatBreakdown.map(({ rate, amount }) => (
                 <div key={rate} className="flex justify-between text-muted-foreground">
-                  <span>VAT {rate}%</span>
+                  <span>{t("totals.vat", { rate })}</span>
                   <span>{formatCurrency(amount, currency)}</span>
                 </div>
               ))}
               <div className="flex justify-between font-semibold text-base border-t pt-1">
-                <span>Total</span>
+                <span>{t("totals.grandTotal")}</span>
                 <span>{formatCurrency(totals.grandTotal, currency)}</span>
               </div>
             </div>
@@ -289,11 +294,11 @@ export function WorkOrderForm({
 
       <div className="flex justify-end gap-3">
         <Button type="button" variant="outline" onClick={() => router.back()} disabled={isPending}>
-          Cancel
+          {tc("cancel")}
         </Button>
         <Button type="submit" disabled={isPending}>
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isEdit ? "Save Changes" : "Create Work Order"}
+          {isEdit ? t("actions.saveChanges") : t("actions.createWorkOrder")}
         </Button>
       </div>
     </form>

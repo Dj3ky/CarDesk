@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import type { WorkOrderStatus } from "../types";
 
@@ -12,21 +13,13 @@ const STATUS_CLASS: Record<WorkOrderStatus, string> = {
   CANCELLED:     "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
 };
 
-const STATUS_LABEL: Record<WorkOrderStatus, string> = {
-  OPEN:          "Open",
-  IN_PROGRESS:   "In Progress",
-  WAITING_PARTS: "Waiting Parts",
-  DONE:          "Done",
-  INVOICED:      "Invoiced",
-  CANCELLED:     "Cancelled",
-};
-
 interface WorkOrderStatusBadgeProps {
   status: WorkOrderStatus;
   className?: string;
 }
 
 export function WorkOrderStatusBadge({ status, className }: WorkOrderStatusBadgeProps) {
+  const t = useTranslations("workOrders.statuses");
   return (
     <span
       className={cn(
@@ -35,7 +28,7 @@ export function WorkOrderStatusBadge({ status, className }: WorkOrderStatusBadge
         className
       )}
     >
-      {STATUS_LABEL[status] ?? status}
+      {t(status)}
     </span>
   );
 }

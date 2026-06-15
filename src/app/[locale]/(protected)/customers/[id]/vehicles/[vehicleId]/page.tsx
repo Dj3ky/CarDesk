@@ -181,23 +181,23 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
         {vehicleWorkOrders.length > 0 && (
           <Card className="md:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-base">Service History</CardTitle>
+              <CardTitle className="text-base">{t("workOrders.serviceHistory.title")}</CardTitle>
               <Link
                 href={`/${locale}/work-orders/new?customerId=${id}`}
                 className="text-xs text-primary hover:underline"
               >
-                + New Work Order
+                {t("workOrders.serviceHistory.newWorkOrder")}
               </Link>
             </CardHeader>
             <CardContent className="p-0">
               <table className="w-full text-sm">
                 <thead className="border-b bg-muted/40">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Number</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden sm:table-cell">Problem</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden md:table-cell">Technician</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Date</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("workOrders.serviceHistory.colNumber")}</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("workOrders.serviceHistory.colStatus")}</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden sm:table-cell">{t("workOrders.serviceHistory.colProblem")}</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground hidden md:table-cell">{t("workOrders.serviceHistory.colTechnician")}</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("workOrders.serviceHistory.colDate")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -218,7 +218,7 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
                         {wo.technician?.name ?? "—"}
                       </td>
                       <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        {new Date(wo.createdAt).toLocaleDateString("sl-SI")}
+                        {new Date(wo.createdAt).toLocaleDateString(locale)}
                       </td>
                     </tr>
                   ))}

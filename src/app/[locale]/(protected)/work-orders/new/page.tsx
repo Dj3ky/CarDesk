@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
@@ -10,7 +11,8 @@ import { getCustomersForWorkOrder, getTechnicians } from "@/modules/work-orders/
 import { getSettings } from "@/modules/settings/actions/get-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "New Work Order" };
+  const t = await getTranslations("workOrders");
+  return { title: t("newTitle") };
 }
 
 interface NewWorkOrderPageProps {
@@ -27,7 +29,8 @@ export default async function NewWorkOrderPage({ params, searchParams }: NewWork
 
   const { customerId } = await searchParams;
 
-  const [customers, technicians, settings] = await Promise.all([
+  const [t, customers, technicians, settings] = await Promise.all([
+    getTranslations("workOrders"),
     getCustomersForWorkOrder(),
     getTechnicians(),
     getSettings(),
@@ -39,14 +42,14 @@ export default async function NewWorkOrderPage({ params, searchParams }: NewWork
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/${locale}/work-orders`}>
             <ChevronLeft className="mr-1 h-4 w-4" />
-            Work Orders
+            {t("title")}
           </Link>
         </Button>
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">New Work Order</h1>
-        <p className="text-sm text-muted-foreground mt-1">Record a new service job</p>
+        <h1 className="text-2xl font-bold tracking-tight">{t("newTitle")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t("newSubtitle")}</p>
       </div>
 
       <WorkOrderForm

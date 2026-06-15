@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,12 +29,14 @@ export function DeleteWorkOrderButton({ workOrderId, workOrderNumber }: DeleteWo
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
 
   function handleDelete() {
     startTransition(async () => {
       const result = await deleteWorkOrder(workOrderId);
       if (result.success) {
-        toast.success("Work order deleted");
+        toast.success(t("deleted"));
         router.push(`/${locale}/work-orders`);
       } else {
         toast.error(result.error);
@@ -52,20 +54,20 @@ export function DeleteWorkOrderButton({ workOrderId, workOrderNumber }: DeleteWo
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Work Order</AlertDialogTitle>
+          <AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete work order {workOrderNumber}? This action cannot be undone.
+            {t("deleteConfirm", { number: workOrderNumber })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>{tc("cancel")}</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Delete
+            {tc("delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

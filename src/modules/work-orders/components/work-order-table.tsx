@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Calendar, Wrench } from "lucide-react";
 import { WorkOrderStatusBadge } from "./work-order-status-badge";
 import type { WorkOrderListItem } from "../types";
@@ -12,11 +12,12 @@ interface WorkOrderTableProps {
 
 export function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
   const locale = useLocale();
+  const t = useTranslations("workOrders");
 
   if (workOrders.length === 0) {
     return (
       <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground text-sm">
-        No work orders found.
+        {t("noWorkOrders")}
       </div>
     );
   }
@@ -26,12 +27,12 @@ export function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
       <table className="w-full text-sm">
         <thead className="border-b bg-muted/40">
           <tr>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Number</th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Customer</th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">Vehicle</th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">Technician</th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden sm:table-cell">Date</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("fields.number")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("fields.customer")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">{t("fields.vehicle")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">{t("fields.technician")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("fields.status")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden sm:table-cell">{t("fields.date")}</th>
           </tr>
         </thead>
         <tbody className="divide-y">
@@ -65,8 +66,8 @@ export function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
                 <div className="flex items-center gap-1.5">
                   <Calendar className="h-3 w-3" />
                   {wo.scheduledAt
-                    ? new Date(wo.scheduledAt).toLocaleDateString("sl-SI")
-                    : new Date(wo.createdAt).toLocaleDateString("sl-SI")}
+                    ? new Date(wo.scheduledAt).toLocaleDateString(locale)
+                    : new Date(wo.createdAt).toLocaleDateString(locale)}
                 </div>
               </td>
             </tr>
@@ -78,11 +79,12 @@ export function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
 }
 
 export function WorkOrderTableSkeleton() {
+  const t = useTranslations("workOrders");
   return (
     <div className="rounded-lg border overflow-hidden">
       <div className="flex items-center gap-2 p-4 text-muted-foreground text-sm">
         <Wrench className="h-4 w-4 animate-pulse" />
-        Loading work orders...
+        {t("loading")}
       </div>
     </div>
   );

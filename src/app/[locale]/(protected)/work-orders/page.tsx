@@ -11,18 +11,11 @@ import { getWorkOrders } from "@/modules/work-orders/actions/get-work-orders";
 import { Pagination } from "@/modules/customers/components/pagination";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Work Orders" };
+  const t = await getTranslations("workOrders");
+  return { title: t("title") };
 }
 
-const STATUSES = [
-  { value: "ALL",           label: "All" },
-  { value: "OPEN",          label: "Open" },
-  { value: "IN_PROGRESS",   label: "In Progress" },
-  { value: "WAITING_PARTS", label: "Waiting Parts" },
-  { value: "DONE",          label: "Done" },
-  { value: "INVOICED",      label: "Invoiced" },
-  { value: "CANCELLED",     label: "Cancelled" },
-];
+const STATUS_KEYS = ["ALL", "OPEN", "IN_PROGRESS", "WAITING_PARTS", "DONE", "INVOICED", "CANCELLED"] as const;
 
 interface WorkOrdersPageProps {
   params: Promise<{ locale: string }>;
@@ -40,7 +33,10 @@ export default async function WorkOrdersPage({ params, searchParams }: WorkOrder
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const status = sp.status ?? "ALL";
 
-  const { workOrders, total, totalPages } = await getWorkOrders({ page, status, search: sp.search });
+  const [t, { workOrders, total, totalPages }] = await Promise.all([
+    getTranslations("workOrders"),
+    getWorkOrders({ page, status, search: sp.search }),
+  ]);
 
   const basePath = `/${locale}/work-orders`;
 
@@ -60,33 +56,33 @@ export default async function WorkOrdersPage({ params, searchParams }: WorkOrder
             <Wrench className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Work Orders</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {total} {total === 1 ? "work order" : "work orders"}
+              {t("subtitle", { count: total })}
             </p>
           </div>
         </div>
         <Button asChild>
           <Link href={`${basePath}/new`}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            New Work Order
+            {t("actions.newWorkOrder")}
           </Link>
         </Button>
       </div>
 
       {/* Status filter tabs */}
       <div className="flex flex-wrap gap-1">
-        {STATUSES.map(({ value, label }) => (
+        {STATUS_KEYS.map((key) => (
           <Link
-            key={value}
-            href={statusHref(value)}
+            key={key}
+            href={statusHref(key)}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              status === value
+              status === key
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >
-            {label}
+            {t(`statuses.${key}`)}
           </Link>
         ))}
       </div>

@@ -1,20 +1,22 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { updateWorkOrderStatus } from "../actions/update-work-order-status";
 import type { WorkOrderStatus } from "../types";
 
-type ActionDef = { label: string; to: WorkOrderStatus; variant: "default" | "destructive" | "outline" | "secondary" };
+type ActionKey = "startWork" | "waitForParts" | "markDone" | "resumeWork" | "markAsInvoiced" | "reopen" | "cancel";
+type ActionDef = { key: ActionKey; to: WorkOrderStatus; variant: "default" | "destructive" | "outline" | "secondary" };
 
 const ACTIONS_BY_STATUS: Record<WorkOrderStatus, ActionDef[]> = {
-  OPEN:          [{ label: "Start Work",        to: "IN_PROGRESS",   variant: "default"      }, { label: "Cancel", to: "CANCELLED", variant: "destructive" }],
-  IN_PROGRESS:   [{ label: "Wait for Parts",    to: "WAITING_PARTS", variant: "outline"      }, { label: "Mark Done", to: "DONE", variant: "default" }, { label: "Cancel", to: "CANCELLED", variant: "destructive" }],
-  WAITING_PARTS: [{ label: "Resume Work",       to: "IN_PROGRESS",   variant: "default"      }, { label: "Cancel", to: "CANCELLED", variant: "destructive" }],
-  DONE:          [{ label: "Mark as Invoiced",  to: "INVOICED",      variant: "default"      }, { label: "Reopen", to: "IN_PROGRESS", variant: "outline" }],
+  OPEN:          [{ key: "startWork",       to: "IN_PROGRESS",   variant: "default"      }, { key: "cancel", to: "CANCELLED", variant: "destructive" }],
+  IN_PROGRESS:   [{ key: "waitForParts",    to: "WAITING_PARTS", variant: "outline"      }, { key: "markDone", to: "DONE", variant: "default" }, { key: "cancel", to: "CANCELLED", variant: "destructive" }],
+  WAITING_PARTS: [{ key: "resumeWork",      to: "IN_PROGRESS",   variant: "default"      }, { key: "cancel", to: "CANCELLED", variant: "destructive" }],
+  DONE:          [{ key: "markAsInvoiced",  to: "INVOICED",      variant: "default"      }, { key: "reopen", to: "IN_PROGRESS", variant: "outline" }],
   INVOICED:      [],
-  CANCELLED:     [{ label: "Reopen",            to: "OPEN",          variant: "outline"      }],
+  CANCELLED:     [{ key: "reopen",          to: "OPEN",          variant: "outline"      }],
 };
 
 interface StatusActionsProps {
@@ -23,6 +25,7 @@ interface StatusActionsProps {
 }
 
 export function StatusActions({ workOrderId, status }: StatusActionsProps) {
+  const t = useTranslations("workOrders");
   const [isPending, startTransition] = useTransition();
   const actions = ACTIONS_BY_STATUS[status] ?? [];
 
@@ -32,7 +35,7 @@ export function StatusActions({ workOrderId, status }: StatusActionsProps) {
     startTransition(async () => {
       const result = await updateWorkOrderStatus(workOrderId, to);
       if (result.success) {
-        toast.success("Status updated");
+        toast.success(t("statusUpdated"));
       } else {
         toast.error(result.error);
       }
@@ -49,7 +52,7 @@ export function StatusActions({ workOrderId, status }: StatusActionsProps) {
           disabled={isPending}
           onClick={() => handleAction(action.to)}
         >
-          {action.label}
+          {t(`actions.${action.key}`)}
         </Button>
       ))}
     </div>

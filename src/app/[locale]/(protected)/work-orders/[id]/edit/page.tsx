@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
@@ -12,8 +13,8 @@ import { WorkOrderForm } from "@/modules/work-orders/components/work-order-form"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const wo = await getWorkOrder(id);
-  return { title: wo ? `Edit ${wo.number}` : "Edit Work Order" };
+  const [t, wo] = await Promise.all([getTranslations("workOrders"), getWorkOrder(id)]);
+  return { title: wo ? `${t("editTitle")} ${wo.number}` : t("editTitle") };
 }
 
 const EDITABLE_STATUSES = ["OPEN", "IN_PROGRESS", "WAITING_PARTS"];
@@ -35,7 +36,8 @@ export default async function EditWorkOrderPage({ params }: EditWorkOrderPagePro
     redirect(`/${locale}/work-orders/${id}`);
   }
 
-  const [customers, technicians, settings] = await Promise.all([
+  const [t, customers, technicians, settings] = await Promise.all([
+    getTranslations("workOrders"),
     getCustomersForWorkOrder(),
     getTechnicians(),
     getSettings(),
@@ -53,7 +55,7 @@ export default async function EditWorkOrderPage({ params }: EditWorkOrderPagePro
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Edit Work Order</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("editTitle")}</h1>
         <p className="text-sm text-muted-foreground mt-1 font-mono">{wo.number}</p>
       </div>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ChevronLeft, Pencil, Calendar, Car, User, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,8 +15,8 @@ import { calcTotals, formatCurrency } from "@/modules/work-orders/lib/calculatio
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const wo = await getWorkOrder(id);
-  return { title: wo ? `Work Order ${wo.number}` : "Work Order" };
+  const [t, wo] = await Promise.all([getTranslations("workOrders"), getWorkOrder(id)]);
+  return { title: wo ? `${wo.number}` : t("title") };
 }
 
 interface WorkOrderPageProps {
@@ -26,7 +27,7 @@ const EDITABLE_STATUSES = ["OPEN", "IN_PROGRESS", "WAITING_PARTS"];
 
 export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
   const { locale, id } = await params;
-  const [session, wo] = await Promise.all([auth(), getWorkOrder(id)]);
+  const [session, wo, t] = await Promise.all([auth(), getWorkOrder(id), getTranslations("workOrders")]);
 
   if (!canAccess(session?.user ?? { role: "", permissions: [] }, "work_orders")) {
     redirect(`/${locale}/dashboard`);
@@ -43,7 +44,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/${locale}/work-orders`}>
             <ChevronLeft className="mr-1 h-4 w-4" />
-            Work Orders
+            {t("title")}
           </Link>
         </Button>
       </div>
@@ -56,8 +57,8 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
             <WorkOrderStatusBadge status={wo.status} />
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
-            Created {new Date(wo.createdAt).toLocaleDateString("sl-SI")}
-            {wo.createdBy && ` by ${wo.createdBy.name ?? "unknown"}`}
+            {t("fields.createdAt")} {new Date(wo.createdAt).toLocaleDateString(locale)}
+            {wo.createdBy && ` ${t("detail.createdBy")} ${wo.createdBy.name ?? ""}`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -65,7 +66,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
             <Button variant="outline" size="sm" asChild>
               <Link href={`/${locale}/work-orders/${wo.id}/edit`}>
                 <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                Edit
+                {t("editTitle")}
               </Link>
             </Button>
           )}
@@ -84,7 +85,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {/* Customer & Vehicle */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Customer & Vehicle</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{t("detail.customerVehicle")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-start gap-2">
@@ -109,7 +110,10 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                       <p className="text-xs text-muted-foreground">VIN: {wo.vehicle.vin}</p>
                     )}
                     {wo.mileageIn && (
-                      <p className="text-sm text-muted-foreground">Mileage in: {wo.mileageIn.toLocaleString()} km{wo.mileageOut ? ` · out: ${wo.mileageOut.toLocaleString()} km` : ""}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("detail.mileageIn")}: {wo.mileageIn.toLocaleString()} km
+                        {wo.mileageOut ? ` · ${t("detail.mileageOut")}: ${wo.mileageOut.toLocaleString()} km` : ""}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -121,7 +125,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {wo.reportedProblem && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Reported Problem</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("detail.reportedProblem")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm whitespace-pre-wrap">{wo.reportedProblem}</p>
@@ -133,17 +137,17 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {wo.items.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Parts / Materials</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("detail.partsMaterials")}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="border-b bg-muted/40">
                       <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Description</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Qty</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Price</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Total</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("detail.description")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.qty")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.price")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.total")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -172,17 +176,17 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {wo.laborItems.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Labor</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("detail.labor")}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="border-b bg-muted/40">
                       <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Description</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Hours</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Rate</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Total</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("detail.description")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.hours")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.rate")}</th>
+                        <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.total")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -208,7 +212,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {wo.internalNotes && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Internal Notes</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("detail.internalNotes")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm whitespace-pre-wrap">{wo.internalNotes}</p>
@@ -225,26 +229,26 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
               {wo.technician && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User className="h-4 w-4" />
-                  <span>Technician: <span className="text-foreground font-medium">{wo.technician.name ?? wo.technician.email}</span></span>
+                  <span>{t("fields.technicianLabel")}: <span className="text-foreground font-medium">{wo.technician.name ?? wo.technician.email}</span></span>
                 </div>
               )}
               {wo.scheduledAt && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>Scheduled: <span className="text-foreground">{new Date(wo.scheduledAt).toLocaleDateString("sl-SI")}</span></span>
+                  <span>{t("fields.scheduledAtLabel")}: <span className="text-foreground">{new Date(wo.scheduledAt).toLocaleDateString(locale)}</span></span>
                 </div>
               )}
               {wo.completedAt && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>Completed: <span className="text-foreground">{new Date(wo.completedAt).toLocaleDateString("sl-SI")}</span></span>
+                  <span>{t("fields.completedAt")}: <span className="text-foreground">{new Date(wo.completedAt).toLocaleDateString(locale)}</span></span>
                 </div>
               )}
               {wo.offerId && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <FileText className="h-4 w-4" />
                   <Link href={`/${locale}/offers/${wo.offerId}`} className="text-primary hover:underline">
-                    Linked offer
+                    {t("fields.linkedOffer")}
                   </Link>
                 </div>
               )}
@@ -255,29 +259,29 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
           {(wo.items.length > 0 || wo.laborItems.length > 0) && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Totals</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">{t("totals.title")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1.5 text-sm">
                 {totals.partsSubtotalExVat > 0 && (
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Parts (ex VAT)</span>
+                    <span>{t("totals.partsExVat")}</span>
                     <span>{formatCurrency(totals.partsSubtotalExVat)}</span>
                   </div>
                 )}
                 {totals.laborSubtotalExVat > 0 && (
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Labor (ex VAT)</span>
+                    <span>{t("totals.laborExVat")}</span>
                     <span>{formatCurrency(totals.laborSubtotalExVat)}</span>
                   </div>
                 )}
                 {totals.vatBreakdown.map(({ rate, amount }) => (
                   <div key={rate} className="flex justify-between text-muted-foreground">
-                    <span>VAT {rate}%</span>
+                    <span>{t("totals.vat", { rate })}</span>
                     <span>{formatCurrency(amount)}</span>
                   </div>
                 ))}
                 <div className="flex justify-between font-semibold text-base border-t pt-2">
-                  <span>Total</span>
+                  <span>{t("totals.grandTotal")}</span>
                   <span>{formatCurrency(totals.grandTotal)}</span>
                 </div>
               </CardContent>

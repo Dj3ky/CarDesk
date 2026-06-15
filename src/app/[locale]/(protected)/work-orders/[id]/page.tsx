@@ -148,7 +148,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                     </thead>
                     <tbody className="divide-y">
                       {wo.items.map((item) => {
-                        const { lineTotal } = calcTotals([item], []);
+                        const { grandTotal } = calcTotals([item], []);
                         return (
                           <tr key={item.id}>
                             <td className="px-4 py-2.5">
@@ -157,7 +157,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                             </td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{parseFloat(item.quantity)} {item.unit}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{formatCurrency(parseFloat(item.pricePerUnit))}</td>
-                            <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(lineTotal.grandTotal)}</td>
+                            <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(grandTotal)}</td>
                           </tr>
                         );
                       })}
@@ -187,13 +187,13 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                     </thead>
                     <tbody className="divide-y">
                       {wo.laborItems.map((labor) => {
-                        const { lineTotal } = calcTotals([], [labor]);
+                        const { grandTotal } = calcTotals([], [labor]);
                         return (
                           <tr key={labor.id}>
                             <td className="px-4 py-2.5">{labor.description}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{parseFloat(labor.hours)} h</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{formatCurrency(parseFloat(labor.hourlyRate))}/h</td>
-                            <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(lineTotal.grandTotal)}</td>
+                            <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(grandTotal)}</td>
                           </tr>
                         );
                       })}

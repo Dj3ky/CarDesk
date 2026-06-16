@@ -33,6 +33,7 @@ export async function POST(request: Request) {
   const encoded = encodeURIComponent(vin.trim().toUpperCase());
   const apiUrl = `${BASE_URL}/api/vin/tecdoc-vin-check/${encoded}`;
 
+  console.log("[parts-catalog/vin] calling:", apiUrl);
   try {
     const apiRes = await fetch(apiUrl, {
       headers: {
@@ -41,17 +42,18 @@ export async function POST(request: Request) {
       },
     });
 
+    const text = await apiRes.text();
+    console.log("[parts-catalog/vin] status:", apiRes.status);
+    console.log("[parts-catalog/vin] body:", text.slice(0, 1000));
+
     if (!apiRes.ok) {
-      const text = await apiRes.text().catch(() => "");
-      console.error(`[parts-catalog/vin] API error ${apiRes.status}:`, text);
       return NextResponse.json(
         { error: `API error: ${apiRes.status} — ${text.slice(0, 200)}` },
         { status: apiRes.status >= 500 ? 502 : apiRes.status }
       );
     }
 
-    const data = await apiRes.json();
-    console.log("[parts-catalog/vin] response:", JSON.stringify(data, null, 2));
+    const data = JSON.parse(text);
     return NextResponse.json({ data });
   } catch (err) {
     console.error("[parts-catalog/vin] fetch error:", err);

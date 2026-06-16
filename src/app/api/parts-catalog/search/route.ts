@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 
-const BASE_URL = "https://api.autopartsapi.com";
+const BASE_URL = "https://auto-parts-catalog.apiprofile.com";
 const DEFAULT_LANG = 1; // 1 = English
 
 export async function POST(request: Request) {
@@ -41,11 +41,12 @@ export async function POST(request: Request) {
     if (!params.typeId) {
       return NextResponse.json({ error: "Missing typeId" }, { status: 400 });
     }
-    apiUrl = `${BASE_URL}/api/v1/articles/by-vehicle/type-id/${params.typeId}/lang-id/${langId}`;
+    apiUrl = `${BASE_URL}/api/articles/list/type-id/1/vehicle-id/${params.typeId}/category-id/0/lang-id/${langId}`;
   } else {
     return NextResponse.json({ error: "Invalid search type" }, { status: 400 });
   }
 
+  console.log("[parts-catalog] calling:", apiUrl);
   try {
     const apiRes = await fetch(apiUrl, {
       headers: {
@@ -57,9 +58,9 @@ export async function POST(request: Request) {
 
     if (!apiRes.ok) {
       const text = await apiRes.text().catch(() => "");
-      console.error(`Parts catalog API error ${apiRes.status}:`, text);
+      console.error(`[parts-catalog] API error ${apiRes.status}:`, text);
       return NextResponse.json(
-        { error: `API error: ${apiRes.status}` },
+        { error: `API error: ${apiRes.status} — ${text.slice(0, 200)}` },
         { status: apiRes.status >= 500 ? 502 : apiRes.status }
       );
     }
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
     const articles = Array.isArray(data) ? data : (data.articles ?? data.data ?? []);
     return NextResponse.json({ articles });
   } catch (err) {
-    console.error("Parts catalog fetch error:", err);
-    return NextResponse.json({ error: "Failed to reach parts catalog API" }, { status: 502 });
+    console.error("[parts-catalog] fetch error:", err);
+    return NextResponse.json({ error: `Failed to reach parts catalog API: ${String(err)}` }, { status: 502 });
   }
 }

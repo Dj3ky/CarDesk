@@ -66,11 +66,10 @@ export async function POST(request: Request) {
     }
 
     const data = await apiRes.json();
-    console.log("[parts-catalog] raw response keys:", JSON.stringify(Object.keys(data ?? {})));
-    console.log("[parts-catalog] first item:", JSON.stringify(Array.isArray(data) ? data[0] : (data?.data?.[0] ?? data)));
-    // Normalise: the API may return an array directly or { articles: [...] }
     const articles = Array.isArray(data) ? data : (data.articles ?? data.data ?? []);
-    return NextResponse.json({ articles, _raw: data });
+    const first = articles[0];
+    if (first) console.log("[parts-catalog] first item FULL:", JSON.stringify(first, null, 2));
+    return NextResponse.json({ articles });
   } catch (err) {
     console.error("[parts-catalog] fetch error:", err);
     return NextResponse.json({ error: `Failed to reach parts catalog API: ${String(err)}` }, { status: 502 });

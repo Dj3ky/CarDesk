@@ -32,7 +32,7 @@ function ArticleCard({ article, activeOffer, onAdded }: {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           description: article.articleProductName || article.articleNo,
-          productNumber: article.articleSearchNo || article.articleNo,
+          productNumber: article.articleNo,
           quantity: parseFloat(qty) || 1,
           pricePerUnit: parseFloat(price) || 0,
         }),

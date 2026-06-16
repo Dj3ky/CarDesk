@@ -33,6 +33,28 @@ export type VinCategory = {
   categoryId4?: number | null;
 };
 
+export type VehicleDetail = {
+  manufacturerName?: string;
+  modelType?: string;
+  typeEngineName?: string;
+  constructionIntervalStart?: string;
+  constructionIntervalEnd?: string;
+  powerKw?: string;
+  powerPs?: string;
+  capacityLt?: string;
+  capacityTech?: string;
+  numberOfCylinders?: number;
+  numberOfValves?: number;
+  bodyType?: string;
+  engineType?: string;
+  gearType?: string | null;
+  driveType?: string;
+  fuelType?: string;
+  fuelMixture?: string;
+  catalysatorType?: string;
+  engCodes?: string;
+};
+
 export type ArticleDetail = {
   articleAllSpecifications: { criteriaName: string; criteriaValue: string }[];
   articleOemNo: { oemBrand: string; oemDisplayNo: string }[];

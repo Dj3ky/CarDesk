@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { PartArticle, VinVehicle, VinCategory, ArticleDetail } from "../types";
+import type { PartArticle, VinVehicle, VinCategory, ArticleDetail, VehicleDetail } from "../types";
 import { ActiveOfferBar, type ActiveOfferInfo } from "./active-offer-bar";
 
 function ArticleCard({ article, activeOffer, onAdded, locale }: {
@@ -265,6 +265,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [vinError, setVinError] = useState<string | null>(null);
   const [vinVehicleFilter, setVinVehicleFilter] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState<VinVehicle | null>(null);
+  const [vehicleDetail, setVehicleDetail] = useState<VehicleDetail | null>(null);
   const [categories, setCategories] = useState<VinCategory[] | null>(null);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -350,24 +351,38 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
 
   async function selectVehicle(vehicle: VinVehicle) {
     setSelectedVehicle(vehicle);
+    setVehicleDetail(null);
     setCategories(null);
     setCategoryFilter("");
     setSelectedCategoryId(null);
     setArticles(null);
     setCategoriesLoading(true);
-    try {
-      const res = await fetch("/api/parts-catalog/categories", {
+
+    const [categoriesRes, detailRes] = await Promise.allSettled([
+      fetch("/api/parts-catalog/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vehicleId: vehicle.vehicleId, locale }),
-      });
-      const json = await res.json();
+      }),
+      fetch("/api/parts-catalog/vehicle-detail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleId: vehicle.vehicleId, locale }),
+      }),
+    ]);
+
+    if (categoriesRes.status === "fulfilled") {
+      const json = await categoriesRes.value.json();
       setCategories(json.categories ?? []);
-    } catch {
+    } else {
       setCategories([]);
-    } finally {
-      setCategoriesLoading(false);
     }
+
+    if (detailRes.status === "fulfilled" && detailRes.value.ok) {
+      setVehicleDetail(await detailRes.value.json());
+    }
+
+    setCategoriesLoading(false);
   }
 
   const grouped = useMemo(() => {
@@ -512,6 +527,40 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                         ));
                       })()}
                     </div>
+
+                    {/* Vehicle detail card */}
+                    {vehicleDetail && (
+                      <div className="rounded-lg border bg-muted/30 px-4 py-3 space-y-2">
+                        <p className="text-sm font-semibold">
+                          {vehicleDetail.manufacturerName} {vehicleDetail.modelType}
+                        </p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                          {vehicleDetail.typeEngineName && <span>{vehicleDetail.typeEngineName}</span>}
+                          {vehicleDetail.powerKw && vehicleDetail.powerPs && (
+                            <span>{Math.round(parseFloat(vehicleDetail.powerKw))} kW / {Math.round(parseFloat(vehicleDetail.powerPs))} PS</span>
+                          )}
+                          {vehicleDetail.capacityTech && (
+                            <span>{Math.round(parseFloat(vehicleDetail.capacityTech))} cc</span>
+                          )}
+                          {vehicleDetail.fuelType && <span>{vehicleDetail.fuelType}</span>}
+                          {vehicleDetail.bodyType && <span>{vehicleDetail.bodyType}</span>}
+                          {vehicleDetail.driveType && <span>{vehicleDetail.driveType}</span>}
+                          {vehicleDetail.numberOfCylinders && <span>{vehicleDetail.numberOfCylinders} cyl</span>}
+                          {vehicleDetail.fuelMixture && <span>{vehicleDetail.fuelMixture}</span>}
+                          {vehicleDetail.engCodes && (
+                            <span className="font-mono">Engine: {vehicleDetail.engCodes}</span>
+                          )}
+                          {vehicleDetail.constructionIntervalStart && (
+                            <span>
+                              {vehicleDetail.constructionIntervalStart.slice(0, 7).replace("-", "/")}
+                              {vehicleDetail.constructionIntervalEnd
+                                ? ` – ${vehicleDetail.constructionIntervalEnd.slice(0, 7).replace("-", "/")}`
+                                : ""}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Category picker */}
                     {categoriesLoading && (

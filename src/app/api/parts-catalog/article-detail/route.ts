@@ -58,12 +58,17 @@ export async function POST(request: Request) {
     let articleParts: PartItem[] = [];
     if (partsRes.ok) {
       const pd = await partsRes.json();
+      console.log(`[parts-catalog] list-of-parts articleId=${articleId} status=200:`, JSON.stringify(pd));
       articleParts = Array.isArray(pd.articles) ? pd.articles : [];
     } else {
+      console.log(`[parts-catalog] list-of-parts articleId=${articleId} status=${partsRes.status}, trying country=0`);
       const fallback = await fetch(partsUrl0, { headers, next: { revalidate: 300 } });
       if (fallback.ok) {
         const fd = await fallback.json();
+        console.log(`[parts-catalog] list-of-parts fallback articleId=${articleId}:`, JSON.stringify(fd));
         articleParts = Array.isArray(fd.articles) ? fd.articles : [];
+      } else {
+        console.log(`[parts-catalog] list-of-parts fallback also failed: ${fallback.status}`);
       }
     }
 

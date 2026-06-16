@@ -295,20 +295,16 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                     </div>
                     <div className="rounded-lg border divide-y max-h-72 overflow-y-auto">
                       {(() => {
-                        // Deduplicate by vehicleTypeDescription, keep first match
+                        // Deduplicate by carName (already includes engine variant)
                         const seen = new Set<string>();
                         const unique = vinVehicles.filter((v) => {
-                          const key = v.vehicleTypeDescription ?? v.carName;
-                          if (seen.has(key)) return false;
-                          seen.add(key);
+                          if (seen.has(v.carName)) return false;
+                          seen.add(v.carName);
                           return true;
                         });
                         const q = vinVehicleFilter.trim().toLowerCase();
                         const filtered = q
-                          ? unique.filter((v) =>
-                              v.carName.toLowerCase().includes(q) ||
-                              v.vehicleTypeDescription?.toLowerCase().includes(q)
-                            )
+                          ? unique.filter((v) => v.carName.toLowerCase().includes(q))
                           : unique;
                         return filtered.map((v) => (
                           <button
@@ -326,9 +322,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                               "h-4 w-4 shrink-0",
                               selectedVehicle?.vehicleId === v.vehicleId ? "text-blue-500" : "text-muted-foreground"
                             )} />
-                            <p className="text-sm font-medium truncate">
-                              {v.vehicleTypeDescription ?? v.carName}
-                            </p>
+                            <p className="text-sm font-medium truncate">{v.carName}</p>
                           </button>
                         ));
                       })()}

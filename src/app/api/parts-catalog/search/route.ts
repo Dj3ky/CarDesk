@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const params = body as { type?: string; query?: string; vehicleId?: number; typeId?: number; langId?: number; locale?: string };
+  const params = body as { type?: string; query?: string; vehicleId?: number; typeId?: number; categoryId?: string | number; langId?: number; locale?: string };
   const langId = params.langId ?? LOCALE_TO_LANG[params.locale ?? ""] ?? DEFAULT_LANG;
 
   let apiUrl: string;
@@ -40,10 +40,11 @@ export async function POST(request: Request) {
     apiUrl = `${BASE_URL}/api/articles-oem/search-by-article-oem-no?articleOemNo=${encoded}&langId=${langId}`;
   } else if (params.type === "vehicle") {
     const vehicleId = params.vehicleId ?? params.typeId;
+    const categoryId = params.categoryId ?? 0;
     if (!vehicleId) {
       return NextResponse.json({ error: "Missing vehicleId" }, { status: 400 });
     }
-    apiUrl = `${BASE_URL}/api/articles/list/type-id/1/vehicle-id/${vehicleId}/category-id/0/lang-id/${langId}`;
+    apiUrl = `${BASE_URL}/api/articles/list/type-id/1/vehicle-id/${vehicleId}/category-id/${categoryId}/lang-id/${langId}`;
   } else {
     return NextResponse.json({ error: "Invalid search type" }, { status: 400 });
   }

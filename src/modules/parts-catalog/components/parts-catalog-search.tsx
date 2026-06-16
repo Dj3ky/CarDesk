@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { PartArticle, VinVehicle } from "../types";
+import type { PartArticle, VinVehicle, VinCategory } from "../types";
 
 function ArticleCard({ article }: { article: PartArticle }) {
   return (
@@ -86,6 +86,10 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [vinVehicles, setVinVehicles] = useState<VinVehicle[] | null>(null);
   const [vinError, setVinError] = useState<string | null>(null);
   const [vinVehicleFilter, setVinVehicleFilter] = useState("");
+  const [selectedVehicle, setSelectedVehicle] = useState<VinVehicle | null>(null);
+  const [categories, setCategories] = useState<VinCategory[] | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<PartArticle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -139,6 +143,8 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
     setVinError(null);
     setVinVehicles(null);
     setVinVehicleFilter("");
+    setSelectedVehicle(null);
+    setCategories(null);
     setArticles(null);
     try {
       const res = await fetch("/api/parts-catalog/vin", {
@@ -156,6 +162,27 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       setVinError(t("searchError"));
     } finally {
       setVinLoading(false);
+    }
+  }
+
+  async function selectVehicle(vehicle: VinVehicle) {
+    setSelectedVehicle(vehicle);
+    setCategories(null);
+    setCategoryFilter("");
+    setArticles(null);
+    setCategoriesLoading(true);
+    try {
+      const res = await fetch("/api/parts-catalog/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleId: vehicle.vehicleId, locale }),
+      });
+      const json = await res.json();
+      setCategories(json.categories ?? []);
+    } catch {
+      setCategories([]);
+    } finally {
+      setCategoriesLoading(false);
     }
   }
 
@@ -265,7 +292,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                         />
                       </div>
                     </div>
-                    <div className="rounded-lg border divide-y max-h-80 overflow-y-auto">
+                    <div className="rounded-lg border divide-y max-h-72 overflow-y-auto">
                       {vinVehicles
                         .filter((v) =>
                           !vinVehicleFilter.trim() ||
@@ -276,8 +303,11 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                           <button
                             key={v.vehicleId}
                             type="button"
-                            onClick={() => search({ type: "vehicle", vehicleId: v.vehicleId })}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted transition-colors"
+                            onClick={() => selectVehicle(v)}
+                            className={cn(
+                              "w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted transition-colors",
+                              selectedVehicle?.vehicleId === v.vehicleId && "bg-muted"
+                            )}
                           >
                             <Car className="h-4 w-4 text-muted-foreground shrink-0" />
                             <div className="min-w-0">
@@ -289,6 +319,56 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                           </button>
                         ))}
                     </div>
+
+                    {/* Category picker */}
+                    {categoriesLoading && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground py-3">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t("loadingCategories")}
+                      </div>
+                    )}
+
+                    {categories !== null && categories.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-4">
+                          <p className="text-sm font-medium shrink-0">{t("selectCategory")}</p>
+                          <div className="relative max-w-xs w-full">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                            <Input
+                              value={categoryFilter}
+                              onChange={(e) => setCategoryFilter(e.target.value)}
+                              placeholder={t("filterPlaceholder")}
+                              className="pl-8 h-8 text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="rounded-lg border divide-y max-h-64 overflow-y-auto">
+                          {categories
+                            .filter((c) => {
+                              const name = String(c.categoryName ?? c.assemblyGroupName ?? c.productGroupName ?? c.description ?? "");
+                              return !categoryFilter.trim() || name.toLowerCase().includes(categoryFilter.toLowerCase());
+                            })
+                            .map((c, i) => {
+                              const name = String(c.categoryName ?? c.assemblyGroupName ?? c.productGroupName ?? c.description ?? `Category ${c.categoryId}`);
+                              const catId = c.categoryId ?? c.productGroupId;
+                              return (
+                                <button
+                                  key={`${catId}-${i}`}
+                                  type="button"
+                                  onClick={() => selectedVehicle && search({ type: "vehicle", vehicleId: selectedVehicle.vehicleId, categoryId: catId })}
+                                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
+                                >
+                                  {name}
+                                </button>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    )}
+
+                    {categories !== null && categories.length === 0 && (
+                      <p className="text-sm text-muted-foreground py-2">{t("noCategories")}</p>
+                    )}
                   </>
                 )}
               </div>

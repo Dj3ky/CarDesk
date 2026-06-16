@@ -107,7 +107,11 @@
       "PowerShell(git commit -m \"fix: use git fetch + reset --hard instead of pull to skip local change conflicts\")",
       "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/work-orders/[workOrderId]/pdf\")",
       "Bash(xargs grep -l \"phone\\\\|mobile\\\\|pwa\\\\|PWA\")",
-      "Bash(xargs grep -l \"scan\\\\|barcode\\\\|QR\\\\|scanner\")"
+      "Bash(xargs grep -l \"scan\\\\|barcode\\\\|QR\\\\|scanner\")",
+      "Bash(gh repo *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:auto-parts-catalog.apiprofile.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

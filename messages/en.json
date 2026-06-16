@@ -21,7 +21,8 @@
     "settings": "Settings",
     "profile": "Profile",
     "users": "Users",
-    "workOrders": "Work Orders"
+    "workOrders": "Work Orders",
+    "partsCatalog": "Parts Catalog"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -295,7 +296,8 @@
       "system": "System",
       "pricing": "Pricing",
       "backup": "Backup",
-      "update": "Update"
+      "update": "Update",
+      "integrations": "Integrations"
     },
     "pricing": {
       "title": "Price Rules",
@@ -383,7 +385,9 @@
       "pdf": "PDF & Legal",
       "pdfDesc": "Content shown in generated PDF documents",
       "system": "System Settings",
-      "systemDesc": "Language and regional preferences"
+      "systemDesc": "Language and regional preferences",
+      "integrations": "Integrations",
+      "integrationsDesc": "API keys and external service connections"
     },
     "fields": {
       "companyName": "Company Name",
@@ -405,7 +409,9 @@
       "pdfFooterTextHint": "Text printed at the bottom of every generated document",
       "termsAndConditions": "Terms & Conditions",
       "termsAndConditionsHint": "Terms displayed on offers and invoices",
-      "defaultLanguage": "Default Language"
+      "defaultLanguage": "Default Language",
+      "partsCatalogApiKey": "Parts Catalog API Key",
+      "partsCatalogApiKeyHint": "API key from auto-parts-catalog.apiprofile.com — register free at their website"
     },
     "currencies": {
       "EUR": "EUR — Euro",
@@ -417,6 +423,21 @@
       "en": "English",
       "sl": "Slovenian"
     }
+  },
+  "partsCatalog": {
+    "title": "Parts Catalog",
+    "subtitle": "Search for spare parts by OEM number or vehicle",
+    "tabOem": "By OEM Number",
+    "tabVehicle": "By Vehicle Type ID",
+    "oemPlaceholder": "e.g. 1J0 698 151 B",
+    "oemHint": "Enter the original equipment manufacturer (OEM) part number",
+    "vehicleTypeIdPlaceholder": "Vehicle type ID",
+    "vehicleHint": "Enter the TecDoc vehicle type ID to find compatible parts",
+    "searchButton": "Search",
+    "noResults": "No parts found for this search.",
+    "resultCount": "{count, plural, one {# result} other {# results}}",
+    "searchError": "Search failed. Please try again.",
+    "noApiKey": "Parts catalog API key is not configured. Go to Settings → Integrations to add your API key."
   },
   "offers": {
     "title": "Offers",

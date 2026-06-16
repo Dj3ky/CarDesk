@@ -46,6 +46,7 @@ export const settingsSchema = z.object({
     .transform((v) => v.trim()),
   pdfFooterText: optStr(1000),
   termsAndConditions: optStr(5000),
+  partsCatalogApiKey: optStr(200),
 });
 
 export type SettingsFormValues = z.input<typeof settingsSchema>;

@@ -73,6 +73,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       workOrderPrefix: settings.workOrderPrefix ?? "WO",
       pdfFooterText: settings.pdfFooterText ?? "",
       termsAndConditions: settings.termsAndConditions ?? "",
+      partsCatalogApiKey: settings.partsCatalogApiKey ?? "",
     },
   });
 
@@ -413,6 +414,41 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Integrations */}
+        {activeTab === "integrations" && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">
+                {t("settings.sections.integrations")}
+              </CardTitle>
+              <CardDescription>{t("settings.sections.integrationsDesc")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="partsCatalogApiKey"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("settings.fields.partsCatalogApiKey")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="your-api-key"
+                        autoComplete="off"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t("settings.fields.partsCatalogApiKeyHint")}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

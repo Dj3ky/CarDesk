@@ -22,7 +22,7 @@ interface PageProps {
   searchParams: Promise<{ tab?: string }>;
 }
 
-const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "pricing", "backup", "update"];
+const VALID_TABS: SettingsTab[] = ["company", "finance", "documents", "system", "pricing", "integrations", "backup", "update"];
 
 export default async function SettingsPage({ params, searchParams }: PageProps) {
   const { locale } = await params;

@@ -9,6 +9,7 @@ export const MODULES = [
   "settings",
   "users",
   "backup",
+  "parts_catalog",
 ] as const;
 
 export type Module = (typeof MODULES)[number];
@@ -24,6 +25,7 @@ export const MODULE_LABELS: Record<Module, string> = {
   settings: "Settings",
   users: "Users",
   backup: "Backup",
+  parts_catalog: "Parts Catalog",
 };
 
 export const DEFAULT_EMPLOYEE_PERMISSIONS: Module[] = [

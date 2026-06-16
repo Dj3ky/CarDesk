@@ -40,6 +40,7 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     workOrderPrefix: d.workOrderPrefix,
     pdfFooterText: d.pdfFooterText ?? null,
     termsAndConditions: d.termsAndConditions ?? null,
+    partsCatalogApiKey: d.partsCatalogApiKey ?? null,
   };
 
   await prisma.settings.upsert({

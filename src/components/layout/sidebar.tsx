@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Gauge,
   Wrench,
+  Search,
 } from "lucide-react";
 import { useSidebar } from "./sidebar-context";
 import { canAccess } from "@/lib/permissions";
@@ -35,8 +36,9 @@ const NAV_ITEMS: {
   { href: "/products",     labelKey: "products",    icon: Package,     module: "products"    },
   { href: "/pricelist",    labelKey: "pricelist",   icon: Tag,         module: "products"    },
   { href: "/offers",       labelKey: "offers",      icon: FileText,    module: "offers"      },
-  { href: "/work-orders",  labelKey: "workOrders",  icon: Wrench,      module: "work_orders" },
-  { href: "/reports",      labelKey: "reports",     icon: BarChart2,   module: "reports"     },
+  { href: "/work-orders",  labelKey: "workOrders",  icon: Wrench,      module: "work_orders"  },
+  { href: "/parts-catalog", labelKey: "partsCatalog", icon: Search,   module: "parts_catalog" },
+  { href: "/reports",      labelKey: "reports",     icon: BarChart2,   module: "reports"      },
   { href: "/users",        labelKey: "users",       icon: UserCog,     module: "users"       },
   { href: "/audit",        labelKey: "audit",       icon: ShieldCheck, module: "audit"       },
   { href: "/profile",      labelKey: "profile",     icon: User                               },

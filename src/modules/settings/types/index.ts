@@ -14,6 +14,7 @@ export type SettingsData = {
   workOrderPrefix: string;
   pdfFooterText: string | null;
   termsAndConditions: string | null;
+  partsCatalogApiKey: string | null;
   updatedAt: Date;
 };
 

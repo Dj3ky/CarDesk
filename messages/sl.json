@@ -432,7 +432,7 @@
     "tabVehicle": "Po ID vozila",
     "vinPlaceholder": "npr. WVWZZZ1KZAM012345",
     "vinHint": "Vnesite 17-mestno identifikacijsko številko vozila",
-    "vinResult": "Vozilo prepoznano",
+    "vinMatchCount": "{count, plural, one {# ujemajoče vozilo} two {# ujemajoči vozili} few {# ujemajoča vozila} other {# ujemajočih vozil}} — izberite za iskanje delov",
     "vinWarning": "VIN vsebuje napake — predlagana popravek:",
     "oemPlaceholder": "npr. 1J0 698 151 B",
     "oemHint": "Vnesite originalno OEM številko dela",

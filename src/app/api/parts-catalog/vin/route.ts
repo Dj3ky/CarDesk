@@ -33,7 +33,6 @@ export async function POST(request: Request) {
   const encoded = encodeURIComponent(vin.trim().toUpperCase());
   const apiUrl = `${BASE_URL}/api/vin/tecdoc-vin-check/${encoded}`;
 
-  console.log("[parts-catalog/vin] calling:", apiUrl);
   try {
     const apiRes = await fetch(apiUrl, {
       headers: {
@@ -43,8 +42,6 @@ export async function POST(request: Request) {
     });
 
     const text = await apiRes.text();
-    console.log("[parts-catalog/vin] status:", apiRes.status);
-    console.log("[parts-catalog/vin] body:", text.slice(0, 1000));
 
     if (!apiRes.ok) {
       return NextResponse.json(
@@ -53,8 +50,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = JSON.parse(text);
-    return NextResponse.json({ data });
+    const json = JSON.parse(text);
+    const vehicles = json?.data?.matchingVehicles?.array ?? [];
+    return NextResponse.json({ vehicles });
   } catch (err) {
     console.error("[parts-catalog/vin] fetch error:", err);
     return NextResponse.json({ error: `Failed to reach parts catalog API: ${String(err)}` }, { status: 502 });

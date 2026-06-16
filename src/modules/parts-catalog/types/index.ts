@@ -12,6 +12,15 @@ export type PartArticle = {
   s3image?: string;
 };
 
+export type VinVehicle = {
+  manuId: number;
+  modelId: number;
+  vehicleId: number;
+  carName: string;
+  vehicleTypeDescription?: string;
+  linkageTargetType?: string;
+};
+
 export type PartsCatalogSearchParams =
   | { type: "oem"; query: string; langId?: number }
-  | { type: "vehicle"; typeId: number; langId?: number };
+  | { type: "vehicle"; vehicleId: number; langId?: number };

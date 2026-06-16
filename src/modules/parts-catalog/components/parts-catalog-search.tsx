@@ -2,13 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { PartArticle } from "../types";
+import type { PartArticle, VinVehicle } from "../types";
 
 function ArticleCard({ article }: { article: PartArticle }) {
   return (
@@ -83,8 +83,9 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [vehicleTypeId, setVehicleTypeId] = useState("");
   const [vinQuery, setVinQuery] = useState("");
   const [vinLoading, setVinLoading] = useState(false);
-  const [vinResult, setVinResult] = useState<Record<string, unknown> | null>(null);
+  const [vinVehicles, setVinVehicles] = useState<VinVehicle[] | null>(null);
   const [vinError, setVinError] = useState<string | null>(null);
+  const [vinVehicleFilter, setVinVehicleFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<PartArticle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -136,7 +137,9 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
     if (!vinQuery.trim()) return;
     setVinLoading(true);
     setVinError(null);
-    setVinResult(null);
+    setVinVehicles(null);
+    setVinVehicleFilter("");
+    setArticles(null);
     try {
       const res = await fetch("/api/parts-catalog/vin", {
         method: "POST",
@@ -147,7 +150,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       if (!res.ok) {
         setVinError(json.error ?? t("searchError"));
       } else {
-        setVinResult(json.data);
+        setVinVehicles(json.vehicles ?? []);
       }
     } catch {
       setVinError(t("searchError"));
@@ -242,49 +245,54 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
               </div>
             )}
 
-            {vinResult && (() => {
-              const r = vinResult as Record<string, unknown>;
-              const hasErrors = !!(r.error_code && String(r.error_code).trim());
-              const PRIMARY: { key: string; label: string }[] = [
-                { key: "make", label: "Make" },
-                { key: "manufacturer_name", label: "Manufacturer" },
-                { key: "model_year", label: "Year" },
-                { key: "vehicle_type", label: "Type" },
-                { key: "plant_country", label: "Country" },
-                { key: "plant_city", label: "City" },
-              ];
-              const visibleFields = PRIMARY.filter(
-                ({ key }) => r[key] && r[key] !== "Not Applicable"
-              );
-              return (
-                <div className="mt-4 space-y-3">
-                  {hasErrors && (
-                    <div className="flex items-start gap-2 rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800 dark:bg-yellow-950 dark:border-yellow-800 dark:text-yellow-300">
-                      <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium">{t("vinWarning")}</p>
-                        {r.suggested_vin ? (
-                          <p className="font-mono mt-0.5">{String(r.suggested_vin)}</p>
-                        ) : null}
+            {vinVehicles !== null && (
+              <div className="mt-4 space-y-3">
+                {vinVehicles.length === 0 ? (
+                  <p className="text-sm text-muted-foreground py-4 text-center">{t("noResults")}</p>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-sm text-muted-foreground shrink-0">
+                        {t("vinMatchCount", { count: vinVehicles.length })}
+                      </p>
+                      <div className="relative max-w-xs w-full">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                        <Input
+                          value={vinVehicleFilter}
+                          onChange={(e) => setVinVehicleFilter(e.target.value)}
+                          placeholder={t("filterPlaceholder")}
+                          className="pl-8 h-8 text-sm"
+                        />
                       </div>
                     </div>
-                  )}
-                  {visibleFields.length > 0 && (
-                    <div className="rounded-lg border p-4">
-                      <p className="text-sm font-medium mb-3">{t("vinResult")}</p>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
-                        {visibleFields.map(({ key, label }) => (
-                          <div key={key} className="text-sm">
-                            <p className="text-xs text-muted-foreground">{label}</p>
-                            <p className="font-medium">{String(r[key])}</p>
-                          </div>
+                    <div className="rounded-lg border divide-y max-h-80 overflow-y-auto">
+                      {vinVehicles
+                        .filter((v) =>
+                          !vinVehicleFilter.trim() ||
+                          v.carName.toLowerCase().includes(vinVehicleFilter.toLowerCase()) ||
+                          v.vehicleTypeDescription?.toLowerCase().includes(vinVehicleFilter.toLowerCase())
+                        )
+                        .map((v) => (
+                          <button
+                            key={v.vehicleId}
+                            type="button"
+                            onClick={() => search({ type: "vehicle", vehicleId: v.vehicleId })}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted transition-colors"
+                          >
+                            <Car className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{v.carName}</p>
+                              {v.vehicleTypeDescription && (
+                                <p className="text-xs text-muted-foreground">{v.vehicleTypeDescription}</p>
+                              )}
+                            </div>
+                          </button>
                         ))}
-                      </div>
                     </div>
-                  )}
-                </div>
-              );
-            })()}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
 

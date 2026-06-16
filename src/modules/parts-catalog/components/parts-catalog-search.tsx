@@ -37,6 +37,7 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailUnavailable, setDetailUnavailable] = useState(false);
   const [partsModalOpen, setPartsModalOpen] = useState(false);
+  const [criteriaOpen, setCriteriaOpen] = useState(false);
 
   async function toggleDetail() {
     if (detailOpen) { setDetailOpen(false); return; }
@@ -238,17 +239,24 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
             )}
             {(detail.articleSelectionCriterias?.length ?? 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
-                  {t("applicationCriteria")}
-                </p>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                  {detail.articleSelectionCriterias!.map((s, i) => (
-                    <div key={i} className="flex justify-between gap-2 text-xs border-b border-muted py-0.5">
-                      <span className="text-muted-foreground">{s.criteriaName}</span>
-                      <span className="font-medium text-right">{s.criteriaValue}</span>
-                    </div>
-                  ))}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setCriteriaOpen((o) => !o)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide hover:text-foreground transition-colors"
+                >
+                  {criteriaOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                  {t("applicationCriteria")} ({detail.articleSelectionCriterias!.length})
+                </button>
+                {criteriaOpen && (
+                  <div className="mt-1.5 grid grid-cols-2 gap-x-6 gap-y-1">
+                    {detail.articleSelectionCriterias!.map((s, i) => (
+                      <div key={i} className="flex justify-between gap-2 text-xs border-b border-muted py-0.5">
+                        <span className="text-muted-foreground">{s.criteriaName}</span>
+                        <span className="font-medium text-right">{s.criteriaValue}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
             {detail.articleEanNo?.eanNumbers && (

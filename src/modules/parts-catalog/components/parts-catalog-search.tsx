@@ -80,7 +80,6 @@ function ArticleCard({ article, activeOffer, onAdded }: {
               {article.manufacturerName && (
                 <span>Brand: {article.manufacturerName}</span>
               )}
-              <span className="text-muted-foreground/50">ID: {article.articleId}</span>
             </div>
           </div>
         </div>
@@ -433,10 +432,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                               "h-4 w-4 shrink-0",
                               selectedVehicle?.vehicleId === v.vehicleId ? "text-blue-500" : "text-muted-foreground"
                             )} />
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium truncate">{v.carName}</p>
-                              <p className="text-xs text-muted-foreground/60">ID: {v.vehicleId}</p>
-                            </div>
+                            <p className="text-sm font-medium truncate">{v.carName}</p>
                           </button>
                         ));
                       })()}

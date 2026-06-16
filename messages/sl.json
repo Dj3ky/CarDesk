@@ -472,13 +472,14 @@
     "specifications": "Specifikacije",
     "detailUnavailable": "Za ta artikel ni dodatnih podrobnosti.",
     "applicationCriteria": "Merila uporabe",
+    "kosovnica": "Kosovnica",
     "includedParts": "Sestavni deli",
     "partNumber": "Kataloška št.",
     "partDescription": "Opis",
     "partQty": "Kol.",
     "partStatus": "Status",
-    "statusNormal": "Na zalogi",
-    "statusDiscontinued": "Ni več v prodaji",
+    "statusNormal": "Dobavljivo",
+    "statusDiscontinued": "Ni več dobavljivo",
     "statusOnDemand": "Na zahtevo"
   },
   "offers": {

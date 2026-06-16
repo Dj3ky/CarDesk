@@ -36,6 +36,7 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
   const [detail, setDetail] = useState<ArticleDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailUnavailable, setDetailUnavailable] = useState(false);
+  const [partsModalOpen, setPartsModalOpen] = useState(false);
 
   async function toggleDetail() {
     if (detailOpen) { setDetailOpen(false); return; }
@@ -111,6 +112,50 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
               <ImageOff className="h-8 w-8 text-muted-foreground/30" />
             )}
           </div>
+
+          {partsModalOpen && detail && (detail.articleParts?.length ?? 0) > 0 && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+              <div className="bg-background border rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+                <div className="flex items-center justify-between px-4 py-3 border-b shrink-0">
+                  <div>
+                    <h3 className="font-semibold">{t("kosovnica")}</h3>
+                    <p className="text-xs text-muted-foreground font-mono">{article.articleNo} — {article.articleProductName}</p>
+                  </div>
+                  <button type="button" onClick={() => setPartsModalOpen(false)} className="text-muted-foreground hover:text-foreground text-xl leading-none">✕</button>
+                </div>
+                <div className="overflow-y-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted/50 sticky top-0">
+                      <tr>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground w-8">#</th>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">{t("partNumber")}</th>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">{t("partDescription")}</th>
+                        <th className="px-4 py-2 text-center font-medium text-muted-foreground w-12">{t("partQty")}</th>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">{t("partStatus")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {detail.articleParts!.map((p) => {
+                        const isDiscontinued = p.articleStatus.toLowerCase().includes("no longer");
+                        const isOnDemand = p.articleStatus.toLowerCase().includes("on demand");
+                        return (
+                          <tr key={p.orderInList} className="hover:bg-muted/30">
+                            <td className="px-4 py-2 text-muted-foreground">{p.orderInList}</td>
+                            <td className="px-4 py-2 font-mono">{p.articleNo}</td>
+                            <td className="px-4 py-2">{p.articleProductName}</td>
+                            <td className="px-4 py-2 text-center">{p.quantity}</td>
+                            <td className={cn("px-4 py-2", isDiscontinued ? "text-red-500" : isOnDemand ? "text-amber-500" : "text-green-600")}>
+                              {isDiscontinued ? t("statusDiscontinued") : isOnDemand ? t("statusOnDemand") : t("statusNormal")}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
 
           {imageOpen && article.s3image && (
             <div
@@ -193,39 +238,14 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
             )}
             {(detail.articleParts?.length ?? 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
-                  {t("includedParts")} ({detail.articleParts!.length})
-                </p>
-                <div className="rounded-md border overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead className="bg-muted/50">
-                      <tr>
-                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground w-8">#</th>
-                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partNumber")}</th>
-                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partDescription")}</th>
-                        <th className="px-3 py-1.5 text-center font-medium text-muted-foreground w-10">{t("partQty")}</th>
-                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partStatus")}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {detail.articleParts!.map((p) => {
-                        const isDiscontinued = p.articleStatus.toLowerCase().includes("no longer");
-                        const isOnDemand = p.articleStatus.toLowerCase().includes("on demand");
-                        return (
-                          <tr key={p.orderInList} className="hover:bg-muted/30">
-                            <td className="px-3 py-1.5 text-muted-foreground">{p.orderInList}</td>
-                            <td className="px-3 py-1.5 font-mono">{p.articleNo}</td>
-                            <td className="px-3 py-1.5">{p.articleProductName}</td>
-                            <td className="px-3 py-1.5 text-center">{p.quantity}</td>
-                            <td className={cn("px-3 py-1.5", isDiscontinued ? "text-red-500" : isOnDemand ? "text-amber-500" : "text-green-600")}>
-                              {isDiscontinued ? t("statusDiscontinued") : isOnDemand ? t("statusOnDemand") : t("statusNormal")}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPartsModalOpen(true)}
+                  className="h-7 text-xs"
+                >
+                  {t("kosovnica")} ({detail.articleParts!.length})
+                </Button>
               </div>
             )}
 

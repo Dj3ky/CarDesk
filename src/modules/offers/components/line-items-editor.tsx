@@ -219,7 +219,7 @@ export function LineItemsEditor({
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Button type="button" variant="outline" size="sm" onClick={addItem}>
             <Plus className="mr-1.5 h-4 w-4" />
@@ -232,7 +232,7 @@ export function LineItemsEditor({
         </div>
 
         {items.length > 0 && (
-          <div className="space-y-1 text-sm min-w-[220px] text-right">
+          <div className="space-y-1 text-sm sm:min-w-[220px] sm:text-right">
             <div className="flex justify-between gap-8 text-muted-foreground">
               <span>{t("totals.subtotal")}</span>
               <span className="font-medium text-foreground">

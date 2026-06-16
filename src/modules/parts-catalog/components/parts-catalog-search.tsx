@@ -351,7 +351,8 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
 export function PartsCatalogSearch({ locale }: { locale: string }) {
   const t = useTranslations("partsCatalog");
 
-  const [activeTab, setActiveTab] = useState<"oem" | "vehicle" | "vin">("oem");
+  const [activeTab, setActiveTab] = useState<"oem" | "trade" | "vehicle" | "vin">("oem");
+  const [tradeQuery, setTradeQuery] = useState("");
   const [oemQuery, setOemQuery] = useState("");
   const [vehicleTypeId, setVehicleTypeId] = useState("");
   const [vinQuery, setVinQuery] = useState("");
@@ -509,7 +510,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       <div className="space-y-4">
         {/* Tab switcher */}
         <div className="flex gap-1 border-b">
-          {(["oem", "vin", "vehicle"] as const).map((tab) => (
+          {(["oem", "trade", "vin", "vehicle"] as const).map((tab) => (
             <button
               key={tab}
               type="button"
@@ -521,7 +522,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              {tab === "oem" ? t("tabOem") : tab === "vin" ? t("tabVin") : t("tabVehicle")}
+              {tab === "oem" ? t("tabOem") : tab === "trade" ? t("tabTrade") : tab === "vin" ? t("tabVin") : t("tabVehicle")}
             </button>
           ))}
         </div>
@@ -541,6 +542,24 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-2">{t("oemHint")}</p>
+          </div>
+        )}
+
+        {activeTab === "trade" && (
+          <div>
+            <form onSubmit={(e) => { e.preventDefault(); if (tradeQuery.trim()) search({ type: "trade", query: tradeQuery.trim() }); }} className="flex gap-2">
+              <Input
+                value={tradeQuery}
+                onChange={(e) => setTradeQuery(e.target.value)}
+                placeholder={t("tradePlaceholder")}
+                className="font-mono max-w-xs"
+              />
+              <Button type="submit" disabled={loading || !tradeQuery.trim()}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                {t("searchButton")}
+              </Button>
+            </form>
+            <p className="text-xs text-muted-foreground mt-2">{t("tradeHint")}</p>
           </div>
         )}
 

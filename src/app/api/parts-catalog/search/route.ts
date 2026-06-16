@@ -38,6 +38,12 @@ export async function POST(request: Request) {
     }
     const encoded = encodeURIComponent(params.query.trim());
     apiUrl = `${BASE_URL}/api/articles-oem/search-by-article-oem-no?articleOemNo=${encoded}&langId=${langId}`;
+  } else if (params.type === "trade") {
+    if (!params.query) {
+      return NextResponse.json({ error: "Missing query" }, { status: 400 });
+    }
+    const encoded = encodeURIComponent(params.query.trim());
+    apiUrl = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encoded}&articleType=TradeNumber&langId=${langId}`;
   } else if (params.type === "vehicle") {
     const vehicleId = params.vehicleId ?? params.typeId;
     const categoryId = params.categoryId ?? 0;

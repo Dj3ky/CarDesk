@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   }
 
   const encoded = encodeURIComponent(vin.trim().toUpperCase());
-  const apiUrl = `${BASE_URL}/api/vin/decoder-v2/${encoded}`;
+  const apiUrl = `${BASE_URL}/api/vin/tecdoc-vin-check/${encoded}`;
 
   try {
     const apiRes = await fetch(apiUrl, {

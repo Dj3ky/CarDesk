@@ -113,7 +113,8 @@
       "WebFetch(domain:auto-parts-catalog.apiprofile.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:api.autopartsapi.com)",
-      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/parts-catalog/open-offers/[offerId]/items\")"
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/parts-catalog/open-offers/[offerId]/items\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@prisma/adapter-pg/package.json'\\).version\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

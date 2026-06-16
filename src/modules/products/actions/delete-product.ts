@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
+import { invalidateProductCache } from "@/lib/product-cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/lib/audit";
@@ -27,6 +28,7 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
     revalidatePath("/products");
     revalidatePath("/pricelist");
     revalidateTag("products", { expire: 0 });
+    invalidateProductCache();
     return { success: true };
   } catch (err: unknown) {
     const e = err as { code?: string };

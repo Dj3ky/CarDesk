@@ -3,6 +3,7 @@ import { unlink } from "fs/promises";
 import { revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { invalidateProductCache } from "@/lib/product-cache";
 import { parseXlsxAllRows, countCsvRows, streamCsvRows } from "./parse-file";
 import { mapAndValidateRow } from "./parse-utils";
 import type { ValidatedProduct, ImportError, ColumnMapping } from "../types";
@@ -269,6 +270,7 @@ export async function processImportJob(jobId: string): Promise<void> {
     });
 
     revalidateTag("products", { expire: 0 });
+    invalidateProductCache();
   } catch (err) {
     console.error(`[import] job ${jobId} failed:`, err);
     await prisma.importJob

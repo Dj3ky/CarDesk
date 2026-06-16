@@ -1,26 +1,11 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getCachedCountAll, getCachedCountActive } from "@/lib/product-cache";
 import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
-
-// Cached counts for the two common default views (no user-facing filters).
-// Exported so instrumentation.ts can warm them at startup.
-// Invalidated on any product mutation or import via revalidateTag("products").
-export const getCachedCountAll = unstable_cache(
-  () => prisma.product.count(),
-  ["product-count-all"],
-  { revalidate: false, tags: ["products"] }
-);
-
-export const getCachedCountActive = unstable_cache(
-  () => prisma.product.count({ where: { isActive: true } }),
-  ["product-count-active"],
-  { revalidate: false, tags: ["products"] }
-);
 
 const PAGE_SIZE_ADMIN = 25;
 const PAGE_SIZE_PRICELIST = 50;
@@ -34,7 +19,6 @@ export async function getProducts(
 
   const andConditions: Prisma.ProductWhereInput[] = [];
 
-  // Active filter — admin can see inactive, pricelist hides them
   if (!filters.showInactive) {
     andConditions.push({ isActive: true });
   }
@@ -47,7 +31,6 @@ export async function getProducts(
     filters.maxPrice !== undefined
   );
 
-  // Full-text / multi-field search (benefits from pg_trgm GIN indexes)
   if (search) {
     andConditions.push({
       OR: [
@@ -60,7 +43,6 @@ export async function getProducts(
     });
   }
 
-  // Exact brand / supplier filters
   if (filters.brand) {
     andConditions.push({ brand: { equals: filters.brand, mode: "insensitive" } });
   }
@@ -68,7 +50,6 @@ export async function getProducts(
     andConditions.push({ supplier: { equals: filters.supplier, mode: "insensitive" } });
   }
 
-  // Price range — uses B-tree index on price column
   if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
     const priceFilter: Prisma.DecimalFilter = {};
     if (filters.minPrice !== undefined) priceFilter.gte = new Prisma.Decimal(filters.minPrice);
@@ -79,8 +60,7 @@ export async function getProducts(
   const where: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  // For default views (no user-facing filters), use a cached count to avoid
-  // a full COUNT(*) on every page load with 1M+ rows.
+  // Default views use the in-memory cached count; filtered views run exact COUNT.
   const getCount = hasUserFilters
     ? () => prisma.product.count({ where })
     : filters.showInactive
@@ -113,7 +93,6 @@ export async function getProducts(
     getActivePriceRules(),
   ]);
 
-  // Serialise Decimals to strings, apply any matching price rule
   const products: ProductListItem[] = rawProducts.map((p) => {
     const basePrice = parseFloat(p.price.toString());
     const rule = findMatchingRule(p.brand, p.supplier, priceRules);

@@ -468,7 +468,15 @@
     "oemNumbers": "OEM Numbers",
     "specifications": "Specifications",
     "detailUnavailable": "No additional details available for this part.",
-    "applicationCriteria": "Application Criteria"
+    "applicationCriteria": "Application Criteria",
+    "includedParts": "Included Parts",
+    "partNumber": "Part No.",
+    "partDescription": "Description",
+    "partQty": "Qty",
+    "partStatus": "Status",
+    "statusNormal": "Available",
+    "statusDiscontinued": "Discontinued",
+    "statusOnDemand": "On demand"
   },
   "offers": {
     "title": "Offers",

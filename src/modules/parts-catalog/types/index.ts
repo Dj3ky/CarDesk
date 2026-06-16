@@ -55,11 +55,20 @@ export type VehicleDetail = {
   engCodes?: string;
 };
 
+export type ArticlePart = {
+  articleNo: string;
+  articleStatus: string;
+  articleProductName: string;
+  quantity: number;
+  orderInList: number;
+};
+
 export type ArticleDetail = {
   articleAllSpecifications: { criteriaName: string; criteriaValue: string }[];
   articleOemNo: { oemBrand: string; oemDisplayNo: string }[];
   articleEanNo?: { eanNumbers: string };
   articleSelectionCriterias?: { criteriaName: string; criteriaValue: string }[];
+  articleParts?: ArticlePart[];
 };
 
 export type PartsCatalogSearchParams =

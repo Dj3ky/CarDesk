@@ -191,6 +191,44 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
                 </div>
               </div>
             )}
+            {(detail.articleParts?.length ?? 0) > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                  {t("includedParts")} ({detail.articleParts!.length})
+                </p>
+                <div className="rounded-md border overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground w-8">#</th>
+                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partNumber")}</th>
+                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partDescription")}</th>
+                        <th className="px-3 py-1.5 text-center font-medium text-muted-foreground w-10">{t("partQty")}</th>
+                        <th className="px-3 py-1.5 text-left font-medium text-muted-foreground">{t("partStatus")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {detail.articleParts!.map((p) => {
+                        const isDiscontinued = p.articleStatus.toLowerCase().includes("no longer");
+                        const isOnDemand = p.articleStatus.toLowerCase().includes("on demand");
+                        return (
+                          <tr key={p.orderInList} className="hover:bg-muted/30">
+                            <td className="px-3 py-1.5 text-muted-foreground">{p.orderInList}</td>
+                            <td className="px-3 py-1.5 font-mono">{p.articleNo}</td>
+                            <td className="px-3 py-1.5">{p.articleProductName}</td>
+                            <td className="px-3 py-1.5 text-center">{p.quantity}</td>
+                            <td className={cn("px-3 py-1.5", isDiscontinued ? "text-red-500" : isOnDemand ? "text-amber-500" : "text-green-600")}>
+                              {isDiscontinued ? t("statusDiscontinued") : isOnDemand ? t("statusOnDemand") : t("statusNormal")}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {(detail.articleSelectionCriterias?.length ?? 0) > 0 && (
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">

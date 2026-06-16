@@ -468,7 +468,15 @@
     "oemNumbers": "OEM številke",
     "specifications": "Specifikacije",
     "detailUnavailable": "Za ta artikel ni dodatnih podrobnosti.",
-    "applicationCriteria": "Merila uporabe"
+    "applicationCriteria": "Merila uporabe",
+    "includedParts": "Sestavni deli",
+    "partNumber": "Kataloška št.",
+    "partDescription": "Opis",
+    "partQty": "Kol.",
+    "partStatus": "Status",
+    "statusNormal": "Na zalogi",
+    "statusDiscontinued": "Ni več v prodaji",
+    "statusOnDemand": "Na zahtevo"
   },
   "offers": {
     "title": "Ponudbe",

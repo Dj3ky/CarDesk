@@ -26,11 +26,14 @@ export async function POST(request: Request) {
   const detailUrl = `${BASE_URL}/api/articles/details/article-id/${articleId}/lang-id/${langId}`;
   const criteriaUrl = `${BASE_URL}/api/articles/selection-of-all-specifications-criterias-for-the-article/article-id/${articleId}/lang-id/${langId}/country-filter-id/${COUNTRY_FILTER_ID}`;
   const criteriaUrl0 = `${BASE_URL}/api/articles/selection-of-all-specifications-criterias-for-the-article/article-id/${articleId}/lang-id/${langId}/country-filter-id/0`;
+  const partsUrl = `${BASE_URL}/api/articles/list-of-parts-for-article/article-id/${articleId}/lang-id/${langId}/country-filter-id/${COUNTRY_FILTER_ID}`;
+  const partsUrl0 = `${BASE_URL}/api/articles/list-of-parts-for-article/article-id/${articleId}/lang-id/${langId}/country-filter-id/0`;
 
   try {
-    const [detailRes, criteriaRes] = await Promise.all([
+    const [detailRes, criteriaRes, partsRes] = await Promise.all([
       fetch(detailUrl, { headers, next: { revalidate: 300 } }),
       fetch(criteriaUrl, { headers, next: { revalidate: 300 } }),
+      fetch(partsUrl, { headers, next: { revalidate: 300 } }),
     ]);
 
     if (!detailRes.ok) {
@@ -41,10 +44,9 @@ export async function POST(request: Request) {
 
     let selectionCriterias: { criteriaName: string; criteriaValue: string }[] = [];
     if (criteriaRes.ok) {
-      const criteriaData = await criteriaRes.json();
-      selectionCriterias = Array.isArray(criteriaData) ? criteriaData : [];
+      const cd = await criteriaRes.json();
+      selectionCriterias = Array.isArray(cd) ? cd : [];
     } else {
-      // fallback to country filter 0
       const fallback = await fetch(criteriaUrl0, { headers, next: { revalidate: 300 } });
       if (fallback.ok) {
         const fd = await fallback.json();
@@ -52,7 +54,20 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ ...data, articleSelectionCriterias: selectionCriterias });
+    type PartItem = { articleNo: string; articleStatus: string; articleProductName: string; quantity: number; orderInList: number };
+    let articleParts: PartItem[] = [];
+    if (partsRes.ok) {
+      const pd = await partsRes.json();
+      articleParts = Array.isArray(pd.articles) ? pd.articles : [];
+    } else {
+      const fallback = await fetch(partsUrl0, { headers, next: { revalidate: 300 } });
+      if (fallback.ok) {
+        const fd = await fallback.json();
+        articleParts = Array.isArray(fd.articles) ? fd.articles : [];
+      }
+    }
+
+    return NextResponse.json({ ...data, articleSelectionCriterias: selectionCriterias, articleParts });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 502 });
   }

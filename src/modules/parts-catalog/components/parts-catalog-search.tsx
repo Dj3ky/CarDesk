@@ -38,7 +38,14 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ articleId: article.articleId, locale }),
       });
-      if (res.ok) setDetail(await res.json());
+      if (res.ok) {
+        const json = await res.json();
+        if (json.articleAllSpecifications || json.articleOemNo) {
+          setDetail(json);
+        }
+      }
+    } catch {
+      // silently ignore — detail panel stays empty
     } finally {
       setDetailLoading(false);
     }
@@ -119,7 +126,7 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
 
         {detailOpen && detail && (
           <div className="mt-3 pt-3 border-t space-y-3">
-            {detail.articleOemNo.length > 0 && (
+            {(detail.articleOemNo?.length ?? 0) > 0 && (
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
                   {t("oemNumbers")}
@@ -134,7 +141,7 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
                 </div>
               </div>
             )}
-            {detail.articleAllSpecifications.length > 0 && (
+            {(detail.articleAllSpecifications?.length ?? 0) > 0 && (
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
                   {t("specifications")}

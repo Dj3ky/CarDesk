@@ -432,7 +432,10 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                               "h-4 w-4 shrink-0",
                               selectedVehicle?.vehicleId === v.vehicleId ? "text-blue-500" : "text-muted-foreground"
                             )} />
-                            <p className="text-sm font-medium truncate">{v.carName}</p>
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{v.carName}</p>
+                              <p className="text-xs text-muted-foreground/60">ID: {v.vehicleId}</p>
+                            </div>
                           </button>
                         ));
                       })()}

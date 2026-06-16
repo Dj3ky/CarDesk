@@ -433,6 +433,7 @@
     "vinPlaceholder": "e.g. WVWZZZ1KZAM012345",
     "vinHint": "Enter the 17-character Vehicle Identification Number",
     "vinResult": "Vehicle identified",
+    "vinWarning": "VIN has errors — suggested correction:",
     "oemPlaceholder": "e.g. 1J0 698 151 B",
     "oemHint": "Enter the original equipment manufacturer (OEM) part number",
     "vehicleTypeIdPlaceholder": "Vehicle type ID",

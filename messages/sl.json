@@ -433,6 +433,7 @@
     "vinPlaceholder": "npr. WVWZZZ1KZAM012345",
     "vinHint": "Vnesite 17-mestno identifikacijsko številko vozila",
     "vinResult": "Vozilo prepoznano",
+    "vinWarning": "VIN vsebuje napake — predlagana popravek:",
     "oemPlaceholder": "npr. 1J0 698 151 B",
     "oemHint": "Vnesite originalno OEM številko dela",
     "vehicleTypeIdPlaceholder": "ID tipa vozila",

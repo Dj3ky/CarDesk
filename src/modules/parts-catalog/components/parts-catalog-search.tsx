@@ -242,21 +242,49 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
               </div>
             )}
 
-            {vinResult && (
-              <div className="mt-4 rounded-lg border p-4 space-y-2">
-                <p className="text-sm font-medium">{t("vinResult")}</p>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                  {Object.entries(vinResult).map(([key, value]) =>
-                    value && typeof value !== "object" ? (
-                      <div key={key} className="flex gap-2 text-sm">
-                        <span className="text-muted-foreground capitalize shrink-0">{key}:</span>
-                        <span className="font-medium">{String(value)}</span>
+            {vinResult && (() => {
+              const r = vinResult as Record<string, unknown>;
+              const hasErrors = !!(r.error_code && String(r.error_code).trim());
+              const PRIMARY: { key: string; label: string }[] = [
+                { key: "make", label: "Make" },
+                { key: "manufacturer_name", label: "Manufacturer" },
+                { key: "model_year", label: "Year" },
+                { key: "vehicle_type", label: "Type" },
+                { key: "plant_country", label: "Country" },
+                { key: "plant_city", label: "City" },
+              ];
+              const visibleFields = PRIMARY.filter(
+                ({ key }) => r[key] && r[key] !== "Not Applicable"
+              );
+              return (
+                <div className="mt-4 space-y-3">
+                  {hasErrors && (
+                    <div className="flex items-start gap-2 rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800 dark:bg-yellow-950 dark:border-yellow-800 dark:text-yellow-300">
+                      <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium">{t("vinWarning")}</p>
+                        {r.suggested_vin ? (
+                          <p className="font-mono mt-0.5">{String(r.suggested_vin)}</p>
+                        ) : null}
                       </div>
-                    ) : null
+                    </div>
+                  )}
+                  {visibleFields.length > 0 && (
+                    <div className="rounded-lg border p-4">
+                      <p className="text-sm font-medium mb-3">{t("vinResult")}</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
+                        {visibleFields.map(({ key, label }) => (
+                          <div key={key} className="text-sm">
+                            <p className="text-xs text-muted-foreground">{label}</p>
+                            <p className="font-medium">{String(r[key])}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         )}
 

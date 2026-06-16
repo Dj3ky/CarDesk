@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, ImageOff, AlertCircle } from "lucide-react";
+import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,12 +27,7 @@ function ArticleCard({ article }: { article: PartArticle }) {
           )}
         </div>
         <div className="flex-1 min-w-0 space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
-            {article.supplierName && (
-              <Badge variant="secondary">{article.supplierName}</Badge>
-            )}
-          </div>
+          <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
           {article.articleProductName && (
             <p className="text-sm text-muted-foreground">{article.articleProductName}</p>
           )}
@@ -50,6 +45,33 @@ function ArticleCard({ article }: { article: PartArticle }) {
   );
 }
 
+function SupplierGroup({ name, articles }: { name: string; articles: PartArticle[] }) {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <div className="border rounded-lg overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-muted/50 hover:bg-muted transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          {open ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+          <span className="font-semibold text-sm">{name}</span>
+          <Badge variant="outline" className="text-xs">{articles.length}</Badge>
+        </div>
+      </button>
+      {open && (
+        <div className="divide-y">
+          {articles.map((article) => (
+            <ArticleCard key={article.articleId} article={article} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PartsCatalogSearch() {
   const t = useTranslations("partsCatalog");
 
@@ -59,11 +81,13 @@ export function PartsCatalogSearch() {
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<PartArticle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filterText, setFilterText] = useState("");
 
   async function search(body: object) {
     setLoading(true);
     setError(null);
     setArticles(null);
+    setFilterText("");
     try {
       const res = await fetch("/api/parts-catalog/search", {
         method: "POST",
@@ -95,6 +119,28 @@ export function PartsCatalogSearch() {
     if (!id) return;
     search({ type: "vehicle", typeId: id });
   }
+
+  const grouped = useMemo(() => {
+    if (!articles) return null;
+    const q = filterText.trim().toLowerCase();
+    const filtered = q
+      ? articles.filter(
+          (a) =>
+            a.articleNo?.toLowerCase().includes(q) ||
+            a.articleProductName?.toLowerCase().includes(q) ||
+            a.supplierName?.toLowerCase().includes(q) ||
+            a.articleSearchNo?.toLowerCase().includes(q)
+        )
+      : articles;
+
+    const map = new Map<string, PartArticle[]>();
+    for (const a of filtered) {
+      const key = a.supplierName ?? "Unknown";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(a);
+    }
+    return { groups: map, total: filtered.length };
+  }, [articles, filterText]);
 
   return (
     <div className="space-y-6">
@@ -163,19 +209,32 @@ export function PartsCatalogSearch() {
         </div>
       )}
 
-      {articles !== null && (
-        <div className="space-y-3">
-          {articles.length === 0 ? (
+      {grouped !== null && (
+        <div className="space-y-4">
+          {/* Filter bar */}
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground shrink-0">
+              {t("resultCount", { count: grouped.total })}
+            </p>
+            <div className="relative max-w-xs w-full">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+              <Input
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                placeholder={t("filterPlaceholder")}
+                className="pl-8 h-8 text-sm"
+              />
+            </div>
+          </div>
+
+          {grouped.total === 0 ? (
             <p className="text-sm text-muted-foreground py-8 text-center">{t("noResults")}</p>
           ) : (
-            <>
-              <p className="text-sm text-muted-foreground">
-                {t("resultCount", { count: articles.length })}
-              </p>
-              {articles.map((article) => (
-                <ArticleCard key={article.articleId} article={article} />
+            <div className="space-y-3">
+              {Array.from(grouped.groups.entries()).map(([supplier, items]) => (
+                <SupplierGroup key={supplier} name={supplier} articles={items} />
               ))}
-            </>
+            </div>
           )}
         </div>
       )}

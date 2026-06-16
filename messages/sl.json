@@ -436,6 +436,7 @@
     "searchButton": "Išči",
     "noResults": "Ni najdenih delov za to iskanje.",
     "resultCount": "{count, plural, one {# rezultat} two {# rezultata} few {# rezultati} other {# rezultatov}}",
+    "filterPlaceholder": "Filtriraj rezultate...",
     "searchError": "Iskanje ni uspelo. Prosimo, poskusite znova.",
     "noApiKey": "API ključ kataloga delov ni nastavljen. Pojdite na Nastavitve → Integracije."
   },

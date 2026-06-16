@@ -466,7 +466,8 @@
     "added": "Added to offer",
     "details": "Details",
     "oemNumbers": "OEM Numbers",
-    "specifications": "Specifications"
+    "specifications": "Specifications",
+    "detailUnavailable": "No additional details available for this part."
   },
   "offers": {
     "title": "Offers",

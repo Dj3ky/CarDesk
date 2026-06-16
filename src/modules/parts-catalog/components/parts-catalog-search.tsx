@@ -26,11 +26,12 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState<ArticleDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [detailUnavailable, setDetailUnavailable] = useState(false);
 
   async function toggleDetail() {
     if (detailOpen) { setDetailOpen(false); return; }
     setDetailOpen(true);
-    if (detail) return;
+    if (detail || detailUnavailable) return;
     setDetailLoading(true);
     try {
       const res = await fetch("/api/parts-catalog/article-detail", {
@@ -42,10 +43,14 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
         const json = await res.json();
         if (json.articleAllSpecifications || json.articleOemNo) {
           setDetail(json);
+        } else {
+          setDetailUnavailable(true);
         }
+      } else {
+        setDetailUnavailable(true);
       }
     } catch {
-      // silently ignore — detail panel stays empty
+      setDetailUnavailable(true);
     } finally {
       setDetailLoading(false);
     }
@@ -123,6 +128,12 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
             {t("details")}
           </button>
         </div>
+
+        {detailOpen && detailUnavailable && (
+          <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
+            {t("detailUnavailable")}
+          </div>
+        )}
 
         {detailOpen && detail && (
           <div className="mt-3 pt-3 border-t space-y-3">

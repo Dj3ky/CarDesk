@@ -466,7 +466,8 @@
     "added": "Dodano v ponudbo",
     "details": "Podrobnosti",
     "oemNumbers": "OEM številke",
-    "specifications": "Specifikacije"
+    "specifications": "Specifikacije",
+    "detailUnavailable": "Za ta artikel ni dodatnih podrobnosti."
   },
   "offers": {
     "title": "Ponudbe",

@@ -2,13 +2,33 @@
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getCachedCountAll, getCachedCountActive } from "@/lib/product-cache";
+import {
+  getCachedCountAll,
+  getCachedCountActive,
+  getCachedFirstPageAdmin,
+  getCachedFirstPageActive,
+  type RawProductRow,
+} from "@/lib/product-cache";
 import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductFilters, ProductListItem, ProductListResult } from "../types";
 
 const PAGE_SIZE_ADMIN = 25;
 const PAGE_SIZE_PRICELIST = 50;
+
+function transformRows(rows: RawProductRow[], priceRules: Awaited<ReturnType<typeof getActivePriceRules>>): ProductListItem[] {
+  return rows.map((p) => {
+    const basePrice = parseFloat(p.price.toString());
+    const rule = findMatchingRule(p.brand, p.supplier, priceRules);
+    const adjusted = rule ? applyRule(basePrice, rule) : undefined;
+    return {
+      ...p,
+      price: p.price.toString(),
+      vatRate: p.vatRate.toString(),
+      ...(adjusted !== undefined && { adjustedPrice: adjusted.toFixed(2) }),
+    };
+  });
+}
 
 export async function getProducts(
   filters: ProductFilters & { page?: number; pageSize?: "admin" | "pricelist" }
@@ -17,12 +37,6 @@ export async function getProducts(
   const pageSize = filters.pageSize === "pricelist" ? PAGE_SIZE_PRICELIST : PAGE_SIZE_ADMIN;
   const search = filters.search?.trim();
 
-  const andConditions: Prisma.ProductWhereInput[] = [];
-
-  if (!filters.showInactive) {
-    andConditions.push({ isActive: true });
-  }
-
   const hasUserFilters = !!(
     search ||
     filters.brand ||
@@ -30,6 +44,24 @@ export async function getProducts(
     filters.minPrice !== undefined ||
     filters.maxPrice !== undefined
   );
+
+  // Fast path: default first page served entirely from in-memory cache.
+  if (!hasUserFilters && page === 1) {
+    const [rawRows, total, priceRules] = await Promise.all([
+      filters.showInactive ? getCachedFirstPageAdmin() : getCachedFirstPageActive(),
+      filters.showInactive ? getCachedCountAll() : getCachedCountActive(),
+      getActivePriceRules(),
+    ]);
+    const products = transformRows(rawRows, priceRules);
+    return { products, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
+  // Filtered / paginated path — hit the database directly.
+  const andConditions: Prisma.ProductWhereInput[] = [];
+
+  if (!filters.showInactive) {
+    andConditions.push({ isActive: true });
+  }
 
   if (search) {
     andConditions.push({
@@ -60,13 +92,6 @@ export async function getProducts(
   const where: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  // Default views use the in-memory cached count; filtered views run exact COUNT.
-  const getCount = hasUserFilters
-    ? () => prisma.product.count({ where })
-    : filters.showInactive
-      ? getCachedCountAll
-      : getCachedCountActive;
-
   const [rawProducts, total, priceRules] = await Promise.all([
     prisma.product.findMany({
       where,
@@ -89,21 +114,12 @@ export async function getProducts(
         isActive: true,
       },
     }),
-    getCount(),
+    hasUserFilters
+      ? prisma.product.count({ where })
+      : filters.showInactive ? getCachedCountAll() : getCachedCountActive(),
     getActivePriceRules(),
   ]);
 
-  const products: ProductListItem[] = rawProducts.map((p) => {
-    const basePrice = parseFloat(p.price.toString());
-    const rule = findMatchingRule(p.brand, p.supplier, priceRules);
-    const adjusted = rule ? applyRule(basePrice, rule) : undefined;
-    return {
-      ...p,
-      price: p.price.toString(),
-      vatRate: p.vatRate.toString(),
-      ...(adjusted !== undefined && { adjustedPrice: adjusted.toFixed(2) }),
-    };
-  });
-
+  const products = transformRows(rawProducts as RawProductRow[], priceRules);
   return { products, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
 }

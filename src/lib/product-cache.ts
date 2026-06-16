@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-export interface FilterOptions {
-  brands: string[];
-  suppliers: string[];
-}
+import type { FilterOptions } from "@/modules/products/types";
 
 // Module-level singletons — persist for the lifetime of the Node.js process.
 // Populated once at startup via warmProductCache() in instrumentation.ts,

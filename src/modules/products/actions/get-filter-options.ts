@@ -1,6 +1,10 @@
 "use server";
 
-import { getCachedFilterOptions, type FilterOptions } from "@/lib/product-cache";
+import { getCachedFilterOptions } from "@/lib/product-cache";
+import type { FilterOptions } from "../types";
 
 export type { FilterOptions };
-export { getCachedFilterOptions as getFilterOptions };
+
+export async function getFilterOptions(): Promise<FilterOptions> {
+  return getCachedFilterOptions();
+}

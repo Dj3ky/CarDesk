@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight, Car, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,16 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
   const [price, setPrice] = useState("0");
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [imageOpen, setImageOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    if (!imageOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setImageOpen(false); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [imageOpen]);
   const [detail, setDetail] = useState<ArticleDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailUnavailable, setDetailUnavailable] = useState(false);
@@ -95,12 +104,27 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
               <img
                 src={article.s3image}
                 alt={article.articleNo}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain cursor-zoom-in"
+                onClick={() => setImageOpen(true)}
               />
             ) : (
               <ImageOff className="h-8 w-8 text-muted-foreground/30" />
             )}
           </div>
+
+          {imageOpen && article.s3image && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
+              onClick={() => setImageOpen(false)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={article.s3image}
+                alt={article.articleNo}
+                className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+          )}
           <div className="flex-1 min-w-0 space-y-1">
             <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
             {article.articleProductName && (
@@ -159,6 +183,21 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
                 </p>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-1">
                   {detail.articleAllSpecifications.map((s, i) => (
+                    <div key={i} className="flex justify-between gap-2 text-xs border-b border-muted py-0.5">
+                      <span className="text-muted-foreground">{s.criteriaName}</span>
+                      <span className="font-medium text-right">{s.criteriaValue}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {(detail.articleSelectionCriterias?.length ?? 0) > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                  {t("applicationCriteria")}
+                </p>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-1">
+                  {detail.articleSelectionCriterias!.map((s, i) => (
                     <div key={i} className="flex justify-between gap-2 text-xs border-b border-muted py-0.5">
                       <span className="text-muted-foreground">{s.criteriaName}</span>
                       <span className="font-medium text-right">{s.criteriaValue}</span>

@@ -59,6 +59,7 @@ export type ArticleDetail = {
   articleAllSpecifications: { criteriaName: string; criteriaValue: string }[];
   articleOemNo: { oemBrand: string; oemDisplayNo: string }[];
   articleEanNo?: { eanNumbers: string };
+  articleSelectionCriterias?: { criteriaName: string; criteriaValue: string }[];
 };
 
 export type PartsCatalogSearchParams =

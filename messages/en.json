@@ -467,7 +467,8 @@
     "details": "Details",
     "oemNumbers": "OEM Numbers",
     "specifications": "Specifications",
-    "detailUnavailable": "No additional details available for this part."
+    "detailUnavailable": "No additional details available for this part.",
+    "applicationCriteria": "Application Criteria"
   },
   "offers": {
     "title": "Offers",

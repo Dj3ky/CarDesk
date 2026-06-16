@@ -467,7 +467,8 @@
     "details": "Podrobnosti",
     "oemNumbers": "OEM številke",
     "specifications": "Specifikacije",
-    "detailUnavailable": "Za ta artikel ni dodatnih podrobnosti."
+    "detailUnavailable": "Za ta artikel ni dodatnih podrobnosti.",
+    "applicationCriteria": "Merila uporabe"
   },
   "offers": {
     "title": "Ponudbe",

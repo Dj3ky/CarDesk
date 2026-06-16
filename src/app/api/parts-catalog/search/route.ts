@@ -69,10 +69,6 @@ export async function POST(request: Request) {
 
     const data = await apiRes.json();
     const articles = Array.isArray(data) ? data : (data.articles ?? data.data ?? []);
-    if (params.type === "vehicle" && articles.length > 0) {
-      console.log("[parts-catalog] vehicle article sample keys:", Object.keys(articles[0]));
-      console.log("[parts-catalog] vehicle article sample:", JSON.stringify(articles[0], null, 2));
-    }
     return NextResponse.json({ articles });
   } catch (err) {
     console.error("[parts-catalog] fetch error:", err);

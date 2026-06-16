@@ -236,19 +236,6 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
                 </div>
               </div>
             )}
-            {(detail.articleParts?.length ?? 0) > 0 && (
-              <div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setPartsModalOpen(true)}
-                  className="h-7 text-xs"
-                >
-                  {t("kosovnica")} ({detail.articleParts!.length})
-                </Button>
-              </div>
-            )}
-
             {(detail.articleSelectionCriterias?.length ?? 0) > 0 && (
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
@@ -268,6 +255,18 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
               <p className="text-xs text-muted-foreground">
                 EAN: <span className="font-mono">{detail.articleEanNo.eanNumbers}</span>
               </p>
+            )}
+
+            {(detail.articleParts?.length ?? 0) > 0 && (
+              <div className="pt-1">
+                <Button
+                  size="sm"
+                  onClick={() => setPartsModalOpen(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                >
+                  📋 {t("kosovnica")} ({detail.articleParts!.length})
+                </Button>
+              </div>
             )}
           </div>
         )}

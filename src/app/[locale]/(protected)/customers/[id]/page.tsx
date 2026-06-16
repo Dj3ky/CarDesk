@@ -60,7 +60,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
       </div>
 
       {/* Page header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-xl font-bold text-primary">
             {customer.firstName[0]}{customer.lastName[0]}

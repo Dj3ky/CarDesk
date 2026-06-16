@@ -34,14 +34,14 @@ export function SettingsNav({ activeTab }: SettingsNavProps) {
   }
 
   return (
-    <nav className="flex flex-col gap-1 w-40 shrink-0">
+    <nav className="flex flex-row gap-1 overflow-x-auto pb-1 sm:flex-col sm:w-40 sm:shrink-0 sm:overflow-visible sm:pb-0">
       {TABS.map(({ key, Icon }) => (
         <button
           key={key}
           type="button"
           onClick={() => setTab(key)}
           className={cn(
-            "group flex items-center gap-2.5 rounded-md py-2 pr-3 text-sm font-medium transition-all text-left w-full border-l-2 pl-[10px]",
+            "group flex items-center gap-2 rounded-md py-2 px-3 text-sm font-medium transition-all text-left shrink-0 sm:w-full sm:pr-3 sm:border-l-2 sm:pl-[10px] sm:gap-2.5 border-b-2 sm:border-b-0",
             activeTab === key
               ? "border-primary bg-accent text-foreground"
               : "border-transparent text-muted-foreground hover:bg-accent hover:text-foreground"

@@ -145,9 +145,9 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
                     <TableHead>{t("columns.when")}</TableHead>
                     <TableHead>{t("columns.action")}</TableHead>
                     <TableHead>{t("columns.entity")}</TableHead>
-                    <TableHead>{t("columns.record")}</TableHead>
-                    <TableHead>{t("columns.user")}</TableHead>
-                    <TableHead>{t("columns.details")}</TableHead>
+                    <TableHead className="hidden md:table-cell">{t("columns.record")}</TableHead>
+                    <TableHead className="hidden md:table-cell">{t("columns.user")}</TableHead>
+                    <TableHead className="hidden lg:table-cell">{t("columns.details")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -168,13 +168,13 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
                           {log.entity}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell className="hidden md:table-cell font-mono text-xs">
                         {log.entityLabel ?? log.entityId.slice(0, 8) + "…"}
                       </TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className="hidden md:table-cell text-sm">
                         {log.user ? (log.user.name ?? log.user.email) : "—"}
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
+                      <TableCell className="hidden lg:table-cell text-xs text-muted-foreground">
                         {log.changes
                           ? (() => {
                               const c = log.changes as Record<string, unknown>;

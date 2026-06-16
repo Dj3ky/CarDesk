@@ -61,7 +61,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
   return (
     <div className="max-w-4xl space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold tracking-tight font-mono">

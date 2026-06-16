@@ -186,7 +186,7 @@ export default async function DashboardPage() {
             {formatCurrency(mtdTotals.grandTotal, currency)}
           </div>
           <p className="text-xs text-muted-foreground mt-1">{t("dashboard.revenueMTDDesc")}</p>
-          <div className="flex gap-6 mt-3 text-sm">
+          <div className="flex flex-wrap gap-2 mt-3 text-sm">
             {Object.entries(statusMap).map(([status, count]) => (
               <div key={status} className="flex items-center gap-1.5">
                 <OfferStatusBadge status={status as OfferStatus} />

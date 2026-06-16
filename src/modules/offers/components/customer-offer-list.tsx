@@ -49,9 +49,9 @@ export async function CustomerOfferList({ customerId, locale }: CustomerOfferLis
           <TableRow>
             <TableHead>{t("offers.fields.offerNumber")}</TableHead>
             <TableHead>{t("offers.fields.status")}</TableHead>
-            <TableHead>{t("offers.fields.vehicle")}</TableHead>
-            <TableHead>{t("offers.fields.date")}</TableHead>
-            <TableHead>{t("offers.fields.validUntil")}</TableHead>
+            <TableHead className="hidden md:table-cell">{t("offers.fields.vehicle")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("offers.fields.date")}</TableHead>
+            <TableHead className="hidden lg:table-cell">{t("offers.fields.validUntil")}</TableHead>
             <TableHead className="text-right">{t("offers.fields.total")}</TableHead>
             <TableHead className="w-[50px]" />
           </TableRow>
@@ -70,13 +70,13 @@ export async function CustomerOfferList({ customerId, locale }: CustomerOfferLis
               <TableCell>
                 <OfferStatusBadge status={offer.status} />
               </TableCell>
-              <TableCell className="text-muted-foreground text-sm">
+              <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                 {offer.vehicle
                   ? `${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
                   : "—"}
               </TableCell>
-              <TableCell className="text-sm">{formatDate(offer.createdAt)}</TableCell>
-              <TableCell className="text-sm">
+              <TableCell className="hidden sm:table-cell text-sm">{formatDate(offer.createdAt)}</TableCell>
+              <TableCell className="hidden lg:table-cell text-sm">
                 {offer.validUntil ? formatDate(offer.validUntil) : "—"}
               </TableCell>
               <TableCell className="text-right font-medium">

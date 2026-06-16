@@ -52,7 +52,7 @@ export function UserTable({ users, currentUserId }: UserTableProps) {
             <TableHead>{t("fields.name")}</TableHead>
             <TableHead>{t("fields.role")}</TableHead>
             <TableHead>{t("fields.isActive")}</TableHead>
-            <TableHead>{t("fields.createdAt")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("fields.createdAt")}</TableHead>
             <TableHead className="w-28 text-right">{tc("actions")}</TableHead>
           </TableRow>
         </TableHeader>
@@ -84,7 +84,7 @@ export function UserTable({ users, currentUserId }: UserTableProps) {
                   isSelf={user.id === currentUserId}
                 />
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
+              <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">
                 {new Date(user.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right">

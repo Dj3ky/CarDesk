@@ -54,7 +54,7 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
         </div>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
         <SettingsNav activeTab={activeTab} />
 
         <div className="flex-1 min-w-0 max-w-2xl">

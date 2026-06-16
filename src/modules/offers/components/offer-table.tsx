@@ -50,9 +50,9 @@ export function OfferTable({ offers, locale }: OfferTableProps) {
             <TableHead>{t("fields.offerNumber")}</TableHead>
             <TableHead>{t("fields.status")}</TableHead>
             <TableHead>{t("fields.customer")}</TableHead>
-            <TableHead>{t("fields.vehicle")}</TableHead>
-            <TableHead>{t("fields.date")}</TableHead>
-            <TableHead>{t("fields.validUntil")}</TableHead>
+            <TableHead className="hidden md:table-cell">{t("fields.vehicle")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("fields.date")}</TableHead>
+            <TableHead className="hidden lg:table-cell">{t("fields.validUntil")}</TableHead>
             <TableHead className="text-right">{t("fields.total")}</TableHead>
             <TableHead className="w-[80px]" />
           </TableRow>
@@ -72,13 +72,13 @@ export function OfferTable({ offers, locale }: OfferTableProps) {
                 <OfferStatusBadge status={offer.status} />
               </TableCell>
               <TableCell>{customerLabel(offer.customer)}</TableCell>
-              <TableCell className="text-muted-foreground text-sm">
+              <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                 {offer.vehicle
                   ? `${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
                   : "—"}
               </TableCell>
-              <TableCell className="text-sm">{formatDate(offer.createdAt)}</TableCell>
-              <TableCell className="text-sm">
+              <TableCell className="hidden sm:table-cell text-sm">{formatDate(offer.createdAt)}</TableCell>
+              <TableCell className="hidden lg:table-cell text-sm">
                 {offer.validUntil ? formatDate(offer.validUntil) : "—"}
               </TableCell>
               <TableCell className="text-right font-medium">

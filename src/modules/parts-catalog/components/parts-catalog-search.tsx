@@ -344,24 +344,25 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                         </div>
                         <div className="rounded-lg border divide-y max-h-64 overflow-y-auto">
                           {categories
-                            .filter((c) => {
-                              const name = String(c.categoryName ?? c.assemblyGroupName ?? c.productGroupName ?? c.description ?? "");
-                              return !categoryFilter.trim() || name.toLowerCase().includes(categoryFilter.toLowerCase());
+                            .map((c) => {
+                              const catId = c.categoryId4 ?? c.categoryId3 ?? c.categoryId2 ?? c.categoryId1;
+                              const parts = [c.categoryName1, c.categoryName2, c.categoryName3, c.categoryName4].filter(Boolean);
+                              const name = parts.join(" › ");
+                              return { catId, name };
                             })
-                            .map((c, i) => {
-                              const name = String(c.categoryName ?? c.assemblyGroupName ?? c.productGroupName ?? c.description ?? `Category ${c.categoryId}`);
-                              const catId = c.categoryId ?? c.productGroupId;
-                              return (
-                                <button
-                                  key={`${catId}-${i}`}
-                                  type="button"
-                                  onClick={() => selectedVehicle && search({ type: "vehicle", vehicleId: selectedVehicle.vehicleId, categoryId: catId })}
-                                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
-                                >
-                                  {name}
-                                </button>
-                              );
-                            })}
+                            .filter(({ name }) =>
+                              !categoryFilter.trim() || name.toLowerCase().includes(categoryFilter.toLowerCase())
+                            )
+                            .map(({ catId, name }, i) => (
+                              <button
+                                key={`${catId}-${i}`}
+                                type="button"
+                                onClick={() => selectedVehicle && search({ type: "vehicle", vehicleId: selectedVehicle.vehicleId, categoryId: catId })}
+                                className="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
+                              >
+                                {name}
+                              </button>
+                            ))}
                         </div>
                       </div>
                     )}

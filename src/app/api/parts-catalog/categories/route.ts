@@ -37,8 +37,6 @@ export async function POST(request: Request) {
     });
 
     const data = await apiRes.json();
-    const first = Array.isArray(data) ? data[0] : data;
-    console.log("[parts-catalog/categories] first:", JSON.stringify(first, null, 2));
     const categories = Array.isArray(data) ? data : (data.categories ?? data.data ?? []);
     return NextResponse.json({ categories });
   } catch (err) {

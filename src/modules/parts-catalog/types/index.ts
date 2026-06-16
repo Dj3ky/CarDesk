@@ -22,13 +22,15 @@ export type VinVehicle = {
 };
 
 export type VinCategory = {
-  categoryId: string | number;
-  categoryName?: string;
-  description?: string;
-  assemblyGroupName?: string;
-  productGroupId?: string | number;
-  productGroupName?: string;
-  [key: string]: unknown;
+  level?: number;
+  categoryName1?: string | null;
+  categoryId1?: number | null;
+  categoryName2?: string | null;
+  categoryId2?: number | null;
+  categoryName3?: string | null;
+  categoryId3?: number | null;
+  categoryName4?: string | null;
+  categoryId4?: number | null;
 };
 
 export type PartsCatalogSearchParams =

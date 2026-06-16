@@ -89,6 +89,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [selectedVehicle, setSelectedVehicle] = useState<VinVehicle | null>(null);
   const [categories, setCategories] = useState<VinCategory[] | null>(null);
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<PartArticle[] | null>(null);
@@ -113,8 +114,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       } else {
         const list: PartArticle[] = json.articles ?? [];
         setArticles(list);
-        const suppliers = new Set(list.map((a) => a.supplierName ?? "Unknown"));
-        setOpenGroups(suppliers);
+        setOpenGroups(new Set());
       }
     } catch {
       setError(t("searchError"));
@@ -169,6 +169,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
     setSelectedVehicle(vehicle);
     setCategories(null);
     setCategoryFilter("");
+    setSelectedCategoryId(null);
     setArticles(null);
     setCategoriesLoading(true);
     try {
@@ -293,31 +294,44 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                       </div>
                     </div>
                     <div className="rounded-lg border divide-y max-h-72 overflow-y-auto">
-                      {vinVehicles
-                        .filter((v) =>
-                          !vinVehicleFilter.trim() ||
-                          v.carName.toLowerCase().includes(vinVehicleFilter.toLowerCase()) ||
-                          v.vehicleTypeDescription?.toLowerCase().includes(vinVehicleFilter.toLowerCase())
-                        )
-                        .map((v) => (
+                      {(() => {
+                        // Deduplicate by vehicleTypeDescription, keep first match
+                        const seen = new Set<string>();
+                        const unique = vinVehicles.filter((v) => {
+                          const key = v.vehicleTypeDescription ?? v.carName;
+                          if (seen.has(key)) return false;
+                          seen.add(key);
+                          return true;
+                        });
+                        const q = vinVehicleFilter.trim().toLowerCase();
+                        const filtered = q
+                          ? unique.filter((v) =>
+                              v.carName.toLowerCase().includes(q) ||
+                              v.vehicleTypeDescription?.toLowerCase().includes(q)
+                            )
+                          : unique;
+                        return filtered.map((v) => (
                           <button
                             key={v.vehicleId}
                             type="button"
                             onClick={() => selectVehicle(v)}
                             className={cn(
-                              "w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted transition-colors",
-                              selectedVehicle?.vehicleId === v.vehicleId && "bg-muted"
+                              "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
+                              selectedVehicle?.vehicleId === v.vehicleId
+                                ? "bg-blue-50 border-l-4 border-blue-500 text-blue-900 dark:bg-blue-950 dark:text-blue-100"
+                                : "hover:bg-muted border-l-4 border-transparent"
                             )}
                           >
-                            <Car className="h-4 w-4 text-muted-foreground shrink-0" />
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium truncate">{v.carName}</p>
-                              {v.vehicleTypeDescription && (
-                                <p className="text-xs text-muted-foreground">{v.vehicleTypeDescription}</p>
-                              )}
-                            </div>
+                            <Car className={cn(
+                              "h-4 w-4 shrink-0",
+                              selectedVehicle?.vehicleId === v.vehicleId ? "text-blue-500" : "text-muted-foreground"
+                            )} />
+                            <p className="text-sm font-medium truncate">
+                              {v.vehicleTypeDescription ?? v.carName}
+                            </p>
                           </button>
-                        ))}
+                        ));
+                      })()}
                     </div>
 
                     {/* Category picker */}
@@ -357,8 +371,17 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                               <button
                                 key={`${catId}-${i}`}
                                 type="button"
-                                onClick={() => selectedVehicle && search({ type: "vehicle", vehicleId: selectedVehicle.vehicleId, categoryId: catId })}
-                                className="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
+                                onClick={() => {
+                                  if (!selectedVehicle) return;
+                                  setSelectedCategoryId(catId ?? null);
+                                  search({ type: "vehicle", vehicleId: selectedVehicle.vehicleId, categoryId: catId });
+                                }}
+                                className={cn(
+                                  "w-full px-4 py-2.5 text-left text-sm transition-colors",
+                                  selectedCategoryId === catId && catId != null
+                                    ? "bg-blue-50 border-l-4 border-blue-500 text-blue-900 dark:bg-blue-950 dark:text-blue-100"
+                                    : "hover:bg-muted border-l-4 border-transparent"
+                                )}
                               >
                                 {name}
                               </button>

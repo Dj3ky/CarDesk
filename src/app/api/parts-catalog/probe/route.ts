@@ -21,24 +21,35 @@ export async function POST(request: Request) {
   };
 
   const candidates = [
-    // Vehicle details
+    // Vehicle details — path param style
     `/api/vehicles/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
-    `/api/vehicles/${vehicleId}/lang-id/${langId}`,
-    `/api/vehicle/type-id/1/${vehicleId}/lang-id/${langId}`,
+    `/api/vehicle/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
     `/api/vehicles/detail/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
     `/api/vehicles/attributes/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
-    // Article details
-    `/api/articles/${articleId}/lang-id/${langId}`,
-    `/api/articles/detail/${articleId}/lang-id/${langId}`,
-    `/api/articles/detail/lang-id/${langId}/article-id/${articleId}`,
-    // OEM cross-references for an article
-    `/api/articles-oem/by-article-id/${articleId}`,
-    `/api/articles-oem/list/article-id/${articleId}`,
-    `/api/articles/${articleId}/oem-numbers`,
-    `/api/articles/${articleId}/oem-numbers/lang-id/${langId}`,
+    `/api/vehicle-attributes/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
+    `/api/vehicle/attributes/type-id/1/vehicle-id/${vehicleId}/lang-id/${langId}`,
+    // Vehicle details — query param style (like OEM search)
+    `/api/vehicles/list?vehicleId=${vehicleId}&langId=${langId}`,
+    `/api/vehicle/detail?vehicleId=${vehicleId}&langId=${langId}`,
+    `/api/vehicle/info?vehicleId=${vehicleId}&typeId=1&langId=${langId}`,
+    `/api/vehicle-info?vehicleId=${vehicleId}&langId=${langId}`,
+    // Article OEM cross-refs — query param style
+    `/api/articles-oem/list?articleId=${articleId}&langId=${langId}`,
+    `/api/articles-oem/by-article-id?articleId=${articleId}&langId=${langId}`,
+    `/api/articles-oem/search-by-article-id?articleId=${articleId}&langId=${langId}`,
+    // Article details / criteria — path style
+    `/api/articles/detail/article-id/${articleId}/lang-id/${langId}`,
+    `/api/articles/criteria/article-id/${articleId}/lang-id/${langId}`,
+    `/api/article-criteria/article-id/${articleId}/lang-id/${langId}`,
+    `/api/articles/list/article-id/${articleId}/lang-id/${langId}`,
+    // Article details — query param style
+    `/api/articles/detail?articleId=${articleId}&langId=${langId}`,
+    `/api/articles/criteria?articleId=${articleId}&langId=${langId}`,
+    `/api/articles/info?articleId=${articleId}&langId=${langId}`,
     // Alternatives / comparable
-    `/api/articles/${articleId}/alternatives/lang-id/${langId}`,
-    `/api/articles/comparable/article-id/${articleId}/lang-id/${langId}`,
+    `/api/articles/comparable/type-id/1/article-id/${articleId}/lang-id/${langId}`,
+    `/api/articles/alternatives/article-id/${articleId}/lang-id/${langId}`,
+    `/api/articles/comparable?articleId=${articleId}&langId=${langId}`,
   ];
 
   const headers = {

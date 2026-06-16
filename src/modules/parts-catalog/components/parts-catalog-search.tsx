@@ -11,34 +11,14 @@ import { cn } from "@/lib/utils";
 import type { PartArticle } from "../types";
 
 function ArticleCard({ article }: { article: PartArticle }) {
-  const imageUrl =
-    article.articleImage ??
-    article.imageUrl ??
-    article.images?.[0]?.imageURL ??
-    article.images?.[0]?.imageUrl ??
-    article.images?.[0]?.url;
-
-  const oemList =
-    article.articleOemNumbers ??
-    article.oemNumbers?.map((o) => ({
-      articleOemNo: o.articleOemNo ?? o.articleNumber ?? "",
-      manufacturerName: o.manufacturerName ?? o.mfrName,
-    }));
-
-  const attrList = article.attributes?.map((a) => ({
-    name: a.attrName ?? a.criteriaDescription ?? "",
-    value: a.attrValue ?? a.criteriaValue ?? "",
-    unit: a.displayUnit ?? a.criteriaUnit ?? "",
-  }));
-
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4 flex gap-4">
         <div className="w-20 h-20 shrink-0 rounded-md border bg-muted flex items-center justify-center overflow-hidden">
-          {imageUrl ? (
+          {article.s3image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={imageUrl}
+              src={article.s3image}
               alt={article.articleNo}
               className="w-full h-full object-contain"
             />
@@ -49,37 +29,21 @@ function ArticleCard({ article }: { article: PartArticle }) {
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
-            {article.manufacturerName && (
-              <Badge variant="secondary">{article.manufacturerName}</Badge>
+            {article.supplierName && (
+              <Badge variant="secondary">{article.supplierName}</Badge>
             )}
           </div>
           {article.articleProductName && (
-            <p className="text-sm text-muted-foreground line-clamp-2">{article.articleProductName}</p>
+            <p className="text-sm text-muted-foreground">{article.articleProductName}</p>
           )}
-          {article.articleSearchNo && article.articleSearchNo !== article.articleNo && (
-            <p className="text-xs text-muted-foreground font-mono">OEM: {article.articleSearchNo}</p>
-          )}
-          {oemList && oemList.length > 0 && (
-            <div className="flex flex-wrap gap-1 pt-1">
-              {oemList.slice(0, 4).map((oem, i) => (
-                <span key={i} className="text-xs px-1.5 py-0.5 bg-muted rounded font-mono">
-                  {oem.manufacturerName ? `${oem.manufacturerName}: ` : ""}{oem.articleOemNo}
-                </span>
-              ))}
-              {oemList.length > 4 && (
-                <span className="text-xs text-muted-foreground">+{oemList.length - 4} more</span>
-              )}
-            </div>
-          )}
-          {attrList && attrList.length > 0 && (
-            <div className="flex flex-wrap gap-x-4 gap-y-0.5 pt-1">
-              {attrList.slice(0, 6).map((attr, i) => (
-                <span key={i} className="text-xs text-muted-foreground">
-                  <span className="font-medium">{attr.name}:</span> {attr.value}{attr.unit ? ` ${attr.unit}` : ""}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
+            {article.articleSearchNo && (
+              <span className="font-mono">OEM: {article.articleSearchNo}</span>
+            )}
+            {article.manufacturerName && (
+              <span>Brand: {article.manufacturerName}</span>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

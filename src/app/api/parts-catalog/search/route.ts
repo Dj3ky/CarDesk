@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 
-const BASE_URL = "https://auto-parts-catalog.apiprofile.com/api/v1";
+const BASE_URL = "https://api.autopartsapi.com";
 const DEFAULT_LANG = 1; // 1 = English
 
 export async function POST(request: Request) {
@@ -36,12 +36,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing query" }, { status: 400 });
     }
     const encoded = encodeURIComponent(params.query.trim());
-    apiUrl = `${BASE_URL}/articles/by-oem-number/${encoded}/lang-id/${langId}`;
+    apiUrl = `${BASE_URL}/api/articles-oem/search-by-article-oem-no?articleOemNo=${encoded}&langId=${langId}`;
   } else if (params.type === "vehicle") {
     if (!params.typeId) {
       return NextResponse.json({ error: "Missing typeId" }, { status: 400 });
     }
-    apiUrl = `${BASE_URL}/articles/by-vehicle/type-id/${params.typeId}/lang-id/${langId}`;
+    apiUrl = `${BASE_URL}/api/v1/articles/by-vehicle/type-id/${params.typeId}/lang-id/${langId}`;
   } else {
     return NextResponse.json({ error: "Invalid search type" }, { status: 400 });
   }

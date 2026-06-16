@@ -80,6 +80,7 @@ function ArticleCard({ article, activeOffer, onAdded }: {
               {article.manufacturerName && (
                 <span>Brand: {article.manufacturerName}</span>
               )}
+              <span className="text-muted-foreground/50">ID: {article.articleId}</span>
             </div>
           </div>
         </div>

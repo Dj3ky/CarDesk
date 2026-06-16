@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 
 const BASE_URL = "https://auto-parts-catalog.apiprofile.com";
-const DEFAULT_LANG = 1; // 1 = English
+const DEFAULT_LANG = 4; // 4 = English (GB)
+const LOCALE_TO_LANG: Record<string, number> = { en: 4, sl: 36 };
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -26,8 +27,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const params = body as { type?: string; query?: string; typeId?: number; langId?: number };
-  const langId = params.langId ?? DEFAULT_LANG;
+  const params = body as { type?: string; query?: string; typeId?: number; langId?: number; locale?: string };
+  const langId = params.langId ?? LOCALE_TO_LANG[params.locale ?? ""] ?? DEFAULT_LANG;
 
   let apiUrl: string;
 

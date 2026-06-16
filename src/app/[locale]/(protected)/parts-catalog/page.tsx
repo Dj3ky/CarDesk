@@ -48,7 +48,7 @@ export default async function PartsCatalogPage({ params }: PageProps) {
         </div>
       )}
 
-      <PartsCatalogSearch />
+      <PartsCatalogSearch locale={locale} />
     </div>
   );
 }

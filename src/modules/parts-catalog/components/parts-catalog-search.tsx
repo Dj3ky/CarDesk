@@ -75,7 +75,7 @@ function SupplierGroup({ name, articles, open, onToggle }: {
   );
 }
 
-export function PartsCatalogSearch() {
+export function PartsCatalogSearch({ locale }: { locale: string }) {
   const t = useTranslations("partsCatalog");
 
   const [activeTab, setActiveTab] = useState<"oem" | "vehicle" | "vin">("oem");
@@ -100,7 +100,7 @@ export function PartsCatalogSearch() {
       const res = await fetch("/api/parts-catalog/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ ...body, locale }),
       });
       const json = await res.json();
       if (!res.ok) {

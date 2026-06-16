@@ -463,7 +463,10 @@
     "addQty": "Kol.",
     "addPrice": "Cena €",
     "cancelAdd": "Prekliči",
-    "added": "Dodano v ponudbo"
+    "added": "Dodano v ponudbo",
+    "details": "Podrobnosti",
+    "oemNumbers": "OEM številke",
+    "specifications": "Specifikacije"
   },
   "offers": {
     "title": "Ponudbe",

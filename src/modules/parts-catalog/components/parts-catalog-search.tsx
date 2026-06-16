@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { PartArticle, VinVehicle, VinCategory } from "../types";
+import type { PartArticle, VinVehicle, VinCategory, ArticleDetail } from "../types";
 import { ActiveOfferBar, type ActiveOfferInfo } from "./active-offer-bar";
 
-function ArticleCard({ article, activeOffer, onAdded }: {
+function ArticleCard({ article, activeOffer, onAdded, locale }: {
   article: PartArticle;
   activeOffer: ActiveOfferInfo | null;
   onAdded?: () => void;
+  locale: string;
 }) {
   const t = useTranslations("partsCatalog");
   const [addOpen, setAddOpen] = useState(false);
@@ -22,6 +23,26 @@ function ArticleCard({ article, activeOffer, onAdded }: {
   const [price, setPrice] = useState("0");
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detail, setDetail] = useState<ArticleDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  async function toggleDetail() {
+    if (detailOpen) { setDetailOpen(false); return; }
+    setDetailOpen(true);
+    if (detail) return;
+    setDetailLoading(true);
+    try {
+      const res = await fetch("/api/parts-catalog/article-detail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId: article.articleId, locale }),
+      });
+      if (res.ok) setDetail(await res.json());
+    } finally {
+      setDetailLoading(false);
+    }
+  }
 
   async function handleAdd() {
     if (!activeOffer) return;
@@ -82,7 +103,59 @@ function ArticleCard({ article, activeOffer, onAdded }: {
               )}
             </div>
           </div>
+          <button
+            type="button"
+            onClick={toggleDetail}
+            className="shrink-0 self-start text-xs text-primary hover:underline flex items-center gap-1"
+          >
+            {detailLoading
+              ? <Loader2 className="h-3 w-3 animate-spin" />
+              : detailOpen
+                ? <ChevronDown className="h-3 w-3" />
+                : <ChevronRight className="h-3 w-3" />}
+            {t("details")}
+          </button>
         </div>
+
+        {detailOpen && detail && (
+          <div className="mt-3 pt-3 border-t space-y-3">
+            {detail.articleOemNo.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                  {t("oemNumbers")}
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  {detail.articleOemNo.map((o, i) => (
+                    <span key={i} className="text-xs">
+                      <span className="text-muted-foreground">{o.oemBrand}: </span>
+                      <span className="font-mono">{o.oemDisplayNo}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {detail.articleAllSpecifications.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                  {t("specifications")}
+                </p>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-1">
+                  {detail.articleAllSpecifications.map((s, i) => (
+                    <div key={i} className="flex justify-between gap-2 text-xs border-b border-muted py-0.5">
+                      <span className="text-muted-foreground">{s.criteriaName}</span>
+                      <span className="font-medium text-right">{s.criteriaValue}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {detail.articleEanNo?.eanNumbers && (
+              <p className="text-xs text-muted-foreground">
+                EAN: <span className="font-mono">{detail.articleEanNo.eanNumbers}</span>
+              </p>
+            )}
+          </div>
+        )}
 
         {activeOffer && (
           added ? (
@@ -141,13 +214,14 @@ function ArticleCard({ article, activeOffer, onAdded }: {
   );
 }
 
-function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded }: {
+function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, locale }: {
   name: string;
   articles: PartArticle[];
   open: boolean;
   onToggle: () => void;
   activeOffer: ActiveOfferInfo | null;
   onAdded?: () => void;
+  locale: string;
 }) {
   return (
     <div className="border rounded-lg overflow-hidden">
@@ -170,6 +244,7 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded }:
               article={article}
               activeOffer={activeOffer}
               onAdded={onAdded}
+              locale={locale}
             />
           ))}
         </div>
@@ -581,6 +656,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                   })}
                   activeOffer={activeOffer}
                   onAdded={handleItemAdded}
+                  locale={locale}
                 />
               ))}
             </div>

@@ -463,7 +463,10 @@
     "addQty": "Qty",
     "addPrice": "Price €",
     "cancelAdd": "Cancel",
-    "added": "Added to offer"
+    "added": "Added to offer",
+    "details": "Details",
+    "oemNumbers": "OEM Numbers",
+    "specifications": "Specifications"
   },
   "offers": {
     "title": "Offers",

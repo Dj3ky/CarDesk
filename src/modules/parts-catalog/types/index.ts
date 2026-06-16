@@ -33,6 +33,12 @@ export type VinCategory = {
   categoryId4?: number | null;
 };
 
+export type ArticleDetail = {
+  articleAllSpecifications: { criteriaName: string; criteriaValue: string }[];
+  articleOemNo: { oemBrand: string; oemDisplayNo: string }[];
+  articleEanNo?: { eanNumbers: string };
+};
+
 export type PartsCatalogSearchParams =
   | { type: "oem"; query: string; langId?: number }
   | { type: "vehicle"; vehicleId: number; langId?: number };

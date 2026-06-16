@@ -48,6 +48,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid search type" }, { status: 400 });
   }
 
+  console.log("[parts-catalog/search] url:", apiUrl);
   try {
     const apiRes = await fetch(apiUrl, {
       headers: {
@@ -67,6 +68,8 @@ export async function POST(request: Request) {
     }
 
     const data = await apiRes.json();
+    console.log("[parts-catalog/search] response keys:", JSON.stringify(Object.keys(data ?? {})));
+    console.log("[parts-catalog/search] first item:", JSON.stringify(Array.isArray(data) ? data[0] : data));
     const articles = Array.isArray(data) ? data : (data.articles ?? data.data ?? []);
     return NextResponse.json({ articles });
   } catch (err) {

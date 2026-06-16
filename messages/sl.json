@@ -448,7 +448,22 @@
     "collapseAll": "Strni vse",
     "expandAll": "Razširi vse",
     "searchError": "Iskanje ni uspelo. Prosimo, poskusite znova.",
-    "noApiKey": "API ključ kataloga delov ni nastavljen. Pojdite na Nastavitve → Integracije."
+    "noApiKey": "API ključ kataloga delov ni nastavljen. Pojdite na Nastavitve → Integracije.",
+    "activeOffer": "Aktivna ponudba",
+    "selectOffer": "Izberite ponudbo...",
+    "newOffer": "Nova ponudba",
+    "newOfferTitle": "Ustvari novo ponudbo",
+    "searchCustomer": "Iščite stranko...",
+    "noCustomers": "Ni najdenih strank",
+    "noOpenOffers": "Ni odprtih osnutkov ponudb",
+    "loading": "Nalaganje...",
+    "goToOffer": "Odpri ponudbo",
+    "itemsInOffer": "{count, plural, one {# artikel} other {# artiklov}}",
+    "addToOffer": "Dodaj v ponudbo",
+    "addQty": "Kol.",
+    "addPrice": "Cena €",
+    "cancelAdd": "Prekliči",
+    "added": "Dodano v ponudbo"
   },
   "offers": {
     "title": "Ponudbe",

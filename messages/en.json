@@ -448,7 +448,22 @@
     "collapseAll": "Collapse all",
     "expandAll": "Expand all",
     "searchError": "Search failed. Please try again.",
-    "noApiKey": "Parts catalog API key is not configured. Go to Settings → Integrations to add your API key."
+    "noApiKey": "Parts catalog API key is not configured. Go to Settings → Integrations to add your API key.",
+    "activeOffer": "Active offer",
+    "selectOffer": "Select offer...",
+    "newOffer": "New offer",
+    "newOfferTitle": "Create new offer",
+    "searchCustomer": "Search customer...",
+    "noCustomers": "No customers found",
+    "noOpenOffers": "No open draft offers",
+    "loading": "Loading...",
+    "goToOffer": "Go to offer",
+    "itemsInOffer": "{count, plural, one {# item} other {# items}}",
+    "addToOffer": "Add to offer",
+    "addQty": "Qty",
+    "addPrice": "Price €",
+    "cancelAdd": "Cancel",
+    "added": "Added to offer"
   },
   "offers": {
     "title": "Offers",

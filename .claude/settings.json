@@ -112,12 +112,14 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:auto-parts-catalog.apiprofile.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.autopartsapi.com)"
+      "WebFetch(domain:api.autopartsapi.com)",
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/parts-catalog/open-offers/[offerId]/items\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",
       "d:\\GitHub\\CarDesk\\src\\app\\icons",
-      "d:\\GitHub\\CarDesk\\src\\app\\api\\work-orders\\[workOrderId]"
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\work-orders\\[workOrderId]",
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\parts-catalog\\open-offers\\[offerId]"
     ]
   }
 }

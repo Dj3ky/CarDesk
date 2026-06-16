@@ -2,54 +2,152 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight, Car } from "lucide-react";
+import { Search, Loader2, ImageOff, AlertCircle, ChevronDown, ChevronRight, Car, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { PartArticle, VinVehicle, VinCategory } from "../types";
+import { ActiveOfferBar, type ActiveOfferInfo } from "./active-offer-bar";
 
-function ArticleCard({ article }: { article: PartArticle }) {
+function ArticleCard({ article, activeOffer, onAdded }: {
+  article: PartArticle;
+  activeOffer: ActiveOfferInfo | null;
+  onAdded?: () => void;
+}) {
+  const t = useTranslations("partsCatalog");
+  const [addOpen, setAddOpen] = useState(false);
+  const [qty, setQty] = useState("1");
+  const [price, setPrice] = useState("0");
+  const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  async function handleAdd() {
+    if (!activeOffer) return;
+    setAdding(true);
+    try {
+      const res = await fetch(`/api/parts-catalog/open-offers/${activeOffer.id}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          description: article.articleProductName || article.articleNo,
+          productNumber: article.articleSearchNo || article.articleNo,
+          quantity: parseFloat(qty) || 1,
+          pricePerUnit: parseFloat(price) || 0,
+        }),
+      });
+      if (res.ok) {
+        setAdded(true);
+        onAdded?.();
+        setTimeout(() => {
+          setAdded(false);
+          setAddOpen(false);
+          setQty("1");
+          setPrice("0");
+        }, 1500);
+      }
+    } finally {
+      setAdding(false);
+    }
+  }
+
   return (
     <Card className="overflow-hidden">
-      <CardContent className="p-4 flex gap-4">
-        <div className="w-20 h-20 shrink-0 rounded-md border bg-muted flex items-center justify-center overflow-hidden">
-          {article.s3image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={article.s3image}
-              alt={article.articleNo}
-              className="w-full h-full object-contain"
-            />
-          ) : (
-            <ImageOff className="h-8 w-8 text-muted-foreground/30" />
-          )}
-        </div>
-        <div className="flex-1 min-w-0 space-y-1">
-          <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
-          {article.articleProductName && (
-            <p className="text-sm text-muted-foreground">{article.articleProductName}</p>
-          )}
-          <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
-            {article.articleSearchNo && (
-              <span className="font-mono">OEM: {article.articleSearchNo}</span>
-            )}
-            {article.manufacturerName && (
-              <span>Brand: {article.manufacturerName}</span>
+      <CardContent className="p-4">
+        <div className="flex gap-4">
+          <div className="w-20 h-20 shrink-0 rounded-md border bg-muted flex items-center justify-center overflow-hidden">
+            {article.s3image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={article.s3image}
+                alt={article.articleNo}
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <ImageOff className="h-8 w-8 text-muted-foreground/30" />
             )}
           </div>
+          <div className="flex-1 min-w-0 space-y-1">
+            <span className="font-mono font-semibold text-sm">{article.articleNo}</span>
+            {article.articleProductName && (
+              <p className="text-sm text-muted-foreground">{article.articleProductName}</p>
+            )}
+            <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
+              {article.articleSearchNo && (
+                <span className="font-mono">OEM: {article.articleSearchNo}</span>
+              )}
+              {article.manufacturerName && (
+                <span>Brand: {article.manufacturerName}</span>
+              )}
+            </div>
+          </div>
         </div>
+
+        {activeOffer && (
+          added ? (
+            <div className="mt-3 pt-3 border-t flex items-center gap-1.5 text-sm text-green-600">
+              <Check className="h-4 w-4" />
+              {t("added")}
+            </div>
+          ) : addOpen ? (
+            <div className="mt-3 pt-3 border-t flex items-center gap-2 flex-wrap">
+              <label className="text-xs text-muted-foreground">{t("addQty")}</label>
+              <Input
+                value={qty}
+                onChange={(e) => setQty(e.target.value)}
+                type="number"
+                min="0.001"
+                step="1"
+                className="w-20 h-7 text-sm"
+              />
+              <label className="text-xs text-muted-foreground">{t("addPrice")}</label>
+              <Input
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                type="number"
+                min="0"
+                step="0.01"
+                className="w-28 h-7 text-sm"
+              />
+              <Button size="sm" onClick={handleAdd} disabled={adding} className="h-7">
+                {adding && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
+                {t("addToOffer")}
+              </Button>
+              <button
+                type="button"
+                onClick={() => setAddOpen(false)}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {t("cancelAdd")}
+              </button>
+            </div>
+          ) : (
+            <div className="mt-2 flex justify-end">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setAddOpen(true)}
+                className="h-7 text-xs gap-1"
+              >
+                <Plus className="h-3 w-3" />
+                {t("addToOffer")}
+              </Button>
+            </div>
+          )
+        )}
       </CardContent>
     </Card>
   );
 }
 
-function SupplierGroup({ name, articles, open, onToggle }: {
+function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded }: {
   name: string;
   articles: PartArticle[];
   open: boolean;
   onToggle: () => void;
+  activeOffer: ActiveOfferInfo | null;
+  onAdded?: () => void;
 }) {
   return (
     <div className="border rounded-lg overflow-hidden">
@@ -67,7 +165,12 @@ function SupplierGroup({ name, articles, open, onToggle }: {
       {open && (
         <div className="divide-y">
           {articles.map((article) => (
-            <ArticleCard key={article.articleId} article={article} />
+            <ArticleCard
+              key={article.articleId}
+              article={article}
+              activeOffer={activeOffer}
+              onAdded={onAdded}
+            />
           ))}
         </div>
       )}
@@ -96,6 +199,11 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState("");
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
+  const [activeOffer, setActiveOffer] = useState<ActiveOfferInfo | null>(null);
+
+  function handleItemAdded() {
+    setActiveOffer((prev) => prev ? { ...prev, itemCount: prev.itemCount + 1 } : null);
+  }
 
   async function search(body: object) {
     setLoading(true);
@@ -211,6 +319,8 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
 
   return (
     <div className="space-y-6">
+      <ActiveOfferBar activeOffer={activeOffer} onSelect={setActiveOffer} />
+
       <div className="space-y-4">
         {/* Tab switcher */}
         <div className="flex gap-1 border-b">
@@ -469,6 +579,8 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                     next.has(supplier) ? next.delete(supplier) : next.add(supplier);
                     return next;
                   })}
+                  activeOffer={activeOffer}
+                  onAdded={handleItemAdded}
                 />
               ))}
             </div>

@@ -83,6 +83,7 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
             <thead>
               <tr className="border-b text-xs text-muted-foreground">
                 <th className="py-2 pl-1 pr-2 w-8" />
+                <th className="py-2 px-2 text-left font-medium w-[140px]">{t("parts.partNumber")}</th>
                 <th className="py-2 px-2 text-left font-medium min-w-[200px]">{t("parts.description")}</th>
                 <th className="py-2 px-2 text-right font-medium w-20">{t("parts.qty")}</th>
                 <th className="py-2 px-2 text-center font-medium w-20">{t("parts.unit")}</th>
@@ -110,12 +111,14 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
                         <PackageSearch className="h-4 w-4" />
                       </button>
                     </td>
-                    <td className="py-1.5 px-2 align-top">
+                    <td className="py-1.5 px-2 align-top pt-3">
                       <Input
                         {...register(`items.${index}.productNumber`)}
                         placeholder={t("parts.partNumber")}
-                        className="h-7 text-xs font-mono mb-1"
+                        className="h-8 text-xs font-mono w-[130px]"
                       />
+                    </td>
+                    <td className="py-1.5 px-2 align-top pt-3">
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("parts.description")} *`}

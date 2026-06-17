@@ -96,6 +96,9 @@ export function LineItemsEditor({
             <thead>
               <tr className="border-b text-xs text-muted-foreground">
                 <th className="py-2 pl-1 pr-2 text-left font-medium w-8">#</th>
+                <th className="py-2 px-2 text-left font-medium w-[140px]">
+                  {t("items.productNumber")}
+                </th>
                 <th className="py-2 px-2 text-left font-medium min-w-[220px]">
                   {t("items.description")}
                 </th>
@@ -137,12 +140,14 @@ export function LineItemsEditor({
                         <PackageSearch className="h-4 w-4" />
                       </button>
                     </td>
-                    <td className="py-1.5 px-2 align-top">
+                    <td className="py-1.5 px-2 align-top pt-3">
                       <Input
                         {...register(`items.${index}.productNumber`)}
                         placeholder={t("items.productNumber")}
-                        className="h-7 text-xs font-mono mb-1"
+                        className="h-8 text-xs font-mono w-[130px]"
                       />
+                    </td>
+                    <td className="py-1.5 px-2 align-top pt-3">
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("items.description")} *`}

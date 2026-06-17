@@ -394,12 +394,12 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
               </CardTitle>
               <CardDescription>{t("settings.sections.systemDesc")}</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
+            <CardContent className="space-y-4">
               <FormField
                 control={form.control}
                 name="defaultLanguage"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="max-w-xs">
                     <FormLabel>{t("settings.fields.defaultLanguage")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
@@ -423,7 +423,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                 control={form.control}
                 name="sessionTimeoutMinutes"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="max-w-xs">
                     <FormLabel>{t("settings.fields.sessionTimeoutMinutes")}</FormLabel>
                     <Select
                       value={String(field.value)}

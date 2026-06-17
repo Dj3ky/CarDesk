@@ -49,7 +49,7 @@ export function Header() {
       </Button>
 
       {/* Logo — mobile center */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:hidden">
+      <Link href={`/${locale}/dashboard`} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:hidden">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-sm">
           <Gauge className="h-4 w-4 text-primary-foreground" />
         </div>
@@ -57,7 +57,7 @@ export function Header() {
           <span className="font-light text-foreground/70">Car</span>
           <span className="font-bold text-primary">Desk</span>
         </span>
-      </div>
+      </Link>
 
       <div className="hidden md:block" />
 

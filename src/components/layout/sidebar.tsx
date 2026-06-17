@@ -91,13 +91,15 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function Sidebar() {
   const { mobileOpen, setMobileOpen } = useSidebar();
+  const locale = useLocale();
+  const dashboardHref = `/${locale}/dashboard`;
 
   return (
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-50 w-64 flex-col border-r bg-sidebar">
         <div className="flex h-16 items-center border-b px-6">
-          <div className="flex items-center gap-2.5">
+          <Link href={dashboardHref} className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary shadow-sm">
               <Gauge className="h-5 w-5 text-sidebar-primary-foreground" />
             </div>
@@ -105,7 +107,7 @@ export function Sidebar() {
               <span className="font-light text-sidebar-foreground/70">Car</span>
               <span className="font-bold text-sidebar-primary">Desk</span>
             </span>
-          </div>
+          </Link>
         </div>
         <NavContent />
       </aside>
@@ -119,7 +121,11 @@ export function Sidebar() {
           />
           <aside className="relative z-10 flex w-64 flex-col border-r bg-sidebar">
             <div className="flex h-16 items-center justify-between border-b px-6">
-              <div className="flex items-center gap-2.5">
+              <Link
+                href={dashboardHref}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2.5"
+              >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary shadow-sm">
                   <Gauge className="h-5 w-5 text-sidebar-primary-foreground" />
                 </div>
@@ -127,7 +133,7 @@ export function Sidebar() {
                   <span className="font-light text-sidebar-foreground/70">Car</span>
                   <span className="font-bold text-sidebar-primary">Desk</span>
                 </span>
-              </div>
+              </Link>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="rounded-md p-1 text-sidebar-foreground hover:bg-sidebar-accent"

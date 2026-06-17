@@ -10,11 +10,13 @@ export async function getOffers({
   status,
   search,
   customerId,
+  groupBy,
 }: {
   page?: number;
   status?: string;
   search?: string;
   customerId?: string;
+  groupBy?: string;
 } = {}): Promise<{ offers: OfferListItem[]; total: number; totalPages: number }> {
   const skip = (page - 1) * PAGE_SIZE;
 
@@ -25,19 +27,50 @@ export async function getOffers({
       ? {
           OR: [
             { offerNumber: { contains: search, mode: "insensitive" as const } },
+            { notes: { contains: search, mode: "insensitive" as const } },
             {
               customer: {
                 OR: [
                   { firstName: { contains: search, mode: "insensitive" as const } },
                   { lastName: { contains: search, mode: "insensitive" as const } },
                   { companyName: { contains: search, mode: "insensitive" as const } },
+                  { email: { contains: search, mode: "insensitive" as const } },
                 ],
+              },
+            },
+            {
+              vehicle: {
+                OR: [
+                  { make: { contains: search, mode: "insensitive" as const } },
+                  { model: { contains: search, mode: "insensitive" as const } },
+                  { registrationPlate: { contains: search, mode: "insensitive" as const } },
+                  { vin: { contains: search, mode: "insensitive" as const } },
+                ],
+              },
+            },
+            {
+              items: {
+                some: {
+                  OR: [
+                    { description: { contains: search, mode: "insensitive" as const } },
+                    { productNumber: { contains: search, mode: "insensitive" as const } },
+                  ],
+                },
               },
             },
           ],
         }
       : {}),
   };
+
+  const orderBy =
+    groupBy === "customer"
+      ? [
+          { customer: { companyName: "asc" as const } },
+          { customer: { firstName: "asc" as const } },
+          { createdAt: "desc" as const },
+        ]
+      : [{ createdAt: "desc" as const }];
 
   const [offers, total] = await Promise.all([
     prisma.offer.findMany({
@@ -51,7 +84,7 @@ export async function getOffers({
       },
       skip,
       take: PAGE_SIZE,
-      orderBy: { createdAt: "desc" },
+      orderBy,
     }),
     prisma.offer.count({ where }),
   ]);

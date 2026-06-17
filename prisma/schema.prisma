@@ -315,10 +315,11 @@ model Settings {
   offerPrefix        String   @default("OFF")
   invoicePrefix      String   @default("INV")
   workOrderPrefix    String   @default("WO")
-  pdfFooterText      String?  @db.Text
-  termsAndConditions String?  @db.Text
-  partsCatalogApiKey String?
-  updatedAt          DateTime @updatedAt
+  pdfFooterText         String?  @db.Text
+  termsAndConditions    String?  @db.Text
+  partsCatalogApiKey    String?
+  sessionTimeoutMinutes Int      @default(30)
+  updatedAt             DateTime @updatedAt
 }
 
 enum WorkOrderStatus {

@@ -411,7 +411,13 @@
       "termsAndConditionsHint": "Pogoji prikazani na ponudbah in računih",
       "defaultLanguage": "Privzeti jezik",
       "partsCatalogApiKey": "API ključ kataloga delov",
-      "partsCatalogApiKeyHint": "API ključ s strani auto-parts-catalog.apiprofile.com — brezplačna registracija na njihovi spletni strani"
+      "partsCatalogApiKeyHint": "API ključ s strani auto-parts-catalog.apiprofile.com — brezplačna registracija na njihovi spletni strani",
+      "sessionTimeoutMinutes": "Odjava ob neaktivnosti",
+      "sessionTimeoutHint": "Samodejno odjavi uporabnike po določenem obdobju neaktivnosti"
+    },
+    "sessionTimeout": {
+      "disabled": "Izklopljeno",
+      "minutes": "{count} minut"
     },
     "currencies": {
       "EUR": "EUR — Euro",

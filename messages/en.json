@@ -411,7 +411,13 @@
       "termsAndConditionsHint": "Terms displayed on offers and invoices",
       "defaultLanguage": "Default Language",
       "partsCatalogApiKey": "Parts Catalog API Key",
-      "partsCatalogApiKeyHint": "API key from auto-parts-catalog.apiprofile.com — register free at their website"
+      "partsCatalogApiKeyHint": "API key from auto-parts-catalog.apiprofile.com — register free at their website",
+      "sessionTimeoutMinutes": "Inactivity Logout",
+      "sessionTimeoutHint": "Automatically sign out users after a period of inactivity"
+    },
+    "sessionTimeout": {
+      "disabled": "Disabled",
+      "minutes": "{count} minutes"
     },
     "currencies": {
       "EUR": "EUR — Euro",

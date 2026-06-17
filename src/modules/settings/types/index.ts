@@ -15,6 +15,7 @@ export type SettingsData = {
   pdfFooterText: string | null;
   termsAndConditions: string | null;
   partsCatalogApiKey: string | null;
+  sessionTimeoutMinutes: number;
   updatedAt: Date;
 };
 

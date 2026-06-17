@@ -74,6 +74,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       pdfFooterText: settings.pdfFooterText ?? "",
       termsAndConditions: settings.termsAndConditions ?? "",
       partsCatalogApiKey: settings.partsCatalogApiKey ?? "",
+      sessionTimeoutMinutes: settings.sessionTimeoutMinutes ?? 30,
     },
   });
 
@@ -393,7 +394,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
               </CardTitle>
               <CardDescription>{t("settings.sections.systemDesc")}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="defaultLanguage"
@@ -414,6 +415,34 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sessionTimeoutMinutes"
+                render={({ field }) => (
+                  <FormItem className="max-w-xs">
+                    <FormLabel>{t("settings.fields.sessionTimeoutMinutes")}</FormLabel>
+                    <Select
+                      value={String(field.value)}
+                      onValueChange={(v) => field.onChange(parseInt(v, 10))}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0">{t("settings.sessionTimeout.disabled")}</SelectItem>
+                        <SelectItem value="15">{t("settings.sessionTimeout.minutes", { count: 15 })}</SelectItem>
+                        <SelectItem value="30">{t("settings.sessionTimeout.minutes", { count: 30 })}</SelectItem>
+                        <SelectItem value="60">{t("settings.sessionTimeout.minutes", { count: 60 })}</SelectItem>
+                        <SelectItem value="120">{t("settings.sessionTimeout.minutes", { count: 120 })}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>{t("settings.fields.sessionTimeoutHint")}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

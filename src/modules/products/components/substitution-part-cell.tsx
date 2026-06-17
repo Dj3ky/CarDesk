@@ -127,7 +127,7 @@ export function SubstitutionPartCell({ substitutionPart }: SubstitutionPartCellP
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">VAT {vatPct}%</span>
+                    <span className="text-muted-foreground">{t("substitutionPopup.vat", { rate: vatPct })}</span>
                     <span className="tabular-nums text-muted-foreground">
                       {formatEur(effectiveIncVat - effectiveExVat)}
                     </span>

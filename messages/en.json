@@ -101,7 +101,8 @@
       "priceExVat": "Price (ex VAT)",
       "priceIncVat": "Price (inc VAT)",
       "stock": "Stock",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "vat": "VAT {rate}%"
     }
   },
   "vehicles": {

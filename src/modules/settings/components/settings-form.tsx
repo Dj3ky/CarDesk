@@ -399,7 +399,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                 control={form.control}
                 name="defaultLanguage"
                 render={({ field }) => (
-                  <FormItem className="max-w-xs">
+                  <FormItem>
                     <FormLabel>{t("settings.fields.defaultLanguage")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
@@ -423,7 +423,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                 control={form.control}
                 name="sessionTimeoutMinutes"
                 render={({ field }) => (
-                  <FormItem className="max-w-xs">
+                  <FormItem>
                     <FormLabel>{t("settings.fields.sessionTimeoutMinutes")}</FormLabel>
                     <Select
                       value={String(field.value)}

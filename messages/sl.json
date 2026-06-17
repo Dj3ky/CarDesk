@@ -101,7 +101,8 @@
       "priceExVat": "Cena (brez DDV)",
       "priceIncVat": "Cena (z DDV)",
       "stock": "Zaloga",
-      "inactive": "Neaktiven"
+      "inactive": "Neaktiven",
+      "vat": "DDV {rate}%"
     }
   },
   "vehicles": {

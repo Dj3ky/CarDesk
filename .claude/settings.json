@@ -119,7 +119,10 @@
       "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.settings, null, 2\\)\\)\")",
       "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\({settings_sections: d.settings?.sections, settings_fields: d.settings?.fields}, null, 2\\)\\)\")",
       "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.settings.sections, null, 2\\)\\)\")",
-      "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.settings.sections, null, 2\\)\\)\")"
+      "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.settings.sections, null, 2\\)\\)\")",
+      "Bash(grep \"\\\\.tsx$\")",
+      "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.products?.substitutionPopup, null, 2\\)\\)\")",
+      "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.products?.substitutionPopup, null, 2\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

@@ -165,13 +165,13 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
                     type="button"
                     size="sm"
                     variant={justAdded[p.id] ? "secondary" : "default"}
-                    className="shrink-0 w-20"
+                    className="shrink-0 sm:w-20"
                     onClick={() => handleAdd(p)}
                   >
                     {justAdded[p.id] ? (
-                      <><Check className="h-3.5 w-3.5 mr-1" />{tp("added")}</>
+                      <><Check className="h-3.5 w-3.5 sm:mr-1" /><span className="hidden sm:inline">{tp("added")}</span></>
                     ) : (
-                      <><Plus className="h-3.5 w-3.5 mr-1" />{tp("add")}</>
+                      <><Plus className="h-3.5 w-3.5 sm:mr-1" /><span className="hidden sm:inline">{tp("add")}</span></>
                     )}
                   </Button>
                 </div>

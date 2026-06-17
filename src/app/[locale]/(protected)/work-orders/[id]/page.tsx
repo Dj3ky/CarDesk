@@ -150,6 +150,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                   <table className="w-full text-sm">
                     <thead className="border-b bg-muted/40">
                       <tr>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground w-[130px]">{t("parts.partNumber")}</th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("detail.description")}</th>
                         <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.qty")}</th>
                         <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.price")}</th>
@@ -161,10 +162,10 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                         const { grandTotal } = calcTotals([item], []);
                         return (
                           <tr key={item.id}>
-                            <td className="px-4 py-2.5">
-                              {item.productNumber && <span className="font-mono text-xs text-muted-foreground mr-1">{item.productNumber}</span>}
-                              {item.description}
+                            <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">
+                              {item.productNumber ?? "—"}
                             </td>
+                            <td className="px-4 py-2.5">{item.description}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{parseFloat(item.quantity)} {item.unit}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{formatCurrency(parseFloat(item.pricePerUnit))}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(grandTotal)}</td>

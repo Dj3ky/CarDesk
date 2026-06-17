@@ -59,7 +59,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
     : `${offer.customer.firstName} ${offer.customer.lastName}`;
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="max-w-6xl space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
@@ -215,6 +215,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               <TableHeader>
                 <TableRow>
                   <TableHead className="pl-6 w-8">#</TableHead>
+                  <TableHead className="w-[140px]">{t("items.productNumber")}</TableHead>
                   <TableHead>{t("items.description")}</TableHead>
                   <TableHead className="text-right">{t("items.quantity")}</TableHead>
                   <TableHead className="text-center">{t("items.unit")}</TableHead>
@@ -230,14 +231,10 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                   return (
                     <TableRow key={item.id}>
                       <TableCell className="pl-6 text-muted-foreground">{idx + 1}</TableCell>
-                      <TableCell>
-                        {item.productNumber && (
-                          <p className="font-mono text-xs text-muted-foreground">
-                            {item.productNumber}
-                          </p>
-                        )}
-                        <p>{item.description}</p>
+                      <TableCell className="font-mono text-xs text-muted-foreground">
+                        {item.productNumber ?? "—"}
                       </TableCell>
+                      <TableCell>{item.description}</TableCell>
                       <TableCell className="text-right">
                         {Number(item.quantity).toFixed(2).replace(/\.00$/, "")}
                       </TableCell>

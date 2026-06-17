@@ -130,7 +130,7 @@ export function LineItemsEditor({
 
                 return (
                   <tr key={field.id} className="border-b hover:bg-muted/30">
-                    <td className="py-1.5 pl-1 pr-2 text-center align-top pt-3">
+                    <td className="py-1.5 pl-1 pr-2 text-center align-middle">
                       <button
                         type="button"
                         title={t("items.searchProduct")}

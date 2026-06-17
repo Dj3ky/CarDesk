@@ -150,7 +150,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                   <table className="w-full text-sm">
                     <thead className="border-b bg-muted/40">
                       <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground w-[130px]">{t("parts.partNumber")}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground w-[130px]">{t("items.productNumber")}</th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">{t("detail.description")}</th>
                         <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.qty")}</th>
                         <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">{t("detail.price")}</th>

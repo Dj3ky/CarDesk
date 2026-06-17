@@ -87,7 +87,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent className="max-w-2xl flex flex-col gap-4">
+      <DialogContent className="max-w-4xl flex flex-col gap-4">
         <DialogHeader>
           <div className="flex items-center gap-3">
             <DialogTitle>{tp("title")}</DialogTitle>

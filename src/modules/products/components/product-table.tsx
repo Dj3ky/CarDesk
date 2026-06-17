@@ -76,7 +76,7 @@ export async function ProductTable({
               <TableRow key={p.id}>
                 <TableCell>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-sm font-medium">{p.productNumber}</span>
+                    <span className="font-mono text-sm font-medium whitespace-nowrap">{p.productNumber}</span>
                     {p.substitutionPart && (
                       <span title={`${t("products.fields.substitutionPart")}: ${p.substitutionPart}`}>
                         <TriangleAlert className="h-3.5 w-3.5 shrink-0 text-amber-500" />

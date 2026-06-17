@@ -46,7 +46,7 @@ export function SubstitutionPartCell({ substitutionPart }: SubstitutionPartCellP
       <button
         type="button"
         onClick={handleOpen}
-        className="flex items-center gap-1 font-mono text-sm text-amber-600 hover:text-amber-700 hover:underline dark:text-amber-400 dark:hover:text-amber-300"
+        className="flex items-center gap-1 font-mono text-sm text-amber-600 hover:text-amber-700 hover:underline dark:text-amber-400 dark:hover:text-amber-300 whitespace-nowrap"
       >
         <ArrowRightLeft className="h-3 w-3 shrink-0" />
         {substitutionPart}

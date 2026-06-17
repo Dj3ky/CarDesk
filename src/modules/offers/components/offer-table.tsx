@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
-import { FileText, Pencil } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +35,16 @@ function customerLabel(
 
 export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps) {
   const t = useTranslations("offers");
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+
+  function toggleGroup(key: string) {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
 
   if (offers.length === 0) {
     return (
@@ -67,61 +77,73 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
             const showGroupHeader = groupByCustomer && customerKey !== lastCustomerKey;
             if (groupByCustomer) lastCustomerKey = customerKey;
 
+            const isCollapsed = groupByCustomer && collapsed.has(customerKey);
             const colSpan = groupByCustomer ? 7 : 8;
 
             return (
               <Fragment key={offer.id}>
                 {showGroupHeader && (
-                  <TableRow className="bg-muted/40 hover:bg-muted/40">
-                    <TableCell colSpan={colSpan} className="py-2 font-semibold text-sm text-foreground">
-                      {customerKey}
+                  <TableRow
+                    className="bg-muted/40 hover:bg-muted/60 cursor-pointer select-none"
+                    onClick={() => toggleGroup(customerKey)}
+                  >
+                    <TableCell colSpan={colSpan} className="py-2">
+                      <div className="flex items-center gap-2 font-semibold text-sm text-foreground">
+                        {isCollapsed
+                          ? <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                          : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                        }
+                        {customerKey}
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}
-                <TableRow>
-                  <TableCell className="font-mono text-sm font-medium">
-                    <Link
-                      href={`/${locale}/offers/${offer.id}`}
-                      className="hover:underline text-primary"
-                    >
-                      {offer.offerNumber}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <OfferStatusBadge status={offer.status} />
-                  </TableCell>
-                  {!groupByCustomer && (
-                    <TableCell>{customerKey}</TableCell>
-                  )}
-                  <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
-                    {offer.vehicle
-                      ? `${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
-                      : "—"}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell text-sm">{formatDate(offer.createdAt)}</TableCell>
-                  <TableCell className="hidden lg:table-cell text-sm">
-                    {offer.validUntil ? formatDate(offer.validUntil) : "—"}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(offer.grandTotal, offer.currency)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 justify-end">
-                      <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-                        <Link href={`/${locale}/offers/${offer.id}`}>
-                          <FileText className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                      {offer.status === "DRAFT" && (
+                {!isCollapsed && (
+                  <TableRow>
+                    <TableCell className="font-mono text-sm font-medium">
+                      <Link
+                        href={`/${locale}/offers/${offer.id}`}
+                        className="hover:underline text-primary"
+                      >
+                        {offer.offerNumber}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <OfferStatusBadge status={offer.status} />
+                    </TableCell>
+                    {!groupByCustomer && (
+                      <TableCell>{customerKey}</TableCell>
+                    )}
+                    <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
+                      {offer.vehicle
+                        ? `${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
+                        : "—"}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell text-sm">{formatDate(offer.createdAt)}</TableCell>
+                    <TableCell className="hidden lg:table-cell text-sm">
+                      {offer.validUntil ? formatDate(offer.validUntil) : "—"}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {formatCurrency(offer.grandTotal, offer.currency)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1 justify-end">
                         <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-                          <Link href={`/${locale}/offers/${offer.id}/edit`}>
-                            <Pencil className="h-4 w-4" />
+                          <Link href={`/${locale}/offers/${offer.id}`}>
+                            <FileText className="h-4 w-4" />
                           </Link>
                         </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
+                        {offer.status === "DRAFT" && (
+                          <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                            <Link href={`/${locale}/offers/${offer.id}/edit`}>
+                              <Pencil className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
               </Fragment>
             );
           })}

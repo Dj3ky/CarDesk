@@ -43,7 +43,8 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
 
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const status = sp.status ?? "ALL";
-  const groupBy = sp.group === "customer" ? "customer" : undefined;
+  // Grouped by default; explicitly opt out with ?group=off
+  const groupBy = sp.group === "off" ? undefined : "customer";
 
   const { offers, total, totalPages } = await getOffers({
     page,
@@ -58,7 +59,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
     const params = new URLSearchParams();
     if (s !== "ALL") params.set("status", s);
     if (sp.search) params.set("search", sp.search);
-    if (groupBy) params.set("group", "customer");
+    if (!groupBy) params.set("group", "off");
     const qs = params.toString();
     return `${basePath}${qs ? `?${qs}` : ""}`;
   }
@@ -67,7 +68,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
     const params = new URLSearchParams();
     if (status !== "ALL") params.set("status", status);
     if (sp.search) params.set("search", sp.search);
-    if (!groupBy) params.set("group", "customer");
+    if (groupBy) params.set("group", "off");
     const qs = params.toString();
     return `${basePath}${qs ? `?${qs}` : ""}`;
   }
@@ -141,7 +142,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
           searchParams={{
             status: status !== "ALL" ? status : undefined,
             search: sp.search,
-            group: groupBy,
+            group: groupBy ? undefined : "off",
           }}
         />
       )}

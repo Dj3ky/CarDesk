@@ -140,21 +140,21 @@ export function LineItemsEditor({
                         <PackageSearch className="h-4 w-4" />
                       </button>
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <Input
                         {...register(`items.${index}.productNumber`)}
                         placeholder={t("items.productNumber")}
                         className="h-8 text-xs font-mono w-[130px]"
                       />
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("items.description")} *`}
                         className="h-8"
                       />
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <Input
                         {...register(`items.${index}.quantity`)}
                         type="number"
@@ -163,7 +163,7 @@ export function LineItemsEditor({
                         className="h-8 text-right w-20"
                       />
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <select
                         {...register(`items.${index}.unit`)}
                         className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
@@ -173,7 +173,7 @@ export function LineItemsEditor({
                         ))}
                       </select>
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <Input
                         {...register(`items.${index}.pricePerUnit`)}
                         type="number"
@@ -182,7 +182,7 @@ export function LineItemsEditor({
                         className="h-8 text-right w-24"
                       />
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <select
                         {...register(`items.${index}.vatRate`)}
                         className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
@@ -192,7 +192,7 @@ export function LineItemsEditor({
                         ))}
                       </select>
                     </td>
-                    <td className="py-1.5 px-2 align-top pt-3">
+                    <td className="py-1.5 px-2 align-middle">
                       <Input
                         {...register(`items.${index}.discount`)}
                         type="number"
@@ -202,10 +202,10 @@ export function LineItemsEditor({
                         className="h-8 text-right w-20"
                       />
                     </td>
-                    <td className="py-1.5 px-2 text-right font-medium align-top pt-3 whitespace-nowrap">
+                    <td className="py-1.5 px-2 text-right font-medium align-middle whitespace-nowrap">
                       {calc ? formatCurrency(calc.lineTotal, currency) : "—"}
                     </td>
-                    <td className="py-1.5 pl-2 pr-1 align-top pt-3">
+                    <td className="py-1.5 pl-2 pr-1 align-middle">
                       <Button
                         type="button"
                         variant="ghost"

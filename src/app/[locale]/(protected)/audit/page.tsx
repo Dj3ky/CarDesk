@@ -154,7 +154,7 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
                   {logs.map((log) => (
                     <TableRow key={log.id}>
                       <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                        {new Date(log.createdAt).toLocaleString("sl-SI")}
+                        {new Date(log.createdAt).toLocaleString("sl-SI", { timeZone: "Europe/Ljubljana" })}
                       </TableCell>
                       <TableCell>
                         <span

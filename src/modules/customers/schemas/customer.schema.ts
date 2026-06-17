@@ -52,7 +52,7 @@ export const customerSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform((v) => v || undefined),
-  country: z.string().min(2).max(2).default("SI"),
+  country: z.string().min(2).max(10).default("SI"),
   notes: z
     .string()
     .max(2000)

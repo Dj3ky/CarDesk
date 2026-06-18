@@ -166,7 +166,7 @@ export default async function WorkOrderPage({ params }: WorkOrderPageProps) {
                               {item.productNumber ?? "—"}
                             </td>
                             <td className="px-4 py-2.5">{item.description}</td>
-                            <td className="px-4 py-2.5 text-right tabular-nums">{parseFloat(item.quantity)} {item.unit}</td>
+                            <td className="px-4 py-2.5 text-right tabular-nums">{parseFloat(item.quantity)} {t(`units.${item.unit}` as "units.pcs")}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums">{formatCurrency(parseFloat(item.pricePerUnit))}</td>
                             <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(grandTotal)}</td>
                           </tr>

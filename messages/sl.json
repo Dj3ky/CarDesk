@@ -768,6 +768,18 @@
       "vat": "DDV {rate}%",
       "grandTotal": "Skupaj"
     },
+    "items": {
+      "productNumber": "Kataloška št."
+    },
+    "units": {
+      "pcs": "kos",
+      "h": "ura",
+      "m": "m",
+      "kg": "kg",
+      "l": "l",
+      "set": "komplet",
+      "pair": "par"
+    },
     "detail": {
       "customerVehicle": "Stranka in vozilo",
       "reportedProblem": "Prijavljena napaka",

@@ -21,6 +21,7 @@ interface LineItemsEditorProps {
   register: UseFormRegister<OfferFormValues>;
   setValue: UseFormSetValue<OfferFormValues>;
   errors: FieldErrors<OfferFormValues>;
+  isSubmitted: boolean;
   defaultVATRate: number;
   defaultDiscount: number;
   currency: string;
@@ -31,6 +32,7 @@ export function LineItemsEditor({
   register,
   setValue,
   errors,
+  isSubmitted,
   defaultVATRate,
   defaultDiscount,
   currency,
@@ -153,9 +155,9 @@ export function LineItemsEditor({
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("items.description")} *`}
-                        className={`h-8${errors.items?.[index]?.description ? " border-destructive focus-visible:ring-destructive" : ""}`}
+                        className={`h-8${isSubmitted && errors.items?.[index]?.description ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
-                      {errors.items?.[index]?.description?.message && (
+                      {isSubmitted && errors.items?.[index]?.description?.message && (
                         <p className="mt-0.5 text-xs text-destructive">{errors.items[index]!.description!.message}</p>
                       )}
                     </td>
@@ -165,7 +167,7 @@ export function LineItemsEditor({
                         type="number"
                         step="0.001"
                         min="0"
-                        className={`h-8 text-right w-20${errors.items?.[index]?.quantity ? " border-destructive focus-visible:ring-destructive" : ""}`}
+                        className={`h-8 text-right w-20${isSubmitted && errors.items?.[index]?.quantity ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </td>
                     <td className="py-1.5 px-2 align-middle">

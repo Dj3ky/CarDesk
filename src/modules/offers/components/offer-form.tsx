@@ -95,10 +95,11 @@ export function OfferForm({
     defaultValues: buildDefaults(offer, defaultCustomerId),
   });
 
-  const { register, handleSubmit, watch, setValue, control, formState: { errors, isDirty } } = form;
+  const { register, handleSubmit, watch, setValue, control, formState: { errors, isDirty, isSubmitted } } = form;
 
   const selectedCustomerId = watch("customerId");
   const selectedVehicleId = watch("vehicleId");
+  const watchedItems = watch("items");
   const selectedCustomer = customerList.find((c) => c.id === selectedCustomerId) ?? null;
 
   useEffect(() => {
@@ -307,11 +308,13 @@ export function OfferForm({
             register={register}
             setValue={setValue}
             errors={errors}
+            isSubmitted={isSubmitted}
             defaultVATRate={defaultVATRate}
             defaultDiscount={selectedCustomer?.defaultDiscount ?? 0}
             currency={currency}
           />
           {(() => {
+            if (watchedItems?.length > 0) return null;
             const e = errors.items as unknown as { root?: { message?: string }; message?: string } | undefined;
             const msg = e?.root?.message ?? e?.message;
             return msg ? <p className="mt-2 text-xs text-destructive">{msg}</p> : null;

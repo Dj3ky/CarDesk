@@ -22,7 +22,9 @@
     "profile": "Profile",
     "users": "Users",
     "workOrders": "Work Orders",
-    "partsCatalog": "Parts Catalog"
+    "partsCatalog": "Parts Catalog",
+    "groupParts": "Parts & Inventory",
+    "groupAdmin": "Administration"
   },
   "dashboard": {
     "title": "Dashboard",

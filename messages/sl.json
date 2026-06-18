@@ -22,7 +22,9 @@
     "profile": "Profil",
     "users": "Uporabniki",
     "workOrders": "Delovni nalogi",
-    "partsCatalog": "Katalog delov"
+    "partsCatalog": "Katalog delov",
+    "groupParts": "Deli in zaloga",
+    "groupAdmin": "Administracija"
   },
   "dashboard": {
     "title": "Nadzorna plošča",

@@ -25,67 +25,121 @@ import { useSidebar } from "./sidebar-context";
 import { canAccess } from "@/lib/permissions";
 import type { Module } from "@/lib/permissions";
 
-const NAV_ITEMS: {
+type NavItem = {
   href: string;
   labelKey: string;
   icon: React.ElementType;
   module?: Module;
-}[] = [
-  { href: "/dashboard",    labelKey: "dashboard",   icon: LayoutDashboard },
-  { href: "/customers",    labelKey: "customers",   icon: Users,       module: "customers"   },
-  { href: "/products",     labelKey: "products",    icon: Package,     module: "products"    },
-  { href: "/pricelist",    labelKey: "pricelist",   icon: Tag,         module: "pricelist"   },
-  { href: "/offers",       labelKey: "offers",      icon: FileText,    module: "offers"      },
-  { href: "/work-orders",  labelKey: "workOrders",  icon: Wrench,      module: "work_orders"  },
-  { href: "/parts-catalog", labelKey: "partsCatalog", icon: Search,   module: "parts_catalog" },
-  { href: "/reports",      labelKey: "reports",     icon: BarChart2,   module: "reports"      },
-  { href: "/users",        labelKey: "users",       icon: UserCog,     module: "users"       },
-  { href: "/audit",        labelKey: "audit",       icon: ShieldCheck, module: "audit"       },
-  { href: "/profile",      labelKey: "profile",     icon: User                               },
-  { href: "/settings",     labelKey: "settings",    icon: Settings,    module: "settings"    },
+};
+
+type NavGroup = {
+  labelKey?: string;
+  items: NavItem[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    items: [
+      { href: "/dashboard",   labelKey: "dashboard",  icon: LayoutDashboard },
+      { href: "/customers",   labelKey: "customers",  icon: Users,      module: "customers"   },
+      { href: "/offers",      labelKey: "offers",     icon: FileText,   module: "offers"      },
+      { href: "/work-orders", labelKey: "workOrders", icon: Wrench,     module: "work_orders" },
+    ],
+  },
+  {
+    labelKey: "groupParts",
+    items: [
+      { href: "/products",     labelKey: "products",     icon: Package, module: "products"     },
+      { href: "/pricelist",    labelKey: "pricelist",    icon: Tag,     module: "pricelist"    },
+      { href: "/parts-catalog", labelKey: "partsCatalog", icon: Search, module: "parts_catalog" },
+    ],
+  },
+  {
+    labelKey: "groupAdmin",
+    items: [
+      { href: "/reports",  labelKey: "reports",  icon: BarChart2,  module: "reports"   },
+      { href: "/users",    labelKey: "users",    icon: UserCog,    module: "users"     },
+      { href: "/audit",    labelKey: "audit",    icon: ShieldCheck, module: "audit"    },
+      { href: "/settings", labelKey: "settings", icon: Settings,   module: "settings"  },
+    ],
+  },
 ];
 
-function NavContent({ onNavigate }: { onNavigate?: () => void }) {
+const PROFILE_ITEM: NavItem = { href: "/profile", labelKey: "profile", icon: User };
+
+function NavLink({
+  href,
+  labelKey,
+  icon: Icon,
+  onNavigate,
+}: NavItem & { onNavigate?: () => void }) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("nav");
-  const { data: session } = useSession();
-
-  const user = session?.user;
+  const fullPath = `/${locale}${href}`;
+  const isActive = pathname === fullPath || pathname.startsWith(`${fullPath}/`);
 
   return (
-    <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-      {NAV_ITEMS.filter((item) => {
-        if (!item.module) return true;
-        if (!user) return false;
-        return canAccess(user, item.module);
-      }).map(({ href, labelKey, icon: Icon }) => {
-        const fullPath = `/${locale}${href}`;
-        const isActive =
-          pathname === fullPath || pathname.startsWith(`${fullPath}/`);
-        return (
-          <Link
-            key={href}
-            href={fullPath}
-            onClick={onNavigate}
-            className={cn(
-              "group flex items-center gap-3 rounded-md py-2.5 pr-3 text-sm font-medium transition-all border-l-2 pl-[10px]",
-              isActive
-                ? "border-sidebar-primary bg-sidebar-accent text-sidebar-foreground"
-                : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+    <Link
+      href={fullPath}
+      onClick={onNavigate}
+      className={cn(
+        "group flex items-center gap-3 rounded-md py-2.5 pr-3 text-sm font-medium transition-all border-l-2 pl-[10px]",
+        isActive
+          ? "border-sidebar-primary bg-sidebar-accent text-sidebar-foreground"
+          : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+      )}
+    >
+      <Icon
+        className={cn(
+          "h-4 w-4 shrink-0 transition-colors",
+          isActive
+            ? "text-sidebar-primary"
+            : "text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70"
+        )}
+      />
+      {t(labelKey)}
+    </Link>
+  );
+}
+
+function NavContent({ onNavigate }: { onNavigate?: () => void }) {
+  const t = useTranslations("nav");
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const visibleGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => {
+      if (!item.module) return true;
+      if (!user) return false;
+      return canAccess(user, item.module);
+    }),
+  })).filter((group) => group.items.length > 0);
+
+  return (
+    <div className="flex flex-1 flex-col overflow-y-auto">
+      <nav className="flex-1 space-y-4 p-4">
+        {visibleGroups.map((group, i) => (
+          <div key={i}>
+            {group.labelKey && (
+              <p className="mb-1 px-[10px] text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40">
+                {t(group.labelKey)}
+              </p>
             )}
-          >
-            <Icon className={cn(
-              "h-4 w-4 shrink-0 transition-colors",
-              isActive
-                ? "text-sidebar-primary"
-                : "text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70"
-            )} />
-            {t(labelKey)}
-          </Link>
-        );
-      })}
-    </nav>
+            <div className="space-y-0.5">
+              {group.items.map((item) => (
+                <NavLink key={item.href} {...item} onNavigate={onNavigate} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      <div className="border-t p-4">
+        <NavLink {...PROFILE_ITEM} onNavigate={onNavigate} />
+      </div>
+    </div>
   );
 }
 

@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useMemo, useRef } from "react";
 import { Loader2, CheckCircle2, AlertCircle, Upload, X } from "lucide-react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -238,13 +237,11 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                     )}
                     {field.value && (
                       <div className="mt-2 inline-block rounded border bg-muted p-2">
-                        <Image
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                           src={field.value}
                           alt="Logo preview"
-                          width={120}
-                          height={48}
-                          className="h-12 w-auto object-contain"
-                          unoptimized
+                          className="h-12 w-auto object-contain max-w-[180px]"
                         />
                       </div>
                     )}

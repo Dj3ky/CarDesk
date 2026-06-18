@@ -1,4 +1,5 @@
 import React from "react";
+import path from "path";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { canAccess } from "@/lib/permissions";
@@ -27,7 +28,11 @@ export async function GET(
   const { renderToBuffer } = await import("@react-pdf/renderer");
   const { WorkOrderPDF } = await import("@/modules/work-orders/pdf/work-order-pdf");
 
-  const element = React.createElement(WorkOrderPDF, { workOrder, settings });
+  const resolvedLogo = settings.companyLogo?.startsWith("/")
+    ? path.join(process.cwd(), "public", settings.companyLogo)
+    : settings.companyLogo ?? null;
+
+  const element = React.createElement(WorkOrderPDF, { workOrder, settings: { ...settings, companyLogo: resolvedLogo } });
   const render = renderToBuffer as (el: React.ReactElement) => Promise<Buffer>;
   const buffer = await render(element);
 

@@ -1,4 +1,5 @@
 import React from "react";
+import path from "path";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { getOffer } from "@/modules/offers/actions/get-offer";
@@ -23,7 +24,11 @@ export async function GET(
   const { renderToBuffer } = await import("@react-pdf/renderer");
   const { OfferPDF } = await import("@/modules/offers/pdf/offer-pdf");
 
-  const element = React.createElement(OfferPDF, { offer, settings });
+  const resolvedLogo = settings.companyLogo?.startsWith("/")
+    ? path.join(process.cwd(), "public", settings.companyLogo)
+    : settings.companyLogo ?? null;
+
+  const element = React.createElement(OfferPDF, { offer, settings: { ...settings, companyLogo: resolvedLogo } });
   // renderToBuffer expects ReactElement<DocumentProps> but accepts any component that renders <Document>
   const render = renderToBuffer as (el: React.ReactElement) => Promise<Buffer>;
   const buffer = await render(element);

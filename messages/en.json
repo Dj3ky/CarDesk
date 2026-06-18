@@ -370,7 +370,7 @@
       "updateAvailable": "{count, plural, one {# new commit available} other {# new commits available}} — update ready to install.",
       "checkError": "Could not reach GitHub. Check your network or git remote configuration.",
       "pullTitle": "Pull from GitHub",
-      "pullDesc": "Pull the latest code from the master branch of dj3ky/CarDesk.",
+      "pullDesc": "Pull the latest code from the master branch of CarDesk.",
       "pullButton": "Pull from GitHub",
       "pulling": "Pulling...",
       "pullDone": "Update complete. The server is restarting — the page will reconnect shortly.",

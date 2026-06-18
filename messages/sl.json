@@ -370,7 +370,7 @@
       "updateAvailable": "{count, plural, one {Na voljo je # nova različica} other {Na voljo je # novih različic}} — posodobitev je pripravljena za namestitev.",
       "checkError": "Ni mogoče doseči GitHuba. Preverite omrežje ali konfiguracijo git remote.",
       "pullTitle": "Povleci iz GitHuba",
-      "pullDesc": "Povleci najnovejšo kodo iz veje master repozitorija dj3ky/CarDesk.",
+      "pullDesc": "Povleci najnovejšo kodo iz veje master repozitorija CarDesk.",
       "pullButton": "Posodobi iz GitHuba",
       "pulling": "Posodabljam...",
       "pullDone": "Posodobitev dokončana. Strežnik se zaganja — stran se bo kmalu znova povezala.",

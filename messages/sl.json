@@ -665,7 +665,8 @@
       "audit": "Revizijska sled",
       "settings": "Nastavitve",
       "users": "Uporabniki",
-      "backup": "Varnostna kopija"
+      "backup": "Varnostna kopija",
+      "parts_catalog": "Katalog delov"
     },
     "selfDeleteError": "Ne morete izbrisati lastnega računa",
     "lastAdminError": "Ni mogoče izbrisati zadnjega administratorskega računa",

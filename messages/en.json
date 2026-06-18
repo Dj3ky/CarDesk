@@ -665,7 +665,8 @@
       "audit": "Audit Log",
       "settings": "Settings",
       "users": "Users",
-      "backup": "Backup"
+      "backup": "Backup",
+      "parts_catalog": "Parts Catalog"
     },
     "selfDeleteError": "You cannot delete your own account",
     "lastAdminError": "Cannot delete the last admin account",

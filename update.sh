@@ -96,6 +96,12 @@ NODE_ENV=production npm run build
 rm -rf .next/standalone/.next/static
 cp -r .next/static .next/standalone/.next/static
 cp -r public .next/standalone/public
+# Migrate legacy runtime-uploaded files from public/uploads/ → uploads/
+# (public/ is overwritten on each build; uploads/ at project root persists)
+if [[ -d public/uploads ]]; then
+  mkdir -p uploads
+  cp -n public/uploads/* uploads/ 2>/dev/null || true
+fi
 success "Build complete"
 
 # ─────────────────────────────────────────────

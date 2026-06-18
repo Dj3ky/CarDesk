@@ -7,9 +7,14 @@ import { uploadsDir } from "@/app/api/upload/route";
 function resolveLogoPath(logo: string | null | undefined): string | null {
   if (!logo) return null;
   if (logo.startsWith("/api/upload/")) {
+    // Current format: file stored in <cwd>/uploads/
     return path.join(uploadsDir(), path.basename(logo));
   }
-  return logo; // external https:// URL — pass through
+  if (logo.startsWith("/uploads/")) {
+    // Legacy format: file stored in <cwd>/public/uploads/
+    return path.join(process.cwd(), "public", "uploads", path.basename(logo));
+  }
+  return logo; // external https:// URL — pass through as-is
 }
 import { getOffer } from "@/modules/offers/actions/get-offer";
 import { getSettings } from "@/modules/settings/actions/get-settings";

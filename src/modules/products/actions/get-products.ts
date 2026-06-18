@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
@@ -33,6 +34,8 @@ function transformRows(rows: RawProductRow[], priceRules: Awaited<ReturnType<typ
 export async function getProducts(
   filters: ProductFilters & { page?: number; pageSize?: "admin" | "pricelist" }
 ): Promise<ProductListResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { products: [], total: 0, page: 1, pageSize: 25, totalPages: 0 };
   const page = Math.max(1, filters.page ?? 1);
   const pageSize = filters.pageSize === "pricelist" ? PAGE_SIZE_PRICELIST : PAGE_SIZE_ADMIN;
   const search = filters.search?.trim();

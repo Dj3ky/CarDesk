@@ -1,6 +1,7 @@
 "use server";
 
 import { unstable_cache } from "next/cache";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { PriceRule } from "../types";
 
@@ -35,10 +36,22 @@ async function fetchActiveRules(): Promise<PriceRule[]> {
   return rows.map(serialize);
 }
 
-export const getAllPriceRules = unstable_cache(fetchAllRules, ["price-rules-all"], {
+const _getAllPriceRules = unstable_cache(fetchAllRules, ["price-rules-all"], {
   tags: ["price-rules"],
 });
 
-export const getActivePriceRules = unstable_cache(fetchActiveRules, ["price-rules-active"], {
+const _getActivePriceRules = unstable_cache(fetchActiveRules, ["price-rules-active"], {
   tags: ["price-rules"],
 });
+
+export async function getAllPriceRules(): Promise<PriceRule[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+  return _getAllPriceRules();
+}
+
+export async function getActivePriceRules(): Promise<PriceRule[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+  return _getActivePriceRules();
+}

@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { CustomerListResult } from "../types";
 
@@ -10,6 +11,8 @@ export async function getCustomers(params: {
   search?: string;
   active?: boolean;
 }): Promise<CustomerListResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { customers: [], total: 0, page: 1, pageSize: PAGE_SIZE, totalPages: 0 };
   const page = Math.max(1, params.page ?? 1);
   const search = params.search?.trim();
 

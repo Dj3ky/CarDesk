@@ -5,12 +5,16 @@ import { randomUUID } from "crypto";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { canAccess } from "@/lib/permissions";
 import { parseFilePreview } from "@/modules/import/lib/parse-file";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!canAccess(session.user, "import")) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   let formData: FormData;

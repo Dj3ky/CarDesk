@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { OfferListItem, OfferStatus } from "../types";
 
@@ -18,6 +19,8 @@ export async function getOffers({
   customerId?: string;
   groupBy?: string;
 } = {}): Promise<{ offers: OfferListItem[]; total: number; totalPages: number }> {
+  const session = await auth();
+  if (!session?.user?.id) return { offers: [], total: 0, totalPages: 0 };
   const skip = (page - 1) * PAGE_SIZE;
 
   const where = {

@@ -1,11 +1,14 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getActivePriceRules } from "@/modules/price-rules/actions/get-price-rules";
 import { findMatchingRule, applyRule } from "@/modules/price-rules/lib/apply-rule";
 import type { ProductListItem } from "../types";
 
 export async function getProductByNumber(productNumber: string): Promise<ProductListItem | null> {
+  const session = await auth();
+  if (!session?.user?.id) return null;
   const [p, priceRules] = await Promise.all([
     prisma.product.findFirst({
       where: { productNumber },

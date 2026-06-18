@@ -1,9 +1,12 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { OfferDetail, OfferItemData, OfferStatus } from "../types";
 
 export async function getOffer(id: string): Promise<OfferDetail | null> {
+  const session = await auth();
+  if (!session?.user?.id) return null;
   const offer = await prisma.offer.findUnique({
     where: { id },
     include: {

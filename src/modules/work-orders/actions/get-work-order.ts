@@ -1,9 +1,12 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { WorkOrderDetail } from "../types";
 
 export async function getWorkOrder(id: string): Promise<WorkOrderDetail | null> {
+  const session = await auth();
+  if (!session?.user?.id) return null;
   const wo = await prisma.workOrder.findUnique({
     where: { id },
     include: {

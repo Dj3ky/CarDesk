@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { WorkOrderListItem, WorkOrderStatus } from "../types";
 
@@ -17,6 +18,8 @@ export async function getWorkOrders({ page = 1, status, search, groupBy }: GetWo
   total: number;
   totalPages: number;
 }> {
+  const session = await auth();
+  if (!session?.user?.id) return { workOrders: [], total: 0, totalPages: 0 };
   const skip = (page - 1) * PAGE_SIZE;
 
   const where = {

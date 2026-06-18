@@ -1,5 +1,5 @@
 import { after } from "next/server";
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import { auth } from "@/lib/auth";
 
 const SERVICE_NAME = process.env.SYSTEMD_SERVICE ?? "cardesk";
@@ -11,11 +11,10 @@ export async function POST() {
   }
 
   after(() => {
-    exec(`systemctl restart ${SERVICE_NAME}`, (err) => {
-      if (err) {
-        // Fallback if systemctl is unavailable (e.g. Docker without systemd)
-        process.exit(1);
-      }
+    const child = spawn("systemctl", ["restart", SERVICE_NAME], { stdio: "ignore" });
+    child.on("error", () => {
+      // Fallback if systemctl is unavailable (e.g. Docker without systemd)
+      process.exit(1);
     });
   });
 

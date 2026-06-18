@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export type CustomerOption = {
@@ -25,6 +26,8 @@ export type TechnicianOption = {
 };
 
 export async function getCustomersForWorkOrder(): Promise<CustomerOption[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
   const customers = await prisma.customer.findMany({
     where: { isActive: true },
     select: { id: true, firstName: true, lastName: true, companyName: true, defaultDiscount: true },
@@ -38,6 +41,8 @@ export async function getCustomersForWorkOrder(): Promise<CustomerOption[]> {
 }
 
 export async function getVehiclesForWorkOrder(customerId: string): Promise<VehicleOption[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
   if (!customerId) return [];
   return prisma.vehicle.findMany({
     where: { customerId, isActive: true },
@@ -47,6 +52,8 @@ export async function getVehiclesForWorkOrder(customerId: string): Promise<Vehic
 }
 
 export async function getTechnicians(): Promise<TechnicianOption[]> {
+  const session = await auth();
+  if (!session?.user?.id) return [];
   return prisma.user.findMany({
     where: { isActive: true },
     select: { id: true, name: true, email: true },

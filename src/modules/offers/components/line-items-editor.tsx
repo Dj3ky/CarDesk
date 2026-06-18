@@ -153,9 +153,11 @@ export function LineItemsEditor({
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("items.description")} *`}
-                        title={errors.items?.[index]?.description?.message}
                         className={`h-8${errors.items?.[index]?.description ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
+                      {errors.items?.[index]?.description?.message && (
+                        <p className="mt-0.5 text-xs text-destructive">{errors.items[index]!.description!.message}</p>
+                      )}
                     </td>
                     <td className="py-1.5 px-2 align-middle">
                       <Input
@@ -163,7 +165,6 @@ export function LineItemsEditor({
                         type="number"
                         step="0.001"
                         min="0"
-                        title={errors.items?.[index]?.quantity?.message}
                         className={`h-8 text-right w-20${errors.items?.[index]?.quantity ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </td>

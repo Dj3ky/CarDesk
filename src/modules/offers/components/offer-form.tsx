@@ -311,9 +311,11 @@ export function OfferForm({
             defaultDiscount={selectedCustomer?.defaultDiscount ?? 0}
             currency={currency}
           />
-          {typeof errors.items?.message === "string" && (
-            <p className="mt-2 text-xs text-destructive">{errors.items.message}</p>
-          )}
+          {(() => {
+            const e = errors.items as unknown as { root?: { message?: string }; message?: string } | undefined;
+            const msg = e?.root?.message ?? e?.message;
+            return msg ? <p className="mt-2 text-xs text-destructive">{msg}</p> : null;
+          })()}
         </CardContent>
       </Card>
 

@@ -43,6 +43,13 @@ if [[ "${_CARDESK_REEXEC:-}" != "1" ]]; then
     cp -rn .next/standalone/uploads/. uploads/ 2>/dev/null || true
   fi
 
+  # Rescue backups for the same reason.
+  if [[ -d .next/standalone/backups ]]; then
+    info "Rescuing backups from .next/standalone/backups …"
+    mkdir -p backups
+    cp -rn .next/standalone/backups/. backups/ 2>/dev/null || true
+  fi
+
   rm -rf .next/standalone
 
   section "Pulling latest code"
@@ -119,6 +126,14 @@ if ! grep -q '^UPLOADS_DIR=' .env.local; then
   echo "# Uploads — absolute path so files survive rebuilds" >> .env.local
   echo "UPLOADS_DIR=$(pwd)/uploads" >> .env.local
   info "Added UPLOADS_DIR=$(pwd)/uploads to .env.local"
+fi
+
+# Same for BACKUP_DIR — backups must survive standalone wipes.
+if ! grep -q '^BACKUP_DIR=' .env.local; then
+  echo "" >> .env.local
+  echo "# Backups — absolute path so files survive rebuilds" >> .env.local
+  echo "BACKUP_DIR=$(pwd)/backups" >> .env.local
+  info "Added BACKUP_DIR=$(pwd)/backups to .env.local"
 fi
 
 success "Build complete"

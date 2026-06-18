@@ -184,6 +184,7 @@ type PdfStrings = {
   colVat: string;
   colDisc: string;
   colTotal: string;
+  vatNumber: string;
   labor: string;
   colHours: string;
   colRate: string;
@@ -218,6 +219,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colVat: "VAT%",
     colDisc: "Disc%",
     colTotal: "Total",
+    vatNumber: "VAT No:",
     labor: "Labor",
     colHours: "Hours",
     colRate: "Rate/h",
@@ -257,6 +259,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colVat: "DDV%",
     colDisc: "Pop.%",
     colTotal: "Skupaj",
+    vatNumber: "ID za DDV:",
     labor: "Delo",
     colHours: "Ure",
     colRate: "Cena/h",
@@ -310,7 +313,7 @@ export function WorkOrderPDF({ workOrder, settings }: WorkOrderPDFProps) {
               <Text style={styles.companyDetail}>{settings.companyAddress}</Text>
             ) : null}
             {settings.companyVAT ? (
-              <Text style={styles.companyDetail}>VAT: {settings.companyVAT}</Text>
+              <Text style={styles.companyDetail}>{s.vatNumber} {settings.companyVAT}</Text>
             ) : null}
             {settings.companyEmail ? (
               <Text style={styles.companyDetail}>{settings.companyEmail}</Text>

@@ -186,6 +186,7 @@ type PdfStrings = {
   colVat: string;
   colDisc: string;
   colTotal: string;
+  vatNumber: string;
   subtotal: string;
   discount: string;
   vatLine: (rate: number, base: string) => string;
@@ -213,6 +214,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colVat: "VAT%",
     colDisc: "Disc%",
     colTotal: "Total",
+    vatNumber: "VAT No:",
     subtotal: "Subtotal (ex. VAT)",
     discount: "Discount",
     vatLine: (rate, base) => `VAT ${rate}% on ${base}`,
@@ -244,6 +246,7 @@ const STRINGS: Record<string, PdfStrings> = {
     colVat: "DDV%",
     colDisc: "Pop.%",
     colTotal: "Skupaj",
+    vatNumber: "ID za DDV:",
     subtotal: "Skupaj (brez DDV)",
     discount: "Popust",
     vatLine: (rate, base) => `DDV ${rate}% na ${base}`,
@@ -293,7 +296,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
               <Text style={styles.companyDetail}>{settings.companyAddress}</Text>
             ) : null}
             {settings.companyVAT ? (
-              <Text style={styles.companyDetail}>VAT: {settings.companyVAT}</Text>
+              <Text style={styles.companyDetail}>{s.vatNumber} {settings.companyVAT}</Text>
             ) : null}
             {settings.companyEmail ? (
               <Text style={styles.companyDetail}>{settings.companyEmail}</Text>
@@ -338,7 +341,7 @@ export function OfferPDF({ offer, settings }: OfferPDFProps) {
               </Text>
             ) : null}
             {offer.customer.taxNumber ? (
-              <Text style={styles.infoLine}>VAT: {offer.customer.taxNumber}</Text>
+              <Text style={styles.infoLine}>{s.vatNumber} {offer.customer.taxNumber}</Text>
             ) : null}
             {offer.customer.address ? (
               <Text style={styles.infoLine}>{offer.customer.address}</Text>

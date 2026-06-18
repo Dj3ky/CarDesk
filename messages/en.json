@@ -519,6 +519,7 @@
     "deleteTitle": "Delete Offer",
     "deleteConfirm": "Are you sure you want to permanently delete {name}? This action cannot be undone.",
     "statuses": {
+      "ALL": "All",
       "DRAFT": "Draft",
       "SENT": "Sent",
       "APPROVED": "Approved",

@@ -519,6 +519,7 @@
     "deleteTitle": "Izbriši ponudbo",
     "deleteConfirm": "Ste prepričani, da želite trajno izbrisati {name}? Tega dejanja ni mogoče razveljaviti.",
     "statuses": {
+      "ALL": "Vse",
       "DRAFT": "Osnutek",
       "SENT": "Poslano",
       "APPROVED": "Potrjeno",

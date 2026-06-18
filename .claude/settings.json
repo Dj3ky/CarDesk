@@ -126,14 +126,20 @@
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^npm \" -and $_ -notmatch \"notice\" } | Select-Object -First 80)",
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^npm \" -and $_ -notmatch \"notice\" })",
       "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(p.dependencies.next\\)\")",
-      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/upload/[filename]\")"
+      "Bash(mkdir -p \"d:/GitHub/CarDesk/src/app/api/upload/[filename]\")",
+      "Bash(node -e \"const f = require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(f.settings?.backup, null, 2\\)\\)\")",
+      "Bash(node -e \"const f = require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(f.settings?.backup, null, 2\\)\\)\")",
+      "Bash(mkdir -p d:/GitHub/CarDesk/src/app/api/backup/download/\\\\[filename\\\\])",
+      "Bash(mkdir -p d:/GitHub/CarDesk/src/app/api/backup/delete/\\\\[filename\\\\])"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",
       "d:\\GitHub\\CarDesk\\src\\app\\icons",
       "d:\\GitHub\\CarDesk\\src\\app\\api\\work-orders\\[workOrderId]",
       "d:\\GitHub\\CarDesk\\src\\app\\api\\parts-catalog\\open-offers\\[offerId]",
-      "d:\\GitHub\\CarDesk\\src\\app\\api\\upload"
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\upload",
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\backup\\download",
+      "d:\\GitHub\\CarDesk\\src\\app\\api\\backup\\delete"
     ]
   }
 }

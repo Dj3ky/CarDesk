@@ -319,6 +319,9 @@ model Settings {
   termsAndConditions    String?  @db.Text
   partsCatalogApiKey    String?
   sessionTimeoutMinutes Int      @default(30)
+  backupSchedule        String   @default("disabled")
+  backupScheduleHour    Int      @default(2)
+  backupRetentionDays   Int      @default(30)
   updatedAt             DateTime @updatedAt
 }
 

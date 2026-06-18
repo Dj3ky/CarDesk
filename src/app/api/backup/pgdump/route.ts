@@ -1,11 +1,26 @@
 import { spawn } from "child_process";
-import { Readable } from "stream";
+import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { saveBackupToDisk, pruneOldBackups } from "@/lib/backup-util";
+import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // ?save=1 saves to server disk instead of streaming to browser
+  if (req.nextUrl.searchParams.get("save") === "1") {
+    try {
+      const filename = await saveBackupToDisk();
+      const settings = await prisma.settings.findUnique({ where: { id: "settings" } });
+      if (settings) await pruneOldBackups(settings.backupRetentionDays);
+      return Response.json({ success: true, filename });
+    } catch (err) {
+      console.error("[backup/pgdump save]", err);
+      return Response.json({ error: err instanceof Error ? err.message : "Backup failed" }, { status: 500 });
+    }
   }
 
   const dbUrl = process.env.DATABASE_URL;
@@ -40,13 +55,11 @@ export async function GET() {
   const stderrChunks: Buffer[] = [];
   pgdump.stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
 
-  const nodeReadable = pgdump.stdout;
-
   const webStream = new ReadableStream({
     start(controller) {
-      nodeReadable.on("data", (chunk: Buffer) => controller.enqueue(chunk));
-      nodeReadable.on("end", () => controller.close());
-      nodeReadable.on("error", (err) => controller.error(err));
+      pgdump.stdout.on("data", (chunk: Buffer) => controller.enqueue(chunk));
+      pgdump.stdout.on("end", () => controller.close());
+      pgdump.stdout.on("error", (err) => controller.error(err));
       pgdump.on("close", (code) => {
         if (code !== 0) {
           const msg = Buffer.concat(stderrChunks).toString();

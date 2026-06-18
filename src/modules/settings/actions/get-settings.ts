@@ -11,6 +11,9 @@ async function fetchSettingsFromDB(): Promise<SettingsData> {
   return {
     ...settings,
     defaultVATRate: settings.defaultVATRate.toString(),
+    backupSchedule: settings.backupSchedule,
+    backupScheduleHour: settings.backupScheduleHour,
+    backupRetentionDays: settings.backupRetentionDays,
   };
 }
 

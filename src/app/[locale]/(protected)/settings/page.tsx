@@ -59,7 +59,7 @@ export default async function SettingsPage({ params, searchParams }: PageProps) 
 
         <div className="flex-1 min-w-0 max-w-2xl">
           {activeTab === "backup" ? (
-            <BackupPanel />
+            <BackupPanel settings={settings} />
           ) : activeTab === "update" ? (
             <UpdatePanel />
           ) : activeTab === "pricing" ? (

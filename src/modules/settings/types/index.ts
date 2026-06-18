@@ -16,6 +16,9 @@ export type SettingsData = {
   termsAndConditions: string | null;
   partsCatalogApiKey: string | null;
   sessionTimeoutMinutes: number;
+  backupSchedule: string;
+  backupScheduleHour: number;
+  backupRetentionDays: number;
   updatedAt: Date;
 };
 

@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-  settingsSchema,
+  createSettingsSchema,
   type SettingsFormValues,
   CURRENCIES,
   LANGUAGES,
@@ -51,13 +51,16 @@ interface SettingsFormProps {
 
 export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
   const t = useTranslations();
+  const tv = useTranslations("validation");
   const locale = useLocale();
   const router = useRouter();
   const [saveState, setSaveState] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const schema = useMemo(() => createSettingsSchema(tv), [tv]);
+
   const form = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       companyName: settings.companyName,
       companyVAT: settings.companyVAT ?? "",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { priceRuleSchema, type PriceRuleFormValues } from "../schemas/price-rule.schema";
+import { createPriceRuleSchema, type PriceRuleFormValues } from "../schemas/price-rule.schema";
 import { createPriceRule } from "../actions/create-price-rule";
 import { togglePriceRule } from "../actions/toggle-price-rule";
 import { deletePriceRule } from "../actions/delete-price-rule";
@@ -51,12 +51,15 @@ interface PricingPanelProps {
 
 export function PricingPanel({ initialRules }: PricingPanelProps) {
   const t = useTranslations("settings.pricing");
+  const tv = useTranslations("validation");
   const [rules, setRules] = useState<PriceRule[]>(initialRules);
   const [showForm, setShowForm] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const schema = useMemo(() => createPriceRuleSchema(tv), [tv]);
+
   const form = useForm<PriceRuleFormValues>({
-    resolver: zodResolver(priceRuleSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       filterType: "brand",
       filterValue: "",

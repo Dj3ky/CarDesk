@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { productSchema, type ProductFormValues, VAT_PRESETS, UNITS } from "../schemas/product.schema";
+import { createProductSchema, type ProductFormValues, VAT_PRESETS, UNITS } from "../schemas/product.schema";
 import { createProduct } from "../actions/create-product";
 import { updateProduct } from "../actions/update-product";
 import type { ProductDetail } from "../types";
@@ -39,13 +39,16 @@ interface ProductFormProps {
 
 export function ProductForm({ product }: ProductFormProps) {
   const t = useTranslations();
+  const tv = useTranslations("validation");
   const locale = useLocale();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const isEdit = !!product;
 
+  const schema = useMemo(() => createProductSchema(tv), [tv]);
+
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       productNumber: product?.productNumber ?? "",
       barcode: product?.barcode ?? "",

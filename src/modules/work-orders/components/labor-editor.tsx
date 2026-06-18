@@ -71,7 +71,8 @@ export function LaborEditor({ form, currency = "EUR", defaultVATRate = 22 }: Lab
                         step="0.25"
                         min="0"
                         placeholder="0.00"
-                        className="h-8 text-right w-24"
+                        title={errs?.hours?.message}
+                        className={`h-8 text-right w-24${errs?.hours ? " border-destructive focus-visible:ring-destructive" : ""}`}
                         {...register(`laborItems.${index}.hours`)}
                       />
                     </td>

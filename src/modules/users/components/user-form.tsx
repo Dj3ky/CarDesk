@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useTransition, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
+import { createLocalizedCreateUserSchema, createLocalizedUpdateUserSchema } from "../schemas/user.schema";
 import { createUser } from "../actions/create-user";
 import { updateUser } from "../actions/update-user";
 import type { CreateUserFormValues, UpdateUserFormValues } from "../schemas/user.schema";
@@ -27,13 +27,17 @@ interface UserFormProps {
 export function UserForm({ user }: UserFormProps) {
   const t = useTranslations("users");
   const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const locale = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const isEdit = !!user;
-  const schema = isEdit ? updateUserSchema : createUserSchema;
+  const schema = useMemo(
+    () => isEdit ? createLocalizedUpdateUserSchema(tv) : createLocalizedCreateUserSchema(tv),
+    [isEdit, tv]
+  );
 
   const form = useForm<CreateUserFormValues | UpdateUserFormValues>({
     resolver: zodResolver(schema),

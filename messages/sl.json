@@ -790,6 +790,25 @@
       "colDate": "Datum"
     }
   },
+  "validation": {
+    "required": "Obvezno",
+    "descriptionRequired": "Opis je obvezen",
+    "customerRequired": "Stranka je obvezna",
+    "itemsRequired": "Vsaj ena postavka je obvezna",
+    "mustBeNumber": "Mora biti število",
+    "mustBePositive": "Mora biti večje od 0",
+    "cannotBeNegative": "Ne sme biti negativno",
+    "firstNameRequired": "Ime je obvezno",
+    "lastNameRequired": "Priimek je obvezen",
+    "invalidEmail": "Neveljaven e-poštni naslov",
+    "productNumberRequired": "Kataloška številka je obvezna",
+    "makeRequired": "Znamka je obvezna",
+    "modelRequired": "Model je obvezen",
+    "yearMin": "Letnik mora biti 1900 ali pozneje",
+    "yearMax": "Letnik ne sme presegati {max}",
+    "passwordMinLength": "Geslo mora imeti vsaj 8 znakov",
+    "newPasswordMinLength": "Novo geslo mora imeti vsaj 8 znakov"
+  },
   "errors": {
     "unauthorized": "Nepooblaščen dostop",
     "forbidden": "Dostop prepovedan",

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { FuelType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { vehicleSchema, type VehicleFormValues } from "../schemas/vehicle.schema";
+import { createVehicleSchema, type VehicleFormValues } from "../schemas/vehicle.schema";
 import { createVehicle } from "../actions/create-vehicle";
 import { updateVehicle } from "../actions/update-vehicle";
 import type { Vehicle } from "@prisma/client";
@@ -42,13 +42,16 @@ interface VehicleFormProps {
 
 export function VehicleForm({ customerId, vehicle }: VehicleFormProps) {
   const t = useTranslations();
+  const tv = useTranslations("validation");
   const locale = useLocale();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const isEdit = !!vehicle;
 
+  const schema = useMemo(() => createVehicleSchema(tv), [tv]);
+
   const form = useForm<VehicleFormValues>({
-    resolver: zodResolver(vehicleSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       make: vehicle?.make ?? "",
       model: vehicle?.model ?? "",

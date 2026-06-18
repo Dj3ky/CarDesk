@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import type { Control, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import type { Control, UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Plus, Trash2, PackageSearch, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ interface LineItemsEditorProps {
   control: Control<OfferFormValues>;
   register: UseFormRegister<OfferFormValues>;
   setValue: UseFormSetValue<OfferFormValues>;
+  errors: FieldErrors<OfferFormValues>;
   defaultVATRate: number;
   defaultDiscount: number;
   currency: string;
@@ -29,6 +30,7 @@ export function LineItemsEditor({
   control,
   register,
   setValue,
+  errors,
   defaultVATRate,
   defaultDiscount,
   currency,
@@ -151,7 +153,8 @@ export function LineItemsEditor({
                       <Input
                         {...register(`items.${index}.description`)}
                         placeholder={`${t("items.description")} *`}
-                        className="h-8"
+                        title={errors.items?.[index]?.description?.message}
+                        className={`h-8${errors.items?.[index]?.description ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </td>
                     <td className="py-1.5 px-2 align-middle">
@@ -160,7 +163,8 @@ export function LineItemsEditor({
                         type="number"
                         step="0.001"
                         min="0"
-                        className="h-8 text-right w-20"
+                        title={errors.items?.[index]?.quantity?.message}
+                        className={`h-8 text-right w-20${errors.items?.[index]?.quantity ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </td>
                     <td className="py-1.5 px-2 align-middle">

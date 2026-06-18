@@ -134,7 +134,8 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
                         type="number"
                         step="0.001"
                         min="0"
-                        className="h-8 text-right w-20"
+                        title={errs?.quantity?.message}
+                        className={`h-8 text-right w-20${errs?.quantity ? " border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </td>
                     <td className="py-1.5 px-2 align-middle">

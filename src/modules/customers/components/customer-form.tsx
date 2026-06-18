@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { customerSchema, type CustomerFormValues } from "../schemas/customer.schema";
+import { createCustomerSchema, type CustomerFormValues } from "../schemas/customer.schema";
 import { createCustomer } from "../actions/create-customer";
 import { updateCustomer } from "../actions/update-customer";
 import type { Customer } from "@prisma/client";
@@ -52,12 +52,15 @@ interface CustomerFormProps {
 
 export function CustomerForm({ customer }: CustomerFormProps) {
   const t = useTranslations();
+  const tv = useTranslations("validation");
   const locale = useLocale();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
+  const schema = useMemo(() => createCustomerSchema(tv), [tv]);
+
   const form = useForm<CustomerFormValues>({
-    resolver: zodResolver(customerSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: customer?.firstName ?? "",
       lastName: customer?.lastName ?? "",

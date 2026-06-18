@@ -790,6 +790,25 @@
       "colDate": "Date"
     }
   },
+  "validation": {
+    "required": "Required",
+    "descriptionRequired": "Description required",
+    "customerRequired": "Customer is required",
+    "itemsRequired": "At least one item is required",
+    "mustBeNumber": "Must be a number",
+    "mustBePositive": "Must be greater than 0",
+    "cannotBeNegative": "Cannot be negative",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "invalidEmail": "Invalid email address",
+    "productNumberRequired": "Product number is required",
+    "makeRequired": "Make is required",
+    "modelRequired": "Model is required",
+    "yearMin": "Year must be 1900 or later",
+    "yearMax": "Year cannot exceed {max}",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "newPasswordMinLength": "New password must be at least 8 characters"
+  },
   "errors": {
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { updateProfileSchema, type UpdateProfileFormValues } from "../schemas/user.schema";
+import { createLocalizedUpdateProfileSchema, type UpdateProfileFormValues } from "../schemas/user.schema";
 import { updateProfile } from "../actions/update-profile";
 
 interface ProfileFormProps {
@@ -23,12 +23,15 @@ export function ProfileForm({ name, email }: ProfileFormProps) {
   const tFields = useTranslations("users.fields");
   const tc = useTranslations("common");
   const tu = useTranslations("users");
+  const tv = useTranslations("validation");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  const schema = useMemo(() => createLocalizedUpdateProfileSchema(tv), [tv]);
+
   const form = useForm<UpdateProfileFormValues>({
-    resolver: zodResolver(updateProfileSchema),
+    resolver: zodResolver(schema),
     defaultValues: { name: name ?? "", currentPassword: "", newPassword: "" },
   });
 

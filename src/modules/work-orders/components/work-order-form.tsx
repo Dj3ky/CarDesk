@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect, useRef } from "react";
+import { useState, useTransition, useEffect, useRef, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QuickCreateDialog } from "@/modules/offers/components/quick-create-dialog";
-import { workOrderSchema } from "../schemas/work-order.schema";
+import { createWorkOrderSchema } from "../schemas/work-order.schema";
 import { createWorkOrder } from "../actions/create-work-order";
 import { updateWorkOrder } from "../actions/update-work-order";
 import { getVehiclesForWorkOrder } from "../actions/get-form-data";
@@ -93,6 +93,7 @@ export function WorkOrderForm({
   const t = useTranslations("workOrders");
   const tc = useTranslations("common");
   const tOffer = useTranslations("offers");
+  const tv = useTranslations("validation");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [customerList, setCustomerList] = useState<CustomerOption[]>(customers);
@@ -102,8 +103,10 @@ export function WorkOrderForm({
   const pendingVehicleIdRef = useRef<string | null>(null);
   const isEdit = !!workOrder;
 
+  const schema = useMemo(() => createWorkOrderSchema(tv), [tv]);
+
   const form = useForm<WorkOrderFormValues>({
-    resolver: zodResolver(workOrderSchema),
+    resolver: zodResolver(schema),
     defaultValues: buildDefaults(workOrder, defaultCustomerId),
   });
 

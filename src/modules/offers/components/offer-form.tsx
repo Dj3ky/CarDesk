@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { offerSchema, type OfferFormValues } from "../schemas/offer.schema";
+import { createOfferSchema, type OfferFormValues } from "../schemas/offer.schema";
 import { createOffer } from "../actions/create-offer";
 import { updateOffer } from "../actions/update-offer";
 import { getVehiclesForCustomer } from "../actions/get-vehicles-for-customer";
@@ -76,6 +76,7 @@ export function OfferForm({
 }: OfferFormProps) {
   const t = useTranslations("offers");
   const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [customerList, setCustomerList] = useState<CustomerOption[]>(customers);
@@ -87,8 +88,10 @@ export function OfferForm({
   const [pendingNav, setPendingNav] = useState<string | null>(null); // "__back__" or href
   const bypassGuard = useRef(false);
 
+  const schema = useMemo(() => createOfferSchema(tv), [tv]);
+
   const form = useForm<OfferFormValues>({
-    resolver: zodResolver(offerSchema),
+    resolver: zodResolver(schema),
     defaultValues: buildDefaults(offer, defaultCustomerId),
   });
 
@@ -303,6 +306,7 @@ export function OfferForm({
             control={control}
             register={register}
             setValue={setValue}
+            errors={errors}
             defaultVATRate={defaultVATRate}
             defaultDiscount={selectedCustomer?.defaultDiscount ?? 0}
             currency={currency}

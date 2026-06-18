@@ -112,10 +112,11 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
   async function onSubmit(values: SettingsFormValues) {
     setSaveState("idle");
     setErrorMsg(null);
+    const languageChanged = form.formState.dirtyFields.defaultLanguage === true;
     const result = await updateSettings({ ...values, companyLogo: logoValue || undefined });
     if (result.success) {
       setSaveState("success");
-      if (values.defaultLanguage !== locale) {
+      if (languageChanged && values.defaultLanguage !== locale) {
         router.push(`/${values.defaultLanguage}/settings`);
       } else {
         setTimeout(() => setSaveState("idle"), 3000);

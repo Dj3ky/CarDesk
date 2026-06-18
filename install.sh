@@ -218,6 +218,7 @@ if [[ "$SKIP_ENV" == false ]]; then
   AUTH_SECRET=$(openssl rand -base64 32)
   DB_URL="postgresql://${DB_USER}:${DB_PASS}@localhost:5432/${DB_NAME}"
 
+  INSTALL_DIR_FOR_ENV="$(pwd)"
   cat > .env.local <<EOF
 # Database
 DATABASE_URL="${DB_URL}"
@@ -230,6 +231,10 @@ AUTH_URL="${APP_URL}"
 NEXT_PUBLIC_APP_URL="${APP_URL}"
 NEXT_PUBLIC_APP_NAME="CarDesk"
 PORT=${APP_PORT}
+
+# Uploads — absolute path so files survive update.sh rebuilds
+# (standalone server.js changes cwd to .next/standalone/, so process.cwd() is not the project root)
+UPLOADS_DIR="${INSTALL_DIR_FOR_ENV}/uploads"
 EOF
 
   # .env for Prisma CLI

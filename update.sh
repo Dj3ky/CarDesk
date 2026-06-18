@@ -34,6 +34,15 @@ cd "$SCRIPT_DIR"
 # The env var guard prevents infinite recursion.
 # ─────────────────────────────────────────────
 if [[ "${_CARDESK_REEXEC:-}" != "1" ]]; then
+  # Rescue uploads before wiping standalone.
+  # standalone/server.js calls process.chdir(__dirname), so cwd becomes .next/standalone/
+  # and uploads land inside it — rm -rf .next/standalone would delete them all.
+  if [[ -d .next/standalone/uploads ]]; then
+    info "Rescuing uploaded files from .next/standalone/uploads …"
+    mkdir -p uploads
+    cp -rn .next/standalone/uploads/. uploads/ 2>/dev/null || true
+  fi
+
   rm -rf .next/standalone
 
   section "Pulling latest code"
@@ -96,12 +105,22 @@ NODE_ENV=production npm run build
 rm -rf .next/standalone/.next/static
 cp -r .next/static .next/standalone/.next/static
 cp -r public .next/standalone/public
-# Migrate legacy runtime-uploaded files from public/uploads/ → uploads/
-# (public/ is overwritten on each build; uploads/ at project root persists)
+
+# Migrate any legacy files that were saved to public/uploads/ (old code path)
 if [[ -d public/uploads ]]; then
   mkdir -p uploads
   cp -n public/uploads/* uploads/ 2>/dev/null || true
 fi
+
+# Ensure UPLOADS_DIR is set to an absolute path in .env.local so the app
+# always finds uploads regardless of what cwd the standalone server uses.
+if ! grep -q '^UPLOADS_DIR=' .env.local; then
+  echo "" >> .env.local
+  echo "# Uploads — absolute path so files survive rebuilds" >> .env.local
+  echo "UPLOADS_DIR=$(pwd)/uploads" >> .env.local
+  info "Added UPLOADS_DIR=$(pwd)/uploads to .env.local"
+fi
+
 success "Build complete"
 
 # ─────────────────────────────────────────────

@@ -378,10 +378,9 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
 export function PartsCatalogSearch({ locale }: { locale: string }) {
   const t = useTranslations("partsCatalog");
 
-  const [activeTab, setActiveTab] = useState<"oem" | "trade" | "vehicle" | "vin">("oem");
+  const [activeTab, setActiveTab] = useState<"oem" | "trade" | "vin">("oem");
   const [tradeQuery, setTradeQuery] = useState("");
   const [oemQuery, setOemQuery] = useState("");
-  const [vehicleTypeId, setVehicleTypeId] = useState("");
   const [vinQuery, setVinQuery] = useState("");
   const [vinLoading, setVinLoading] = useState(false);
   const [vinVehicles, setVinVehicles] = useState<VinVehicle[] | null>(null);
@@ -434,13 +433,6 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
     e.preventDefault();
     if (!oemQuery.trim()) return;
     search({ type: "oem", query: oemQuery.trim() });
-  }
-
-  function searchByVehicle(e: React.FormEvent) {
-    e.preventDefault();
-    const id = parseInt(vehicleTypeId);
-    if (!id) return;
-    search({ type: "vehicle", typeId: id });
   }
 
   async function searchByVin(e: React.FormEvent) {
@@ -537,7 +529,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       <div className="space-y-4">
         {/* Tab switcher */}
         <div className="flex gap-1 border-b">
-          {(["oem", "trade", "vin", "vehicle"] as const).map((tab) => (
+          {(["oem", "trade", "vin"] as const).map((tab) => (
             <button
               key={tab}
               type="button"
@@ -549,7 +541,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              {tab === "oem" ? t("tabOem") : tab === "trade" ? t("tabTrade") : tab === "vin" ? t("tabVin") : t("tabVehicle")}
+              {tab === "oem" ? t("tabOem") : tab === "trade" ? t("tabTrade") : t("tabVin")}
             </button>
           ))}
         </div>
@@ -769,24 +761,6 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
           </div>
         )}
 
-        {activeTab === "vehicle" && (
-          <div>
-            <form onSubmit={searchByVehicle} className="flex gap-2">
-              <Input
-                value={vehicleTypeId}
-                onChange={(e) => setVehicleTypeId(e.target.value)}
-                placeholder={t("vehicleTypeIdPlaceholder")}
-                type="number"
-                className="max-w-xs"
-              />
-              <Button type="submit" disabled={loading || !vehicleTypeId}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                {t("searchButton")}
-              </Button>
-            </form>
-            <p className="text-xs text-muted-foreground mt-2">{t("vehicleHint")}</p>
-          </div>
-        )}
       </div>
 
       {error && (

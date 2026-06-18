@@ -7,6 +7,11 @@ const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/svg+xml", "image/webp"]
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 
 export function uploadsDir() {
+  // UPLOADS_DIR must be an absolute path set in .env.local (see install.sh / update.sh).
+  // process.cwd() is NOT the project root in standalone mode — server.js calls
+  // process.chdir(__dirname) which sets cwd to .next/standalone/, and rm -rf .next/standalone
+  // in update.sh would wipe any uploads stored there.
+  if (process.env.UPLOADS_DIR) return process.env.UPLOADS_DIR;
   return join(process.cwd(), "uploads");
 }
 

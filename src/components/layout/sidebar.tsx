@@ -12,7 +12,6 @@ import {
   Tag,
   FileText,
   Settings,
-  User,
   UserCog,
   X,
   BarChart2,
@@ -65,7 +64,41 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-const PROFILE_ITEM: NavItem = { href: "/profile", labelKey: "profile", icon: User };
+function getInitials(name?: string | null) {
+  if (!name) return "?";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function UserCard({ onNavigate }: { onNavigate?: () => void }) {
+  const locale = useLocale();
+  const t = useTranslations("common");
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  return (
+    <div className="border-t p-3">
+      <Link
+        href={`/${locale}/profile`}
+        onClick={onNavigate}
+        className="flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-sidebar-accent group"
+      >
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/15 text-xs font-semibold text-sidebar-primary">
+          {getInitials(user?.name)}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-sidebar-foreground leading-tight">
+            {user?.name ?? "—"}
+          </p>
+          <p className="truncate text-xs text-sidebar-foreground/50 leading-tight mt-0.5">
+            {user?.role === "ADMIN" ? t("admin") : t("employee")}
+          </p>
+        </div>
+      </Link>
+    </div>
+  );
+}
 
 function NavLink({
   href,
@@ -136,9 +169,7 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="border-t p-4">
-        <NavLink {...PROFILE_ITEM} onNavigate={onNavigate} />
-      </div>
+      <UserCard onNavigate={onNavigate} />
     </div>
   );
 }

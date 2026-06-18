@@ -38,8 +38,9 @@ export default async function WorkOrdersPage({ params, searchParams }: WorkOrder
   // Grouped by default; opt out with ?group=off
   const groupBy = sp.group === "off" ? undefined : "customer";
 
-  const [t, { workOrders, total, totalPages }] = await Promise.all([
+  const [t, tc, { workOrders, total, totalPages }] = await Promise.all([
     getTranslations("workOrders"),
+    getTranslations("common"),
     getWorkOrders({ page, status, search: sp.search, groupBy }),
   ]);
 
@@ -108,7 +109,7 @@ export default async function WorkOrdersPage({ params, searchParams }: WorkOrder
           </Suspense>
           <Link
             href={groupToggleHref()}
-            title={groupBy ? "Ungroup" : "Group by customer"}
+            title={groupBy ? tc("ungroup") : tc("groupByCustomer")}
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md border text-sm transition-colors ${
               groupBy
                 ? "border-primary bg-primary/10 text-primary"

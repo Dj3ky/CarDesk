@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -23,6 +22,7 @@ import {
   TrendingUp,
   UserPlus,
   FilePlus,
+  Wrench,
   ArrowRight,
   LayoutDashboard,
 } from "lucide-react";
@@ -280,17 +280,10 @@ export default async function DashboardPage() {
                 {t("dashboard.newCustomer")}
               </Link>
             </Button>
-            <Separator className="my-2" />
             <Button asChild className="w-full justify-start" variant="outline">
-              <Link href={`/${locale}/products`}>
-                <Package className="mr-2 h-4 w-4" />
-                {t("nav.products")}
-              </Link>
-            </Button>
-            <Button asChild className="w-full justify-start" variant="outline">
-              <Link href={`/${locale}/offers`}>
-                <FileText className="mr-2 h-4 w-4" />
-                {t("nav.offers")}
+              <Link href={`/${locale}/work-orders/new`}>
+                <Wrench className="mr-2 h-4 w-4" />
+                {t("workOrders.actions.newWorkOrder")}
               </Link>
             </Button>
           </CardContent>

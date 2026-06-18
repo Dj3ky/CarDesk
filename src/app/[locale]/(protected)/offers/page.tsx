@@ -17,14 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-const STATUSES: { value: string; label: string }[] = [
-  { value: "ALL", label: "All" },
-  { value: "DRAFT", label: "Draft" },
-  { value: "SENT", label: "Sent" },
-  { value: "APPROVED", label: "Approved" },
-  { value: "REJECTED", label: "Rejected" },
-  { value: "COMPLETED", label: "Completed" },
-];
+const STATUS_KEYS = ["ALL", "DRAFT", "SENT", "APPROVED", "REJECTED", "COMPLETED"] as const;
 
 interface OffersPageProps {
   params: Promise<{ locale: string }>;
@@ -39,7 +32,10 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
   }
 
   const sp = await searchParams;
-  const t = await getTranslations("offers");
+  const [t, tc] = await Promise.all([
+    getTranslations("offers"),
+    getTranslations("common"),
+  ]);
 
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const status = sp.status ?? "ALL";
@@ -83,7 +79,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
           <div>
             <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {total} {total === 1 ? "offer" : "offers"}
+              {t("subtitle", { count: total })}
             </p>
           </div>
         </div>
@@ -98,17 +94,17 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
       {/* Toolbar: search + status tabs + group toggle */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-1 items-center">
-          {STATUSES.map(({ value, label }) => (
+          {STATUS_KEYS.map((key) => (
             <Link
-              key={value}
-              href={statusHref(value)}
+              key={key}
+              href={statusHref(key)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                status === value
+                status === key
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
-              {label}
+              {t(`statuses.${key}`)}
             </Link>
           ))}
         </div>
@@ -118,7 +114,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
           </Suspense>
           <Link
             href={groupToggleHref()}
-            title={groupBy ? "Ungroup" : "Group by customer"}
+            title={groupBy ? tc("ungroup") : tc("groupByCustomer")}
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md border text-sm transition-colors ${
               groupBy
                 ? "border-primary bg-primary/10 text-primary"

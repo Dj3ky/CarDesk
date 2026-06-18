@@ -6,6 +6,10 @@ import { auth } from "@/lib/auth";
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/svg+xml", "image/webp"];
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 
+export function uploadsDir() {
+  return join(process.cwd(), "uploads");
+}
+
 export async function POST(req: Request) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -25,13 +29,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "File too large. Maximum size is 2 MB" }, { status: 400 });
   }
 
-  const uploadsDir = join(process.cwd(), "public", "uploads");
-  await mkdir(uploadsDir, { recursive: true });
+  await mkdir(uploadsDir(), { recursive: true });
 
   const ext = file.name.split(".").pop() ?? "png";
   const filename = `logo-${Date.now()}.${ext}`;
   const bytes = await file.arrayBuffer();
-  await writeFile(join(uploadsDir, filename), Buffer.from(bytes));
+  await writeFile(join(uploadsDir(), filename), Buffer.from(bytes));
 
-  return NextResponse.json({ url: `/uploads/${filename}` });
+  return NextResponse.json({ url: `/api/upload/${filename}` });
 }

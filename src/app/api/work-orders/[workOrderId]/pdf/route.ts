@@ -2,6 +2,15 @@ import React from "react";
 import path from "path";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { uploadsDir } from "@/app/api/upload/route";
+
+function resolveLogoPath(logo: string | null | undefined): string | null {
+  if (!logo) return null;
+  if (logo.startsWith("/api/upload/")) {
+    return path.join(uploadsDir(), path.basename(logo));
+  }
+  return logo; // external https:// URL — pass through
+}
 import { canAccess } from "@/lib/permissions";
 import { getWorkOrder } from "@/modules/work-orders/actions/get-work-order";
 import { getSettings } from "@/modules/settings/actions/get-settings";
@@ -28,9 +37,7 @@ export async function GET(
   const { renderToBuffer } = await import("@react-pdf/renderer");
   const { WorkOrderPDF } = await import("@/modules/work-orders/pdf/work-order-pdf");
 
-  const resolvedLogo = settings.companyLogo?.startsWith("/")
-    ? path.join(process.cwd(), "public", settings.companyLogo)
-    : settings.companyLogo ?? null;
+  const resolvedLogo = resolveLogoPath(settings.companyLogo);
 
   const element = React.createElement(WorkOrderPDF, { workOrder, settings: { ...settings, companyLogo: resolvedLogo } });
   const render = renderToBuffer as (el: React.ReactElement) => Promise<Buffer>;

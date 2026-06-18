@@ -2,6 +2,15 @@ import React from "react";
 import path from "path";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { uploadsDir } from "@/app/api/upload/route";
+
+function resolveLogoPath(logo: string | null | undefined): string | null {
+  if (!logo) return null;
+  if (logo.startsWith("/api/upload/")) {
+    return path.join(uploadsDir(), path.basename(logo));
+  }
+  return logo; // external https:// URL — pass through
+}
 import { getOffer } from "@/modules/offers/actions/get-offer";
 import { getSettings } from "@/modules/settings/actions/get-settings";
 
@@ -24,9 +33,7 @@ export async function GET(
   const { renderToBuffer } = await import("@react-pdf/renderer");
   const { OfferPDF } = await import("@/modules/offers/pdf/offer-pdf");
 
-  const resolvedLogo = settings.companyLogo?.startsWith("/")
-    ? path.join(process.cwd(), "public", settings.companyLogo)
-    : settings.companyLogo ?? null;
+  const resolvedLogo = resolveLogoPath(settings.companyLogo);
 
   const element = React.createElement(OfferPDF, { offer, settings: { ...settings, companyLogo: resolvedLogo } });
   // renderToBuffer expects ReactElement<DocumentProps> but accepts any component that renders <Document>

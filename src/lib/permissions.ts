@@ -1,6 +1,7 @@
 export const MODULES = [
   "customers",
   "products",
+  "pricelist",
   "offers",
   "work_orders",
   "import",
@@ -16,7 +17,8 @@ export type Module = (typeof MODULES)[number];
 
 export const MODULE_LABELS: Record<Module, string> = {
   customers: "Customers & Vehicles",
-  products: "Products & Pricelist",
+  products: "Products",
+  pricelist: "Pricelist",
   offers: "Offers",
   work_orders: "Work Orders",
   import: "Import",
@@ -31,6 +33,7 @@ export const MODULE_LABELS: Record<Module, string> = {
 export const DEFAULT_EMPLOYEE_PERMISSIONS: Module[] = [
   "customers",
   "products",
+  "pricelist",
   "offers",
   "work_orders",
   "reports",

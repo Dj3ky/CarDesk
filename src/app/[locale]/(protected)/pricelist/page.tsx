@@ -32,7 +32,7 @@ interface PricelistPageProps {
 export default async function PricelistPage({ params, searchParams }: PricelistPageProps) {
   const { locale } = await params;
   const session = await auth();
-  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "products")) {
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "pricelist")) {
     redirect(`/${locale}/dashboard`);
   }
 

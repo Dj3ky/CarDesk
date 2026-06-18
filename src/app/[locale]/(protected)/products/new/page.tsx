@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/modules/products/components/product-form";
@@ -16,6 +19,10 @@ interface NewProductPageProps {
 
 export default async function NewProductPage({ params }: NewProductPageProps) {
   const { locale } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "products")) {
+    redirect(`/${locale}/dashboard`);
+  }
   const t = await getTranslations();
 
   return (

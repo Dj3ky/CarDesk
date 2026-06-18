@@ -34,7 +34,7 @@ const NAV_ITEMS: {
   { href: "/dashboard",    labelKey: "dashboard",   icon: LayoutDashboard },
   { href: "/customers",    labelKey: "customers",   icon: Users,       module: "customers"   },
   { href: "/products",     labelKey: "products",    icon: Package,     module: "products"    },
-  { href: "/pricelist",    labelKey: "pricelist",   icon: Tag,         module: "products"    },
+  { href: "/pricelist",    labelKey: "pricelist",   icon: Tag,         module: "pricelist"   },
   { href: "/offers",       labelKey: "offers",      icon: FileText,    module: "offers"      },
   { href: "/work-orders",  labelKey: "workOrders",  icon: Wrench,      module: "work_orders"  },
   { href: "/parts-catalog", labelKey: "partsCatalog", icon: Search,   module: "parts_catalog" },

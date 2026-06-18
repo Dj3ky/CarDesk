@@ -657,7 +657,8 @@
     "moduleAccessHint": "Select which modules this employee can access. Admins always have full access.",
     "modules": {
       "customers": "Customers & Vehicles",
-      "products": "Products & Pricelist",
+      "products": "Products",
+      "pricelist": "Pricelist",
       "offers": "Offers",
       "work_orders": "Work Orders",
       "import": "Import",

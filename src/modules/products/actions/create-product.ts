@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { invalidateProductCache } from "@/lib/product-cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { productSchema, type ProductFormValues } from "../schemas/product.schema";
 import { logAudit } from "@/lib/audit";
@@ -12,6 +13,7 @@ import type { ActionResult } from "../types";
 export async function createProduct(data: ProductFormValues): Promise<ActionResult<{ id: string }>> {
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+  if (!canAccess(session.user, "products")) return { success: false, error: "Forbidden" };
 
   const parsed = productSchema.safeParse(data);
   if (!parsed.success) {

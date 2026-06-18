@@ -657,7 +657,8 @@
     "moduleAccessHint": "Izberite, do katerih modulov ima dostop ta uslužbenec. Administratorji imajo vedno poln dostop.",
     "modules": {
       "customers": "Stranke in vozila",
-      "products": "Artikli in cenik",
+      "products": "Artikli",
+      "pricelist": "Cenik",
       "offers": "Ponudbe",
       "work_orders": "Delovni nalogi",
       "import": "Uvoz",

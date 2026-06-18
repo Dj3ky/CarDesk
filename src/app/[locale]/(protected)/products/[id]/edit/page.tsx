@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { canAccess } from "@/lib/permissions";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/modules/products/components/product-form";
@@ -20,6 +22,10 @@ export async function generateMetadata({ params }: EditProductPageProps): Promis
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
   const { locale, id } = await params;
+  const session = await auth();
+  if (!canAccess(session?.user ?? { role: "", permissions: [] }, "products")) {
+    redirect(`/${locale}/dashboard`);
+  }
   const t = await getTranslations();
   const product = await getProduct(id);
 

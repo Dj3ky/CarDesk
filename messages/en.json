@@ -290,6 +290,7 @@
     "saving": "Saving...",
     "saveSuccess": "Settings saved successfully",
     "saveError": "Failed to save settings",
+    "uploadError": "Upload failed. Please try again.",
     "tabs": {
       "company": "Company",
       "finance": "Finance",
@@ -397,7 +398,9 @@
       "companyEmail": "Company Email",
       "companyPhone": "Company Phone",
       "companyLogo": "Logo URL",
-      "companyLogoHint": "Direct URL to your company logo image (PNG or SVG)",
+      "companyLogoHint": "Paste a URL or upload an image file (PNG, JPG, SVG, WebP — max 2 MB)",
+      "companyLogoUpload": "Upload logo from file",
+      "companyLogoClear": "Clear logo",
       "defaultVATRate": "Default VAT %",
       "currency": "Currency",
       "offerPrefix": "Offer Prefix",

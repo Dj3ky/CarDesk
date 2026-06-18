@@ -290,6 +290,7 @@
     "saving": "Shranjujem...",
     "saveSuccess": "Nastavitve so bile uspešno shranjene",
     "saveError": "Napaka pri shranjevanju nastavitev",
+    "uploadError": "Nalaganje ni uspelo. Prosimo, poskusite znova.",
     "tabs": {
       "company": "Podjetje",
       "finance": "Finance",
@@ -397,7 +398,9 @@
       "companyEmail": "E-pošta podjetja",
       "companyPhone": "Telefon podjetja",
       "companyLogo": "URL logotipa",
-      "companyLogoHint": "Direktna URL do slike logotipa (PNG ali SVG)",
+      "companyLogoHint": "Vnesite URL ali naložite slikovno datoteko (PNG, JPG, SVG, WebP — največ 2 MB)",
+      "companyLogoUpload": "Naloži logotip iz datoteke",
+      "companyLogoClear": "Počisti logotip",
       "defaultVATRate": "Privzeti DDV %",
       "currency": "Valuta",
       "offerPrefix": "Predpona ponudbe",

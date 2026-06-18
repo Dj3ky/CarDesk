@@ -4,8 +4,9 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useMemo } from "react";
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Loader2, CheckCircle2, AlertCircle, Upload, X } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -56,6 +57,9 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
   const router = useRouter();
   const [saveState, setSaveState] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const schema = useMemo(() => createSettingsSchema(tv), [tv]);
 
@@ -80,6 +84,29 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       sessionTimeoutMinutes: settings.sessionTimeoutMinutes ?? 30,
     },
   });
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadError(data.error ?? t("settings.uploadError"));
+      } else {
+        form.setValue("companyLogo", data.url, { shouldDirty: true });
+      }
+    } catch {
+      setUploadError(t("settings.uploadError"));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   async function onSubmit(values: SettingsFormValues) {
     setSaveState("idle");
@@ -167,11 +194,60 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                 control={form.control}
                 name="companyLogo"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel>{t("settings.fields.companyLogo")}</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://..." {...field} />
-                    </FormControl>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input placeholder="https://..." {...field} />
+                      </FormControl>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                        className="hidden"
+                        onChange={handleLogoUpload}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        disabled={uploading}
+                        onClick={() => fileInputRef.current?.click()}
+                        title={t("settings.fields.companyLogoUpload")}
+                      >
+                        {uploading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4" />
+                        )}
+                      </Button>
+                      {field.value && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => form.setValue("companyLogo", "", { shouldDirty: true })}
+                          title={t("settings.fields.companyLogoClear")}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {uploadError && (
+                      <p className="text-sm text-destructive">{uploadError}</p>
+                    )}
+                    {field.value && (
+                      <div className="mt-2 inline-block rounded border bg-muted p-2">
+                        <Image
+                          src={field.value}
+                          alt="Logo preview"
+                          width={120}
+                          height={48}
+                          className="h-12 w-auto object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    )}
                     <FormDescription>
                       {t("settings.fields.companyLogoHint")}
                     </FormDescription>

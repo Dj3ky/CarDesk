@@ -124,7 +124,8 @@
       "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.products?.substitutionPopup, null, 2\\)\\)\")",
       "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.products?.substitutionPopup, null, 2\\)\\)\")",
       "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^npm \" -and $_ -notmatch \"notice\" } | Select-Object -First 80)",
-      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^npm \" -and $_ -notmatch \"notice\" })"
+      "PowerShell(cd d:\\\\GitHub\\\\CarDesk; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^npm \" -and $_ -notmatch \"notice\" })",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(p.dependencies.next\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

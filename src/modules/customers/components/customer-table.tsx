@@ -86,16 +86,14 @@ export async function CustomerTable({ customers, locale }: CustomerTableProps) {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-1">
-                  <Button variant="ghost" size="icon" asChild>
+                  <Button variant="ghost" size="icon" asChild title={t("common.view")}>
                     <Link href={`/${locale}/customers/${customer.id}`}>
                       <Eye className="h-4 w-4" />
-                      <span className="sr-only">View</span>
                     </Link>
                   </Button>
-                  <Button variant="ghost" size="icon" asChild>
+                  <Button variant="ghost" size="icon" asChild title={t("common.edit")}>
                     <Link href={`/${locale}/customers/${customer.id}/edit`}>
                       <Pencil className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
                     </Link>
                   </Button>
                 </div>

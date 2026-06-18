@@ -44,9 +44,8 @@ export function DeleteProductDialog({ productId, productName }: DeleteProductDia
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" title={t("products.deleteTitle")}>
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

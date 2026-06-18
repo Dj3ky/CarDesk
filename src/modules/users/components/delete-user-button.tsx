@@ -51,7 +51,7 @@ export function DeleteUserButton({ userId, userName, isSelf }: DeleteUserButtonP
         className="h-8 w-8 text-muted-foreground hover:text-destructive"
         onClick={() => { setError(null); setOpen(true); }}
         disabled={isSelf}
-        title={isSelf ? t("selfDeleteError") : undefined}
+        title={isSelf ? t("selfDeleteError") : t("deleteTitle")}
       >
         <Trash2 className="h-3.5 w-3.5" />
       </Button>

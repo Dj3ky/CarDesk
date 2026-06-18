@@ -89,7 +89,7 @@ export function UserTable({ users, currentUserId }: UserTableProps) {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-1">
-                  <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                  <Button asChild variant="ghost" size="icon" className="h-8 w-8" title={tc("edit")}>
                     <Link href={`/${locale}/users/${user.id}/edit`}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Link>

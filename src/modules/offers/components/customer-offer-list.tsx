@@ -83,7 +83,7 @@ export async function CustomerOfferList({ customerId, locale }: CustomerOfferLis
                 {formatCurrency(offer.grandTotal, offer.currency)}
               </TableCell>
               <TableCell>
-                <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                <Button asChild variant="ghost" size="icon" className="h-8 w-8" title={t("common.view")}>
                   <Link href={`/${locale}/offers/${offer.id}`}>
                     <FileText className="h-4 w-4" />
                   </Link>

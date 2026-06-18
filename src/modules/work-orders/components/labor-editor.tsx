@@ -19,6 +19,7 @@ interface LaborEditorProps {
 
 export function LaborEditor({ form, currency = "EUR", defaultVATRate = 22 }: LaborEditorProps) {
   const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
   const { fields, append, remove } = useFieldArray({ control: form.control, name: "laborItems" });
   const { register, watch, formState: { errors } } = form;
 
@@ -105,6 +106,7 @@ export function LaborEditor({ form, currency = "EUR", defaultVATRate = 22 }: Lab
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title={tc("delete")}
                         onClick={() => remove(index)}
                       >
                         <Trash2 className="h-4 w-4" />

@@ -51,6 +51,7 @@ interface PricingPanelProps {
 
 export function PricingPanel({ initialRules }: PricingPanelProps) {
   const t = useTranslations("settings.pricing");
+  const tc = useTranslations("common");
   const tv = useTranslations("validation");
   const [rules, setRules] = useState<PriceRule[]>(initialRules);
   const [showForm, setShowForm] = useState(false);
@@ -276,6 +277,7 @@ export function PricingPanel({ initialRules }: PricingPanelProps) {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          title={tc("delete")}
                           onClick={() => handleDelete(rule.id)}
                           disabled={isPending}
                         >

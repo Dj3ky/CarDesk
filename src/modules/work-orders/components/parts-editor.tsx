@@ -25,6 +25,7 @@ interface PartsEditorProps {
 
 export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: PartsEditorProps) {
   const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
   const tUnits = useTranslations("products.units");
   const { fields, append, remove } = useFieldArray({ control: form.control, name: "items" });
   const { register, watch, setValue, formState: { errors } } = form;
@@ -176,6 +177,7 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title={tc("delete")}
                         onClick={() => remove(index)}
                       >
                         <Trash2 className="h-4 w-4" />

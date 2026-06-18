@@ -35,6 +35,7 @@ function customerLabel(
 
 export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps) {
   const t = useTranslations("offers");
+  const tc = useTranslations("common");
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   function toggleGroup(key: string) {
@@ -128,13 +129,13 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 justify-end">
-                        <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                        <Button asChild variant="ghost" size="icon" className="h-8 w-8" title={tc("view")}>
                           <Link href={`/${locale}/offers/${offer.id}`}>
                             <FileText className="h-4 w-4" />
                           </Link>
                         </Button>
                         {offer.status === "DRAFT" && (
-                          <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                          <Button asChild variant="ghost" size="icon" className="h-8 w-8" title={tc("edit")}>
                             <Link href={`/${locale}/offers/${offer.id}/edit`}>
                               <Pencil className="h-4 w-4" />
                             </Link>

@@ -146,10 +146,9 @@ export async function ProductTable({
                 {showActions && (
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="icon" asChild>
+                      <Button variant="ghost" size="icon" asChild title={t("common.edit")}>
                         <Link href={`/${locale}/products/${p.id}/edit`}>
                           <Pencil className="h-4 w-4" />
-                          <span className="sr-only">Edit</span>
                         </Link>
                       </Button>
                       {isAdmin && (

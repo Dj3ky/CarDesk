@@ -38,6 +38,7 @@ export function LineItemsEditor({
   currency,
 }: LineItemsEditorProps) {
   const t = useTranslations("offers");
+  const tc = useTranslations("common");
   const tUnits = useTranslations("products.units");
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const items = useWatch({ control, name: "items" }) ?? [];
@@ -218,6 +219,7 @@ export function LineItemsEditor({
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title={tc("delete")}
                         onClick={() => remove(index)}
                       >
                         <Trash2 className="h-4 w-4" />

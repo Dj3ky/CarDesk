@@ -84,6 +84,8 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
     },
   });
 
+  const logoUrl = form.watch("companyLogo");
+
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -220,7 +222,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                           <Upload className="h-4 w-4" />
                         )}
                       </Button>
-                      {field.value && (
+                      {logoUrl && (
                         <Button
                           type="button"
                           variant="outline"
@@ -235,11 +237,11 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                     {uploadError && (
                       <p className="text-sm text-destructive">{uploadError}</p>
                     )}
-                    {field.value && (
+                    {logoUrl && (
                       <div className="mt-2 inline-block rounded border bg-muted p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={field.value}
+                          src={logoUrl}
                           alt="Logo preview"
                           className="h-12 w-auto object-contain max-w-[180px]"
                         />

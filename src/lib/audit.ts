@@ -3,7 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
-export type AuditAction = "CREATE" | "UPDATE" | "DELETE" | "STATUS_CHANGE";
+export type AuditAction = "CREATE" | "UPDATE" | "DELETE" | "STATUS_CHANGE" | "LOGIN";
 export type AuditEntity = "OFFER" | "CUSTOMER" | "VEHICLE" | "PRODUCT" | "USER" | "SETTINGS" | "WORK_ORDER";
 
 export async function logAudit(params: {

@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 import type { Role } from "@prisma/client";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -33,6 +34,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
 
         if (!isValid) return null;
+
+        await logAudit({
+          action: "LOGIN",
+          entity: "USER",
+          entityId: user.id,
+          entityLabel: `${user.name} (${user.email})`,
+          userId: user.id,
+        });
 
         return {
           id: user.id,

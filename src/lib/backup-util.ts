@@ -55,7 +55,9 @@ export async function saveBackupToDisk(): Promise<string> {
   if (!dbUrl) throw new Error("DATABASE_URL not configured");
 
   const url = new URL(dbUrl);
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
   const filename = `cardesk-pgdump-${timestamp}.dump`;
   const dir = getBackupDir();
   const filePath = path.join(dir, filename);

@@ -58,6 +58,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [logoValue, setLogoValue] = useState(settings.companyLogo ?? "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const schema = useMemo(() => createSettingsSchema(tv), [tv]);
@@ -84,8 +85,6 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
     },
   });
 
-  const logoUrl = form.watch("companyLogo");
-
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -99,6 +98,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       if (!res.ok) {
         setUploadError(data.error ?? t("settings.uploadError"));
       } else {
+        setLogoValue(data.url);
         form.setValue("companyLogo", data.url, { shouldDirty: true });
       }
     } catch {
@@ -112,7 +112,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
   async function onSubmit(values: SettingsFormValues) {
     setSaveState("idle");
     setErrorMsg(null);
-    const result = await updateSettings(values);
+    const result = await updateSettings({ ...values, companyLogo: logoValue || undefined });
     if (result.success) {
       setSaveState("success");
       if (values.defaultLanguage !== locale) {
@@ -199,7 +199,14 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                     <FormLabel>{t("settings.fields.companyLogo")}</FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
-                        <Input placeholder="https://..." {...field} />
+                        <Input
+                          placeholder="https://..."
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setLogoValue(e.target.value);
+                          }}
+                        />
                       </FormControl>
                       <input
                         ref={fileInputRef}
@@ -222,12 +229,15 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                           <Upload className="h-4 w-4" />
                         )}
                       </Button>
-                      {logoUrl && (
+                      {logoValue && (
                         <Button
                           type="button"
                           variant="outline"
                           size="icon"
-                          onClick={() => form.setValue("companyLogo", "", { shouldDirty: true })}
+                          onClick={() => {
+                            form.setValue("companyLogo", "", { shouldDirty: true });
+                            setLogoValue("");
+                          }}
                           title={t("settings.fields.companyLogoClear")}
                         >
                           <X className="h-4 w-4" />
@@ -237,11 +247,11 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                     {uploadError && (
                       <p className="text-sm text-destructive">{uploadError}</p>
                     )}
-                    {logoUrl && (
+                    {logoValue && (
                       <div className="mt-2 inline-block rounded border bg-muted p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={logoUrl}
+                          src={logoValue}
                           alt="Logo preview"
                           className="h-12 w-auto object-contain max-w-[180px]"
                         />

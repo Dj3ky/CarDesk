@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { FilterOptions } from "@/modules/products/types";
 
-// Raw product row matching the findMany select in get-products.ts
 export type RawProductRow = {
   id: string;
   productNumber: string;
@@ -34,37 +33,57 @@ const FIRST_PAGE_SELECT = {
   isActive: true,
 } as const;
 
-// Module-level singletons — persist for the lifetime of the Node.js process.
-// Populated once at startup via warmProductCache() in instrumentation.ts,
-// then cleared on any product mutation so the next request re-fetches.
-let _countAll: number | null = null;
-let _countActive: number | null = null;
-let _filterOptions: FilterOptions | null = null;
-let _firstPageAdmin: RawProductRow[] | null = null;   // showInactive=true,  take=25
-let _firstPageActive: RawProductRow[] | null = null;  // showInactive=false, take=50
+// ─── globalThis store ────────────────────────────────────────────────────────
+// Module-level variables are NOT shared across Next.js bundle chunks.
+// globalThis IS shared across all module instances in the same Node.js process,
+// so cache populated by instrumentation.ts is visible to every page render.
+
+interface ProductCacheStore {
+  countAll: number | null;
+  countActive: number | null;
+  filterOptions: FilterOptions | null;
+  firstPageAdmin: RawProductRow[] | null;
+  firstPageActive: RawProductRow[] | null;
+}
+
+const g = globalThis as typeof globalThis & { __productCache?: ProductCacheStore };
+
+if (!g.__productCache) {
+  g.__productCache = {
+    countAll: null,
+    countActive: null,
+    filterOptions: null,
+    firstPageAdmin: null,
+    firstPageActive: null,
+  };
+}
+
+const store = g.__productCache;
+
+// ─── Public API ──────────────────────────────────────────────────────────────
 
 export function invalidateProductCache(): void {
-  _countAll = null;
-  _countActive = null;
-  _filterOptions = null;
-  _firstPageAdmin = null;
-  _firstPageActive = null;
+  store.countAll = null;
+  store.countActive = null;
+  store.filterOptions = null;
+  store.firstPageAdmin = null;
+  store.firstPageActive = null;
 }
 
 export async function getCachedCountAll(): Promise<number> {
-  if (_countAll !== null) return _countAll;
-  _countAll = await prisma.product.count();
-  return _countAll;
+  if (store.countAll !== null) return store.countAll;
+  store.countAll = await prisma.product.count();
+  return store.countAll;
 }
 
 export async function getCachedCountActive(): Promise<number> {
-  if (_countActive !== null) return _countActive;
-  _countActive = await prisma.product.count({ where: { isActive: true } });
-  return _countActive;
+  if (store.countActive !== null) return store.countActive;
+  store.countActive = await prisma.product.count({ where: { isActive: true } });
+  return store.countActive;
 }
 
 export async function getCachedFilterOptions(): Promise<FilterOptions> {
-  if (_filterOptions !== null) return _filterOptions;
+  if (store.filterOptions !== null) return store.filterOptions;
 
   const [brandRows, supplierRows] = await Promise.all([
     prisma.product.findMany({
@@ -83,32 +102,32 @@ export async function getCachedFilterOptions(): Promise<FilterOptions> {
     }),
   ]);
 
-  _filterOptions = {
+  store.filterOptions = {
     brands: brandRows.map((r) => r.brand!),
     suppliers: supplierRows.map((r) => r.supplier!),
   };
-  return _filterOptions;
+  return store.filterOptions;
 }
 
 export async function getCachedFirstPageAdmin(): Promise<RawProductRow[]> {
-  if (_firstPageAdmin !== null) return _firstPageAdmin;
-  _firstPageAdmin = (await prisma.product.findMany({
+  if (store.firstPageAdmin !== null) return store.firstPageAdmin;
+  store.firstPageAdmin = (await prisma.product.findMany({
     orderBy: [{ productNumber: "asc" }],
     take: 25,
     select: FIRST_PAGE_SELECT,
   })) as RawProductRow[];
-  return _firstPageAdmin;
+  return store.firstPageAdmin;
 }
 
 export async function getCachedFirstPageActive(): Promise<RawProductRow[]> {
-  if (_firstPageActive !== null) return _firstPageActive;
-  _firstPageActive = (await prisma.product.findMany({
+  if (store.firstPageActive !== null) return store.firstPageActive;
+  store.firstPageActive = (await prisma.product.findMany({
     where: { isActive: true },
     orderBy: [{ productNumber: "asc" }],
     take: 50,
     select: FIRST_PAGE_SELECT,
   })) as RawProductRow[];
-  return _firstPageActive;
+  return store.firstPageActive;
 }
 
 export async function warmProductCache(): Promise<void> {

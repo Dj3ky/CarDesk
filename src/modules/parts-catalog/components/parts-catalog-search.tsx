@@ -418,7 +418,13 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
       if (!res.ok) {
         setError(json.error ?? t("searchError"));
       } else {
-        const list: PartArticle[] = json.articles ?? [];
+        const raw: PartArticle[] = json.articles ?? [];
+        const seen = new Set<number>();
+        const list = raw.filter((a) => {
+          if (seen.has(a.articleId)) return false;
+          seen.add(a.articleId);
+          return true;
+        });
         setArticles(list);
         setOpenGroups(new Set());
       }

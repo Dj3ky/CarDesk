@@ -180,9 +180,6 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
               {article.articleSearchNo && (
                 <span className="font-mono">OEM: {article.articleSearchNo}</span>
               )}
-              {article.manufacturerName && (
-                <span>Brand: {article.manufacturerName}</span>
-              )}
             </div>
           </div>
           <button

@@ -57,6 +57,5 @@ export async function POST(request: Request) {
     });
   }
 
-  console.log("[cross-refs] result:", JSON.stringify(result, null, 2));
   return NextResponse.json({ articles: result });
 }

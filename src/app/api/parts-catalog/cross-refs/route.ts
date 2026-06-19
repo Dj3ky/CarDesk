@@ -31,8 +31,12 @@ export async function POST(request: Request) {
     articleIds.map(async (articleId) => {
       const url = `${BASE_URL}/api/artlookup/search-for-cross-references-through-oem-numbers-by-article-id?articleId=${articleId}&langId=${langId}`;
       const res = await fetch(url, { headers, cache: "no-store" });
-      if (!res.ok) return [];
+      if (!res.ok) {
+        console.log(`[cross-refs] ${articleId} status=${res.status}`);
+        return [];
+      }
       const data = await res.json();
+      console.log(`[cross-refs] ${articleId} raw:`, JSON.stringify(data).slice(0, 800));
       const items: {
         articleId: number;
         supplierId: number;

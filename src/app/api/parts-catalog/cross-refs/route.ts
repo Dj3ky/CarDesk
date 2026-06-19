@@ -10,10 +10,14 @@ async function fetchCrossRefs(articleId: number, langId: number, apiKey: string)
   const url = `${BASE_URL}/api/artlookup/select-article-cross-references/article-id/${articleId}/lang-id/${langId}`;
   const res = await fetch(url, {
     headers: { "x-apiprofile-key": apiKey, Accept: "application/json" },
-    next: { revalidate: 300 },
+    cache: "no-store",
   });
-  if (!res.ok) return [];
+  if (!res.ok) {
+    console.log(`[cross-refs] fetch failed for articleId=${articleId} status=${res.status}`);
+    return [];
+  }
   const data = await res.json();
+  console.log(`[cross-refs] articleId=${articleId} raw response:`, JSON.stringify(data).slice(0, 500));
   return Array.isArray(data) ? data : (data.articles ?? data.data ?? []);
 }
 
@@ -57,5 +61,6 @@ export async function POST(request: Request) {
     });
   }
 
+  console.log(`[cross-refs] final result count=${result.length}`, result.map((a: { articleNo?: string; supplierId?: number; supplierName?: string }) => `${a.articleNo} (supplierId=${a.supplierId}, supplier=${a.supplierName})`));
   return NextResponse.json({ articles: result });
 }

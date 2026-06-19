@@ -348,20 +348,15 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
   useEffect(() => {
     if (!open || crossRefsLoaded) return;
     const ids = articles.map((a) => a.articleId);
+    const sids = [...new Set(articles.map((a) => a.supplierId).filter(Boolean))];
     fetch("/api/parts-catalog/cross-refs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articleIds: ids, locale }),
+      body: JSON.stringify({ articleIds: ids, supplierIds: sids, locale }),
     })
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data.articles)) {
-          const supplierIds = new Set(articles.map((a) => a.supplierId).filter(Boolean));
-          const filtered = data.articles.filter((a: PartArticle) =>
-            supplierIds.has(a.supplierId) || a.supplierName === name
-          );
-          setCrossRefs(filtered);
-        }
+        if (Array.isArray(data.articles)) setCrossRefs(data.articles);
       })
       .catch(() => {})
       .finally(() => setCrossRefsLoaded(true));

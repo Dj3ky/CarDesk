@@ -14,6 +14,9 @@ type CrossRefItem = {
   crossManufacturerName: string;
   articleBrandRoot: string;
   searchLevel: string;
+  articleMediaType?: string;
+  articleMediaFileName?: string;
+  s3image?: string;
 };
 
 type FullArticle = {
@@ -70,13 +73,13 @@ export async function POST(request: Request) {
   // Step 2: collect unique cross-ref numbers (excluding root article numbers)
   const rootNumbers = new Set(results.flat().map((a) => a.articleNumberRoot));
   const seenNumbers = new Set<string>(rootNumbers);
-  const crossNums: { crossNumber: string; supplierId: number }[] = [];
+  const crossNums: { crossNumber: string; supplierId: number; fallback: CrossRefItem }[] = [];
 
   for (const batch of results) {
     for (const item of batch) {
       if (seenNumbers.has(item.crossNumber)) continue;
       seenNumbers.add(item.crossNumber);
-      crossNums.push({ crossNumber: item.crossNumber, supplierId: item.supplierId });
+      crossNums.push({ crossNumber: item.crossNumber, supplierId: item.supplierId, fallback: item });
     }
   }
 
@@ -84,20 +87,30 @@ export async function POST(request: Request) {
 
   // Step 3: enrich each cross-ref with full article data
   const enriched = await Promise.all(
-    crossNums.map(async ({ crossNumber, supplierId }) => {
+    crossNums.map(async ({ crossNumber, supplierId, fallback }) => {
       const url = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encodeURIComponent(crossNumber)}&articleType=ArticleNumber&langId=${langId}`;
       const res = await fetch(url, { headers, cache: "no-store" });
-      if (!res.ok) return null;
-      const data = await res.json();
-      const articles: FullArticle[] = Array.isArray(data) ? data : (data.articles ?? []);
-      return (
-        articles.find((a) => a.supplierId === supplierId) ??
-        articles.find((a) => a.articleNo === crossNumber) ??
-        articles[0] ??
-        null
-      );
+      if (res.ok) {
+        const data = await res.json();
+        const articles: FullArticle[] = Array.isArray(data) ? data : (data.articles ?? []);
+        const found =
+          articles.find((a) => a.supplierId === supplierId) ??
+          articles.find((a) => a.articleNo === crossNumber) ??
+          articles[0];
+        if (found) return found;
+      }
+      // Fallback: use cross-ref data as-is (no productName, but at least shows the article)
+      return {
+        articleId: fallback.articleId,
+        articleNo: fallback.crossNumber,
+        supplierName: fallback.crossManufacturerName,
+        supplierId: fallback.supplierId,
+        articleMediaType: fallback.articleMediaType,
+        articleMediaFileName: fallback.articleMediaFileName,
+        s3image: fallback.s3image,
+      };
     })
   );
 
-  return NextResponse.json({ articles: enriched.filter(Boolean) });
+  return NextResponse.json({ articles: enriched });
 }

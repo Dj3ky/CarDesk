@@ -453,7 +453,7 @@
   },
   "partsCatalog": {
     "title": "Parts Catalog",
-    "subtitle": "Search for spare parts by OEM number or vehicle",
+    "subtitle": "Search for spare parts by OEM number, article number or VIN",
     "tabOem": "By OEM Number",
     "tabTrade": "By Article Number",
     "tabVin": "By VIN",

@@ -453,7 +453,7 @@
   },
   "partsCatalog": {
     "title": "Katalog delov",
-    "subtitle": "Iskanje nadomestnih delov po OEM številki ali vozilu",
+    "subtitle": "Iskanje nadomestnih delov po OEM številki, številki artikla ali VIN",
     "tabOem": "Po OEM številki",
     "tabTrade": "Po številki artikla",
     "tabVin": "Po VIN",

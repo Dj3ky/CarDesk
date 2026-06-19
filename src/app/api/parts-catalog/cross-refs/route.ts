@@ -48,12 +48,13 @@ export async function POST(request: Request) {
       if (!res.ok) return [];
       const data = await res.json();
       const items: CrossRefItem[] = Array.isArray(data) ? data : (data.articles ?? []);
-      return items.filter(
-        (a) =>
-          a.searchLevel === "IAM -> OEM -> IAM -> IAM" &&
-          a.crossNumber !== a.articleNumberRoot &&
-          (supplierSet.size === 0 || supplierSet.has(a.supplierId))
-      );
+      return items.filter((a) => {
+        if (a.searchLevel !== "IAM -> OEM -> IAM -> IAM") return false;
+        if (a.crossNumber === a.articleNumberRoot) return false;
+        const n1 = a.crossManufacturerName.toLowerCase();
+        const n2 = a.articleBrandRoot.toLowerCase();
+        return n1.includes(n2) || n2.includes(n1);
+      });
     })
   );
 

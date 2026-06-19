@@ -93,6 +93,7 @@ export async function POST(request: Request) {
       if (res.ok) {
         const data = await res.json();
         const articles: FullArticle[] = Array.isArray(data) ? data : (data.articles ?? []);
+        console.log(`[cross-refs enrich] ${crossNumber} → ${articles.length} results, supplierIds: ${articles.map((a) => a.supplierId).join(",")}, articleNos: ${articles.map((a) => a.articleNo).join(",")}`);
         const found =
           articles.find((a) => a.supplierId === supplierId) ??
           articles.find((a) => a.articleNo === crossNumber) ??

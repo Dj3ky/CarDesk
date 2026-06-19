@@ -342,6 +342,27 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
   onAdded?: () => void;
   locale: string;
 }) {
+  const [crossRefs, setCrossRefs] = useState<PartArticle[]>([]);
+  const [crossRefsLoaded, setCrossRefsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!open || crossRefsLoaded) return;
+    const ids = articles.map((a) => a.articleId);
+    fetch("/api/parts-catalog/cross-refs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleIds: ids, locale }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.articles)) setCrossRefs(data.articles);
+      })
+      .catch(() => {})
+      .finally(() => setCrossRefsLoaded(true));
+  }, [open, crossRefsLoaded, articles, locale]);
+
+  const allArticles = [...articles, ...crossRefs];
+
   return (
     <div className="border rounded-lg overflow-hidden">
       <button
@@ -352,12 +373,12 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
         <div className="flex items-center gap-3">
           {open ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
           <span className="font-semibold text-sm">{name}</span>
-          <Badge variant="outline" className="text-xs">{articles.length}</Badge>
+          <Badge variant="outline" className="text-xs">{allArticles.length}</Badge>
         </div>
       </button>
       {open && (
         <div className="divide-y">
-          {articles.map((article) => (
+          {allArticles.map((article) => (
             <ArticleCard
               key={article.articleId}
               article={article}

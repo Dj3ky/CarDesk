@@ -61,6 +61,6 @@ export async function POST(request: Request) {
     });
   }
 
-  console.log(`[cross-refs] final result count=${result.length}`, result.map((a: { articleNo?: string; supplierId?: number; supplierName?: string }) => `${a.articleNo} (supplierId=${a.supplierId}, supplier=${a.supplierName})`));
+  console.log(`[cross-refs] final result count=${result.length}`, (result as { articleNo?: string; supplierId?: number; supplierName?: string }[]).map((a) => `${a.articleNo} (supplierId=${a.supplierId}, supplier=${a.supplierName})`));
   return NextResponse.json({ articles: result });
 }

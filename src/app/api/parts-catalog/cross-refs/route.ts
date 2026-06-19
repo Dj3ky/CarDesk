@@ -29,12 +29,9 @@ export async function POST(request: Request) {
 
   const results = await Promise.all(
     articleIds.map(async (articleId) => {
-      const url = `${BASE_URL}/api/artlookup/search-for-cross-references-through-oem-numbers-by-article-id`;
-      const form = new FormData();
-      form.append("articleId", String(articleId));
-      form.append("langId", String(langId));
-      supplierSet.forEach((sid) => form.append("supplierId", String(sid)));
-      const res = await fetch(url, { method: "POST", headers, body: form, cache: "no-store" });
+      const supplierParam = [...supplierSet].map((sid) => `supplierId=${sid}`).join("&");
+      const url = `${BASE_URL}/api/artlookup/search-for-cross-references-through-oem-numbers-by-article-id?articleId=${articleId}&langId=${langId}${supplierParam ? `&${supplierParam}` : ""}`;
+      const res = await fetch(url, { headers, cache: "no-store" });
       if (!res.ok) {
         console.log(`[cross-refs] ${articleId} status=${res.status}`);
         return [];

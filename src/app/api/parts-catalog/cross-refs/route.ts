@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     articleIds.map(async (articleId) => {
       const supplierParam = [...supplierSet].map((sid) => `supplierId=${sid}`).join("&");
       const url = `${BASE_URL}/api/artlookup/search-for-cross-references-through-oem-numbers-by-article-id?articleId=${articleId}&langId=${langId}${supplierParam ? `&${supplierParam}` : ""}`;
-      const res = await fetch(url, { headers, cache: "no-store" });
+      const res = await fetch(url, { headers, next: { revalidate: 300 } });
       if (!res.ok) return [];
       const data = await res.json();
       const items: CrossRefItem[] = Array.isArray(data) ? data : (data.articles ?? []);
@@ -85,33 +85,30 @@ export async function POST(request: Request) {
 
   if (crossNums.length === 0) return NextResponse.json({ articles: [] });
 
-  // Step 3: enrich each cross-ref with full article data
-  const enriched = await Promise.all(
-    crossNums.map(async ({ crossNumber, supplierId, fallback }) => {
-      const url = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encodeURIComponent(crossNumber)}&articleType=ArticleNumber&langId=${langId}`;
-      const res = await fetch(url, { headers, cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
-        const articles: FullArticle[] = Array.isArray(data) ? data : (data.articles ?? []);
-        console.log(`[cross-refs enrich] ${crossNumber} → ${articles.length} results, supplierIds: ${articles.map((a) => a.supplierId).join(",")}, articleNos: ${articles.map((a) => a.articleNo).join(",")}`);
-        const found =
-          articles.find((a) => a.supplierId === supplierId) ??
-          articles.find((a) => a.articleNo === crossNumber) ??
-          articles[0];
-        if (found) return found;
-      }
-      // Fallback: use cross-ref data as-is (no productName, but at least shows the article)
-      return {
-        articleId: fallback.articleId,
-        articleNo: fallback.crossNumber,
-        supplierName: fallback.crossManufacturerName,
-        supplierId: fallback.supplierId,
-        articleMediaType: fallback.articleMediaType,
-        articleMediaFileName: fallback.articleMediaFileName,
-        s3image: fallback.s3image,
-      };
-    })
-  );
+  // Step 3: enrich each cross-ref with full article data (sequential to avoid rate limiting)
+  const enriched: unknown[] = [];
+  for (const { crossNumber, supplierId, fallback } of crossNums) {
+    const url = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encodeURIComponent(crossNumber)}&articleType=ArticleNumber&langId=${langId}`;
+    const res = await fetch(url, { headers, next: { revalidate: 300 } });
+    if (res.ok) {
+      const data = await res.json();
+      const articles: FullArticle[] = Array.isArray(data) ? data : (data.articles ?? []);
+      const found =
+        articles.find((a) => a.supplierId === supplierId) ??
+        articles.find((a) => a.articleNo === crossNumber) ??
+        articles[0];
+      if (found) { enriched.push(found); continue; }
+    }
+    enriched.push({
+      articleId: fallback.articleId,
+      articleNo: fallback.crossNumber,
+      supplierName: fallback.crossManufacturerName,
+      supplierId: fallback.supplierId,
+      articleMediaType: fallback.articleMediaType,
+      articleMediaFileName: fallback.articleMediaFileName,
+      s3image: fallback.s3image,
+    });
+  }
 
   return NextResponse.json({ articles: enriched });
 }

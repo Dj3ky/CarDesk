@@ -395,7 +395,7 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
   );
 }
 
-export function PartsCatalogSearch({ locale }: { locale: string }) {
+export function PartsCatalogSearch({ locale, crossRefsEnabled }: { locale: string; crossRefsEnabled?: boolean }) {
   const t = useTranslations("partsCatalog");
 
   const [activeTab, setActiveTab] = useState<"oem" | "trade" | "vin">("oem");
@@ -839,7 +839,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                 <SupplierGroup
                   key={`${supplier}-${searchKey}`}
                   name={supplier}
-                  enableCrossRefs={activeTab !== "trade"}
+                  enableCrossRefs={crossRefsEnabled && activeTab !== "trade"}
                   articles={items}
                   open={openGroups.has(supplier)}
                   onToggle={() => setOpenGroups((prev) => {

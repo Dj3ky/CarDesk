@@ -433,6 +433,8 @@
       "defaultLanguage": "Privzeti jezik",
       "partsCatalogApiKey": "API ključ kataloga delov",
       "partsCatalogApiKeyHint": "API ključ s strani auto-parts-catalog.apiprofile.com — brezplačna registracija na njihovi spletni strani",
+      "partsCatalogCrossRefs": "Omogoči iskanje navzkrižnih referenc",
+      "partsCatalogCrossRefsHint": "Ob razširitvi skupiny dobavitelja samodejno poišče komplet variante in sorodne artikle istega proizvajalca",
       "sessionTimeoutMinutes": "Odjava ob neaktivnosti",
       "sessionTimeoutHint": "Samodejno odjavi uporabnike po določenem obdobju neaktivnosti"
     },

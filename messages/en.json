@@ -433,6 +433,8 @@
       "defaultLanguage": "Default Language",
       "partsCatalogApiKey": "Parts Catalog API Key",
       "partsCatalogApiKeyHint": "API key from auto-parts-catalog.apiprofile.com — register free at their website",
+      "partsCatalogCrossRefs": "Enable cross-reference search",
+      "partsCatalogCrossRefsHint": "When expanding a supplier group, automatically find kit variants and related articles from the same brand",
       "sessionTimeoutMinutes": "Inactivity Logout",
       "sessionTimeoutHint": "Automatically sign out users after a period of inactivity"
     },

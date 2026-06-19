@@ -317,7 +317,8 @@ model Settings {
   workOrderPrefix    String   @default("WO")
   pdfFooterText         String?  @db.Text
   termsAndConditions    String?  @db.Text
-  partsCatalogApiKey    String?
+  partsCatalogApiKey      String?
+  partsCatalogCrossRefs   Boolean  @default(true)
   sessionTimeoutMinutes Int      @default(30)
   backupSchedule        String   @default("disabled")
   backupScheduleHour    Int      @default(2)

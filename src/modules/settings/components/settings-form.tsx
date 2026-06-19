@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useMemo, useRef } from "react";
 import { Loader2, CheckCircle2, AlertCircle, Upload, X } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -81,6 +82,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       pdfFooterText: settings.pdfFooterText ?? "",
       termsAndConditions: settings.termsAndConditions ?? "",
       partsCatalogApiKey: settings.partsCatalogApiKey ?? "",
+      partsCatalogCrossRefs: settings.partsCatalogCrossRefs ?? true,
       sessionTimeoutMinutes: settings.sessionTimeoutMinutes ?? 30,
     },
   });
@@ -568,6 +570,24 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                       {t("settings.fields.partsCatalogApiKeyHint")}
                     </FormDescription>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="partsCatalogCrossRefs"
+                render={({ field }) => (
+                  <FormItem className="flex items-start gap-3">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div>
+                      <FormLabel>{t("settings.fields.partsCatalogCrossRefs")}</FormLabel>
+                      <FormDescription>{t("settings.fields.partsCatalogCrossRefsHint")}</FormDescription>
+                    </div>
                   </FormItem>
                 )}
               />

@@ -15,6 +15,7 @@ export type SettingsData = {
   pdfFooterText: string | null;
   termsAndConditions: string | null;
   partsCatalogApiKey: string | null;
+  partsCatalogCrossRefs: boolean;
   sessionTimeoutMinutes: number;
   backupSchedule: string;
   backupScheduleHour: number;

@@ -48,7 +48,7 @@ export default async function PartsCatalogPage({ params }: PageProps) {
         </div>
       )}
 
-      <PartsCatalogSearch locale={locale} />
+      <PartsCatalogSearch locale={locale} crossRefsEnabled={settings.partsCatalogCrossRefs} />
     </div>
   );
 }

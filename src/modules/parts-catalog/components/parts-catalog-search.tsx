@@ -381,7 +381,7 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
         <div className="divide-y">
           {allArticles.map((article) => (
             <ArticleCard
-              key={article.articleId}
+              key={`${article.articleId}-${article.articleNo}`}
               article={article}
               activeOffer={activeOffer}
               onAdded={onAdded}

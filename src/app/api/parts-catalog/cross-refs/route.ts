@@ -6,6 +6,19 @@ const BASE_URL = "https://auto-parts-catalog.apiprofile.com";
 const LOCALE_TO_LANG: Record<string, number> = { en: 4, sl: 36 };
 const DEFAULT_LANG = 4;
 
+type CrossRefItem = {
+  articleId: number;
+  supplierId: number;
+  crossNumber: string;
+  articleNumberRoot: string;
+  crossManufacturerName: string;
+  articleBrandRoot: string;
+  searchLevel: string;
+  articleMediaType?: string;
+  articleMediaFileName?: string;
+  s3image?: string;
+};
+
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,37 +45,24 @@ export async function POST(request: Request) {
       const supplierParam = [...supplierSet].map((sid) => `supplierId=${sid}`).join("&");
       const url = `${BASE_URL}/api/artlookup/search-for-cross-references-through-oem-numbers-by-article-id?articleId=${articleId}&langId=${langId}${supplierParam ? `&${supplierParam}` : ""}`;
       const res = await fetch(url, { headers, cache: "no-store" });
-      if (!res.ok) {
-        console.log(`[cross-refs] ${articleId} status=${res.status}`);
-        return [];
-      }
+      if (!res.ok) return [];
       const data = await res.json();
-      console.log(`[cross-refs] ${articleId} raw:`, JSON.stringify(data).slice(0, 800));
-      const items: {
-        articleId: number;
-        supplierId: number;
-        crossNumber: string;
-        crossManufacturerName: string;
-        articleBrandRoot: string;
-        searchLevel: string;
-        articleMediaType?: string;
-        articleMediaFileName?: string;
-        s3image?: string;
-      }[] = Array.isArray(data) ? data : (data.articles ?? []);
+      const items: CrossRefItem[] = Array.isArray(data) ? data : (data.articles ?? []);
       return items.filter(
         (a) =>
           a.searchLevel === "IAM -> OEM -> IAM -> IAM" &&
+          a.crossNumber !== a.articleNumberRoot &&
           (supplierSet.size === 0 || supplierSet.has(a.supplierId))
       );
     })
   );
 
-  const seen = new Set<number>(articleIds);
+  const seenNumbers = new Set<string>();
   const merged: unknown[] = [];
   for (const batch of results) {
     for (const item of batch) {
-      if (seen.has(item.articleId)) continue;
-      seen.add(item.articleId);
+      if (seenNumbers.has(item.crossNumber)) continue;
+      seenNumbers.add(item.crossNumber);
       merged.push({
         articleId: item.articleId,
         articleNo: item.crossNumber,

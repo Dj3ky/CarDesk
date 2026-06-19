@@ -355,7 +355,13 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
     })
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data.articles)) setCrossRefs(data.articles);
+        if (Array.isArray(data.articles)) {
+          const supplierIds = new Set(articles.map((a) => a.supplierId).filter(Boolean));
+          const filtered = supplierIds.size > 0
+            ? data.articles.filter((a: PartArticle) => supplierIds.has(a.supplierId))
+            : data.articles;
+          setCrossRefs(filtered);
+        }
       })
       .catch(() => {})
       .finally(() => setCrossRefsLoaded(true));

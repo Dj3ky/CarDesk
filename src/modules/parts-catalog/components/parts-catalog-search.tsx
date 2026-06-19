@@ -416,6 +416,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<PartArticle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -432,6 +433,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
     setError(null);
     setArticles(null);
     setFilterText("");
+    setSearchKey((k) => k + 1);
     try {
       const res = await fetch("/api/parts-catalog/search", {
         method: "POST",
@@ -839,7 +841,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
             <div className="space-y-3">
               {Array.from(grouped.groups.entries()).map(([supplier, items]) => (
                 <SupplierGroup
-                  key={supplier}
+                  key={`${supplier}-${searchKey}`}
                   name={supplier}
                   articles={items}
                   open={openGroups.has(supplier)}

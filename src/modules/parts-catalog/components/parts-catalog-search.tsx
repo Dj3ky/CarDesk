@@ -333,7 +333,7 @@ function ArticleCard({ article, activeOffer, onAdded, locale }: {
   );
 }
 
-function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, locale }: {
+function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, locale, enableCrossRefs }: {
   name: string;
   articles: PartArticle[];
   open: boolean;
@@ -341,12 +341,13 @@ function SupplierGroup({ name, articles, open, onToggle, activeOffer, onAdded, l
   activeOffer: ActiveOfferInfo | null;
   onAdded?: () => void;
   locale: string;
+  enableCrossRefs?: boolean;
 }) {
   const [crossRefs, setCrossRefs] = useState<PartArticle[]>([]);
   const [crossRefsLoaded, setCrossRefsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!open || crossRefsLoaded) return;
+    if (!open || crossRefsLoaded || !enableCrossRefs) return;
     const ids = articles.map((a) => a.articleId);
     const sids = [...new Set(articles.map((a) => a.supplierId).filter(Boolean))];
     fetch("/api/parts-catalog/cross-refs", {
@@ -838,6 +839,7 @@ export function PartsCatalogSearch({ locale }: { locale: string }) {
                 <SupplierGroup
                   key={`${supplier}-${searchKey}`}
                   name={supplier}
+                  enableCrossRefs={activeTab !== "trade"}
                   articles={items}
                   open={openGroups.has(supplier)}
                   onToggle={() => setOpenGroups((prev) => {

@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing query" }, { status: 400 });
     }
     const encoded = encodeURIComponent(params.query.trim());
-    apiUrl = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encoded}&articleType=TradeNumber&langId=${langId}`;
+    apiUrl = `${BASE_URL}/api/artlookup/search-articles-by-article-no?articleNo=${encoded}&articleType=ArticleNumber&langId=${langId}`;
   } else if (params.type === "vehicle") {
     const vehicleId = params.vehicleId ?? params.typeId;
     const categoryId = params.categoryId ?? 0;

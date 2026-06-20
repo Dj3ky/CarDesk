@@ -677,6 +677,7 @@
       "currentPassword": "Trenutno geslo",
       "newPassword": "Novo geslo",
       "saveProfile": "Shrani spremembe",
+      "language": "Jezik vmesnika",
       "sessionNote": "Spremembe imena začnejo veljati po naslednji prijavi."
     },
     "moduleAccess": "Dostop do modulov",

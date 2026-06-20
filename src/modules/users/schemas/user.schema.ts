@@ -40,6 +40,7 @@ function updateUserSchemaWith(t: TFn) {
 function updateProfileSchemaWith(t: TFn) {
   return z.object({
     name: z.string().min(1).max(100),
+    language: z.enum(["en", "sl"]).default("en"),
     currentPassword: z
       .string()
       .optional()

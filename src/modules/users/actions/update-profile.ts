@@ -8,7 +8,7 @@ import { logAudit } from "@/lib/audit";
 import { updateProfileSchema } from "../schemas/user.schema";
 import type { ActionResult } from "../types";
 
-export async function updateProfile(data: unknown): Promise<ActionResult> {
+export async function updateProfile(data: unknown): Promise<ActionResult<{ language: string }>> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" };
@@ -19,9 +19,9 @@ export async function updateProfile(data: unknown): Promise<ActionResult> {
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const { name, currentPassword, newPassword } = parsed.data;
+  const { name, language, currentPassword, newPassword } = parsed.data;
 
-  const updateData: Record<string, unknown> = { name };
+  const updateData: Record<string, unknown> = { name, language };
 
   if (newPassword) {
     if (!currentPassword) {
@@ -53,5 +53,5 @@ export async function updateProfile(data: unknown): Promise<ActionResult> {
   });
 
   revalidatePath("/profile");
-  return { success: true };
+  return { success: true, data: { language } };
 }

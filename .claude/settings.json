@@ -130,7 +130,13 @@
       "Bash(node -e \"const f = require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(f.settings?.backup, null, 2\\)\\)\")",
       "Bash(node -e \"const f = require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(f.settings?.backup, null, 2\\)\\)\")",
       "Bash(mkdir -p d:/GitHub/CarDesk/src/app/api/backup/download/\\\\[filename\\\\])",
-      "Bash(mkdir -p d:/GitHub/CarDesk/src/app/api/backup/delete/\\\\[filename\\\\])"
+      "Bash(mkdir -p d:/GitHub/CarDesk/src/app/api/backup/delete/\\\\[filename\\\\])",
+      "Bash(xargs grep -l \"middleware\\\\|redirect.*locale\\\\|requestLocale\")",
+      "Bash(xargs grep -l \"useRouter\\\\|router.push\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('d:/GitHub/CarDesk/messages/en.json'\\)\\); p=d.get\\('users',{}\\).get\\('profile',{}\\); print\\(json.dumps\\(p, indent=2\\)\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('d:/GitHub/CarDesk/messages/en.json'\\)\\); langs=d.get\\('settings',{}\\).get\\('languages',{}\\); print\\(json.dumps\\(langs, indent=2\\)\\)\")",
+      "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.users?.profile,null,2\\)\\); console.log\\('---LANGUAGES---'\\); console.log\\(JSON.stringify\\(d.settings?.languages,null,2\\)\\)\")",
+      "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.users?.profile,null,2\\)\\); console.log\\('---LANGUAGES---'\\); console.log\\(JSON.stringify\\(d.settings?.languages,null,2\\)\\)\")"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

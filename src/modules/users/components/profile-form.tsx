@@ -10,20 +10,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createLocalizedUpdateProfileSchema, type UpdateProfileFormValues } from "../schemas/user.schema";
 import { updateProfile } from "../actions/update-profile";
 
 interface ProfileFormProps {
   name: string | null;
   email: string;
+  language: string;
 }
 
-export function ProfileForm({ name, email }: ProfileFormProps) {
+export function ProfileForm({ name, email, language }: ProfileFormProps) {
   const t = useTranslations("users.profile");
   const tFields = useTranslations("users.fields");
   const tc = useTranslations("common");
   const tu = useTranslations("users");
   const tv = useTranslations("validation");
+  const tLangs = useTranslations("settings.languages");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -32,10 +41,11 @@ export function ProfileForm({ name, email }: ProfileFormProps) {
 
   const form = useForm<UpdateProfileFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: name ?? "", currentPassword: "", newPassword: "" },
+    defaultValues: { name: name ?? "", language: (language as "en" | "sl") ?? "en", currentPassword: "", newPassword: "" },
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = form;
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = form;
+  const currentLanguage = watch("language");
 
   function onSubmit(values: UpdateProfileFormValues) {
     startTransition(async () => {
@@ -48,8 +58,11 @@ export function ProfileForm({ name, email }: ProfileFormProps) {
         return;
       }
       setSaved(true);
-      reset({ name: values.name, currentPassword: "", newPassword: "" });
+      reset({ name: values.name, language: values.language, currentPassword: "", newPassword: "" });
       setTimeout(() => setSaved(false), 3000);
+      if (result.data?.language && result.data.language !== language) {
+        window.location.href = `/${result.data.language}/profile`;
+      }
     });
   }
 
@@ -70,6 +83,21 @@ export function ProfileForm({ name, email }: ProfileFormProps) {
           <div className="space-y-1.5">
             <Label>{tFields("email")}</Label>
             <Input value={email} disabled className="bg-muted" />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="language">{t("language")}</Label>
+            <Select
+              value={currentLanguage}
+              onValueChange={(val) => setValue("language", val as "en" | "sl")}
+            >
+              <SelectTrigger id="language">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">{tLangs("en")}</SelectItem>
+                <SelectItem value="sl">{tLangs("sl")}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <p className="text-xs text-muted-foreground">{t("sessionNote")}</p>
         </CardContent>

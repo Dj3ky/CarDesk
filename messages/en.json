@@ -677,6 +677,7 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "saveProfile": "Save changes",
+      "language": "Interface Language",
       "sessionNote": "Name changes take effect after your next login."
     },
     "moduleAccess": "Module Access",

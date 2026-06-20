@@ -68,6 +68,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: user.role,
           image: user.image,
           permissions: user.permissions,
+          language: user.language,
         };
       },
     }),
@@ -78,6 +79,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.role = (user as { role: Role }).role;
         token.permissions = (user as { permissions: string[] }).permissions ?? [];
+        token.language = (user as { language: string }).language ?? "en";
       }
       return token;
     },
@@ -86,6 +88,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
         session.user.permissions = (token.permissions as string[]) ?? [];
+        session.user.language = (token.language as string) ?? "en";
       }
       return session;
     },

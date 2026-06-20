@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
+import { signIn, getSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,6 @@ import { Loader2 } from "lucide-react";
 
 export function LoginForm() {
   const t = useTranslations("auth");
-  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,8 +32,9 @@ export function LoginForm() {
       return;
     }
 
-    // Redirect manually so the locale is preserved
-    window.location.href = `/${locale}/dashboard`;
+    const session = await getSession();
+    const lang = session?.user?.language ?? "sl";
+    window.location.href = `/${lang}/dashboard`;
   }
 
   return (

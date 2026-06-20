@@ -19,6 +19,7 @@ export default async function ProfilePage() {
 
   const name = session?.user?.name ?? null;
   const email = session?.user?.email ?? "";
+  const language = session?.user?.language ?? "en";
 
   const initials = name
     ? name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -44,7 +45,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      <ProfileForm name={name} email={email} />
+      <ProfileForm name={name} email={email} language={language} />
     </div>
   );
 }

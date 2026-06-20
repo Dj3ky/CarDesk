@@ -1,6 +1,7 @@
 import { createReadStream } from "fs";
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 import { backupFilePath } from "@/lib/backup-util";
 
 export async function GET(
@@ -17,6 +18,15 @@ export async function GET(
   if (!filePath) {
     return Response.json({ error: "Not found" }, { status: 404 });
   }
+
+  after(() => logAudit({
+    action: "CREATE",
+    entity: "BACKUP",
+    entityId: filename,
+    entityLabel: filename,
+    userId: session.user.id,
+    changes: { method: "download" },
+  }));
 
   const nodeStream = createReadStream(filePath);
   const webStream = new ReadableStream({

@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 import { saveBackupToDisk, pruneOldBackups } from "@/lib/backup-util";
 import { prisma } from "@/lib/prisma";
 
@@ -16,6 +17,13 @@ export async function GET(req: NextRequest) {
       const filename = await saveBackupToDisk();
       const settings = await prisma.settings.findUnique({ where: { id: "settings" } });
       if (settings) await pruneOldBackups(settings.backupRetentionDays);
+      await logAudit({
+        action: "CREATE",
+        entity: "BACKUP",
+        entityId: filename,
+        entityLabel: filename,
+        userId: session.user.id,
+      });
       return Response.json({ success: true, filename });
     } catch (err) {
       console.error("[backup/pgdump save]", err);
@@ -71,6 +79,15 @@ export async function GET(req: NextRequest) {
       pgdump.kill();
     },
   });
+
+  after(() => logAudit({
+    action: "CREATE",
+    entity: "BACKUP",
+    entityId: filename,
+    entityLabel: filename,
+    userId: session.user.id,
+    changes: { method: "download" },
+  }));
 
   return new Response(webStream, {
     headers: {

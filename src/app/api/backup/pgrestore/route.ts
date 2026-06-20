@@ -7,6 +7,7 @@ import { pipeline } from "stream/promises";
 import { Readable } from "stream";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 // Parents before children — respects every FK in the schema
@@ -119,6 +120,14 @@ export async function POST(req: NextRequest) {
   } finally {
     await unlink(tmpFile).catch(() => {});
   }
+
+  await logAudit({
+    action: "RESTORE",
+    entity: "BACKUP",
+    entityId: "restore",
+    entityLabel: "Database restored from backup",
+    userId: session.user.id,
+  });
 
   return Response.json({ success: true });
 }

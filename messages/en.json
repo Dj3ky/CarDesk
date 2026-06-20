@@ -875,6 +875,8 @@
       "allEntities": "All entities",
       "allActions": "All actions",
       "allUsers": "All users",
+      "from": "From",
+      "to": "To",
       "apply": "Apply",
       "clear": "Clear filters"
     },

@@ -3,6 +3,7 @@ import { unlink } from "fs/promises";
 import { revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 import { invalidateProductCache } from "@/lib/product-cache";
 import { parseXlsxAllRows, countCsvRows, streamCsvRows } from "./parse-file";
 import { mapAndValidateRow } from "./parse-utils";
@@ -266,6 +267,20 @@ export async function processImportJob(jobId: string): Promise<void> {
         errorRows: state.errorRows,
         errors: state.errors as unknown as Prisma.JsonArray,
         completedAt: new Date(),
+      },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entity: "IMPORT",
+      entityId: jobId,
+      entityLabel: job.filename,
+      userId: job.createdById,
+      changes: {
+        inserted: state.insertedRows,
+        updated: state.updatedRows,
+        deleted: deletedRows,
+        errors: state.errorRows,
       },
     });
 

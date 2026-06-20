@@ -27,7 +27,7 @@ const PAGE_SIZE = 50;
 
 interface AuditPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; entity?: string; action?: string; user?: string }>;
+  searchParams: Promise<{ page?: string; entity?: string; action?: string; user?: string; from?: string; to?: string }>;
 }
 
 const ACTION_COLORS: Record<string, string> = {
@@ -37,6 +37,7 @@ const ACTION_COLORS: Record<string, string> = {
   STATUS_CHANGE: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
   LOGIN: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
   LOGIN_FAILED: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400",
+  RESTORE: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
 export default async function AuditPage({ params, searchParams }: AuditPageProps) {
@@ -49,14 +50,19 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
 
   after(() => purgeAuditLog());
 
-  const { page: pageParam, entity: entityFilter, action: actionFilter, user: userFilter } = await searchParams;
+  const { page: pageParam, entity: entityFilter, action: actionFilter, user: userFilter, from: fromFilter, to: toFilter } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10));
   const skip = (page - 1) * PAGE_SIZE;
+
+  const createdAtFilter: { gte?: Date; lte?: Date } = {};
+  if (fromFilter) createdAtFilter.gte = new Date(fromFilter + "T00:00:00");
+  if (toFilter) createdAtFilter.lte = new Date(toFilter + "T23:59:59.999");
 
   const where = {
     ...(entityFilter ? { entity: entityFilter } : {}),
     ...(actionFilter ? { action: actionFilter } : {}),
     ...(userFilter ? { userId: userFilter } : {}),
+    ...(Object.keys(createdAtFilter).length > 0 ? { createdAt: createdAtFilter } : {}),
   };
 
   const [logs, total] = await Promise.all([
@@ -133,13 +139,31 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
             </option>
           ))}
         </select>
+        <div className="flex items-center gap-1.5">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("filters.from")}</label>
+          <input
+            type="date"
+            name="from"
+            defaultValue={fromFilter ?? ""}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("filters.to")}</label>
+          <input
+            type="date"
+            name="to"
+            defaultValue={toFilter ?? ""}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+        </div>
         <button
           type="submit"
           className="h-9 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           {t("filters.apply")}
         </button>
-        {(entityFilter || actionFilter || userFilter) && (
+        {(entityFilter || actionFilter || userFilter || fromFilter || toFilter) && (
           <a
             href="?"
             className="inline-flex h-9 items-center rounded-md border border-input px-4 text-sm text-muted-foreground hover:bg-accent"
@@ -222,7 +246,7 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
           <div className="flex gap-2">
             {page > 1 && (
               <a
-                href={`?page=${page - 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}`}
+                href={`?page=${page - 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}${fromFilter ? `&from=${fromFilter}` : ""}${toFilter ? `&to=${toFilter}` : ""}`}
                 className="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs hover:bg-accent"
               >
                 {t("pagination.prev")}
@@ -230,7 +254,7 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
             )}
             {page < totalPages && (
               <a
-                href={`?page=${page + 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}`}
+                href={`?page=${page + 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}${fromFilter ? `&from=${fromFilter}` : ""}${toFilter ? `&to=${toFilter}` : ""}`}
                 className="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs hover:bg-accent"
               >
                 {t("pagination.next")}

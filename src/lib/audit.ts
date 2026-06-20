@@ -3,8 +3,8 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
-export type AuditAction = "CREATE" | "UPDATE" | "DELETE" | "STATUS_CHANGE" | "LOGIN" | "LOGIN_FAILED";
-export type AuditEntity = "OFFER" | "CUSTOMER" | "VEHICLE" | "PRODUCT" | "USER" | "SETTINGS" | "WORK_ORDER";
+export type AuditAction = "CREATE" | "UPDATE" | "DELETE" | "STATUS_CHANGE" | "LOGIN" | "LOGIN_FAILED" | "RESTORE";
+export type AuditEntity = "OFFER" | "CUSTOMER" | "VEHICLE" | "PRODUCT" | "USER" | "SETTINGS" | "WORK_ORDER" | "BACKUP" | "IMPORT";
 
 export async function logAudit(params: {
   action: AuditAction;

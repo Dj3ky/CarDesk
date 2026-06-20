@@ -875,6 +875,8 @@
       "allEntities": "Vse entitete",
       "allActions": "Vsa dejanja",
       "allUsers": "Vsi uporabniki",
+      "from": "Od",
+      "to": "Do",
       "apply": "Uporabi",
       "clear": "Počisti filtre"
     },

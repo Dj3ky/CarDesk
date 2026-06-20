@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 import { updateProfileSchema } from "../schemas/user.schema";
 import type { ActionResult } from "../types";
 
@@ -41,6 +42,16 @@ export async function updateProfile(data: unknown): Promise<ActionResult> {
   }
 
   await prisma.user.update({ where: { id: session.user.id }, data: updateData });
+
+  await logAudit({
+    action: "UPDATE",
+    entity: "USER",
+    entityId: session.user.id,
+    entityLabel: `${name ?? session.user.name} (${session.user.email})`,
+    userId: session.user.id,
+    changes: newPassword ? { updated: "password" } : undefined,
+  });
+
   revalidatePath("/profile");
   return { success: true };
 }

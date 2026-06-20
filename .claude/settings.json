@@ -137,7 +137,8 @@
       "Bash(python -c \"import json; d=json.load\\(open\\('d:/GitHub/CarDesk/messages/en.json'\\)\\); langs=d.get\\('settings',{}\\).get\\('languages',{}\\); print\\(json.dumps\\(langs, indent=2\\)\\)\")",
       "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.users?.profile,null,2\\)\\); console.log\\('---LANGUAGES---'\\); console.log\\(JSON.stringify\\(d.settings?.languages,null,2\\)\\)\")",
       "Bash(node -e \"const d=require\\('./messages/sl.json'\\); console.log\\(JSON.stringify\\(d.users?.profile,null,2\\)\\); console.log\\('---LANGUAGES---'\\); console.log\\(JSON.stringify\\(d.settings?.languages,null,2\\)\\)\")",
-      "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.users?.fields,null,2\\)\\)\")"
+      "Bash(node -e \"const d=require\\('./messages/en.json'\\); console.log\\(JSON.stringify\\(d.users?.fields,null,2\\)\\)\")",
+      "Read(//d/GitHub/CarDesk/src/app/api/offers/**)"
     ],
     "additionalDirectories": [
       "d:\\GitHub\\CarDesk\\src\\app\\api\\offers\\[offerId]",

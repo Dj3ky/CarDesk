@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { Pencil, FileDown } from "lucide-react";
+import { Pencil, FileDown, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -89,6 +89,13 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             >
               <FileDown className="mr-1.5 h-3.5 w-3.5" />
               {t("actions.downloadPdf")}
+            </a>
+          </Button>
+
+          <Button asChild variant="outline" size="sm">
+            <a href={`/api/offers/${offer.id}/xls`} download>
+              <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" />
+              XLS
             </a>
           </Button>
 

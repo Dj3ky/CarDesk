@@ -9,37 +9,56 @@ interface InactivityWatcherProps {
 }
 
 const ACTIVITY_EVENTS = ["mousemove", "mousedown", "keydown", "touchstart", "scroll"] as const;
+const STORAGE_KEY = "inactivity_last_active";
 
 export function InactivityWatcher({ timeoutMinutes, locale }: InactivityWatcherProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastActivityRef = useRef<number>(Date.now());
 
   useEffect(() => {
     if (timeoutMinutes <= 0) return;
 
     const ms = timeoutMinutes * 60 * 1000;
 
+    function getLastActive(): number {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? parseInt(stored, 10) : Date.now();
+    }
+
     function logout() {
+      localStorage.removeItem(STORAGE_KEY);
       signOut({ redirectTo: `/${locale}/login` });
     }
 
+    // On iOS PWA, the OS can kill and fully reload the page when the user returns.
+    // Check localStorage on mount to catch inactivity that happened before the reload.
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && Date.now() - parseInt(stored, 10) >= ms) {
+      logout();
+      return;
+    }
+
     function reset() {
-      lastActivityRef.current = Date.now();
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && Date.now() - parseInt(stored, 10) >= ms) {
+        logout();
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, String(Date.now()));
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(logout, ms);
     }
 
-    // On mobile, setTimeout is frozen when the screen locks or app is backgrounded.
+    // On Android PWA / mobile browsers, setTimeout is frozen when the screen locks.
     // When the user returns, check wall-clock elapsed time and log out if needed.
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
-        if (Date.now() - lastActivityRef.current >= ms) {
+        const lastActive = getLastActive();
+        const elapsed = Date.now() - lastActive;
+        if (elapsed >= ms) {
           logout();
         } else {
-          // Reschedule the remaining time
-          const remaining = ms - (Date.now() - lastActivityRef.current);
           if (timerRef.current) clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(logout, remaining);
+          timerRef.current = setTimeout(logout, ms - elapsed);
         }
       }
     }

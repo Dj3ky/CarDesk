@@ -17,6 +17,7 @@ export type SettingsData = {
   partsCatalogApiKey: string | null;
   partsCatalogCrossRefs: boolean;
   sessionTimeoutMinutes: number;
+  auditRetentionDays: number;
   backupSchedule: string;
   backupScheduleHour: number;
   backupRetentionDays: number;

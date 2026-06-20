@@ -43,6 +43,7 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     partsCatalogApiKey: d.partsCatalogApiKey ?? null,
     partsCatalogCrossRefs: d.partsCatalogCrossRefs,
     sessionTimeoutMinutes: d.sessionTimeoutMinutes,
+    auditRetentionDays: d.auditRetentionDays,
   };
 
   await prisma.settings.upsert({
@@ -55,7 +56,7 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     action: "UPDATE",
     entity: "SETTINGS",
     entityId: "settings",
-    entityLabel: d.companyName || "Settings",
+    entityLabel: "Settings",
     userId: session.user.id,
   });
 

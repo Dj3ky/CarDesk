@@ -26,14 +26,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email: credentials.email as string },
         });
 
-        if (!user || !user.password || !user.isActive) return null;
+        if (!user || !user.password || !user.isActive) {
+          await logAudit({
+            action: "LOGIN_FAILED",
+            entity: "USER",
+            entityId: user?.id ?? (credentials.email as string),
+            entityLabel: user ? `${user.name} (${user.email})` : credentials.email as string,
+            userId: null,
+          });
+          return null;
+        }
 
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.password
         );
 
-        if (!isValid) return null;
+        if (!isValid) {
+          await logAudit({
+            action: "LOGIN_FAILED",
+            entity: "USER",
+            entityId: user.id,
+            entityLabel: `${user.name} (${user.email})`,
+            userId: null,
+          });
+          return null;
+        }
 
         await logAudit({
           action: "LOGIN",

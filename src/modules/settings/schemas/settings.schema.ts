@@ -52,6 +52,7 @@ function settingsSchemaWith(t: TFn) {
     partsCatalogApiKey: optStr(200),
     partsCatalogCrossRefs: z.boolean().default(true),
     sessionTimeoutMinutes: z.coerce.number().int().min(0).max(480).default(30),
+    auditRetentionDays: z.coerce.number().int().min(0).max(3650).default(0),
   });
 }
 

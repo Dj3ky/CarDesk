@@ -84,6 +84,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       partsCatalogApiKey: settings.partsCatalogApiKey ?? "",
       partsCatalogCrossRefs: settings.partsCatalogCrossRefs ?? true,
       sessionTimeoutMinutes: settings.sessionTimeoutMinutes ?? 30,
+      auditRetentionDays: settings.auditRetentionDays ?? 0,
     },
   });
 
@@ -506,6 +507,34 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="auditRetentionDays"
+                render={({ field }) => (
+                  <FormItem className="max-w-xs">
+                    <FormLabel>{t("settings.fields.auditRetentionDays")}</FormLabel>
+                    <Select
+                      value={String(field.value)}
+                      onValueChange={(v) => field.onChange(parseInt(v, 10))}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0">{t("settings.auditRetention.forever")}</SelectItem>
+                        <SelectItem value="30">{t("settings.auditRetention.days", { count: 30 })}</SelectItem>
+                        <SelectItem value="90">{t("settings.auditRetention.days", { count: 90 })}</SelectItem>
+                        <SelectItem value="180">{t("settings.auditRetention.days", { count: 180 })}</SelectItem>
+                        <SelectItem value="365">{t("settings.auditRetention.days", { count: 365 })}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>{t("settings.fields.auditRetentionDaysHint")}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

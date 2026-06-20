@@ -436,11 +436,17 @@
       "partsCatalogCrossRefs": "Omogoči iskanje navzkrižnih referenc",
       "partsCatalogCrossRefsHint": "Ob razširitvi skupiny dobavitelja samodejno poišče komplet variante in sorodne artikle istega proizvajalca",
       "sessionTimeoutMinutes": "Odjava ob neaktivnosti",
-      "sessionTimeoutHint": "Samodejno odjavi uporabnike po določenem obdobju neaktivnosti"
+      "sessionTimeoutHint": "Samodejno odjavi uporabnike po določenem obdobju neaktivnosti",
+      "auditRetentionDays": "Hramba revizijskega dnevnika",
+      "auditRetentionDaysHint": "Samodejno briši vnose revizijskega dnevnika, starejše od tega. Nastavi na 0 za trajno hranjenje."
     },
     "sessionTimeout": {
       "disabled": "Izklopljeno",
       "minutes": "{count} minut"
+    },
+    "auditRetention": {
+      "forever": "Hrani za vedno",
+      "days": "{count} dni"
     },
     "currencies": {
       "EUR": "EUR — Euro",
@@ -868,6 +874,7 @@
     "filters": {
       "allEntities": "Vse entitete",
       "allActions": "Vsa dejanja",
+      "allUsers": "Vsi uporabniki",
       "apply": "Uporabi",
       "clear": "Počisti filtre"
     },

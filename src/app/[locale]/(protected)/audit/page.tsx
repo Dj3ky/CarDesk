@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -15,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ShieldCheck } from "lucide-react";
+import { purgeAuditLog } from "@/lib/audit-purge";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("audit");
@@ -25,7 +27,7 @@ const PAGE_SIZE = 50;
 
 interface AuditPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string; entity?: string; action?: string }>;
+  searchParams: Promise<{ page?: string; entity?: string; action?: string; user?: string }>;
 }
 
 const ACTION_COLORS: Record<string, string> = {
@@ -34,6 +36,7 @@ const ACTION_COLORS: Record<string, string> = {
   DELETE: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
   STATUS_CHANGE: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
   LOGIN: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+  LOGIN_FAILED: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400",
 };
 
 export default async function AuditPage({ params, searchParams }: AuditPageProps) {
@@ -44,13 +47,16 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
     redirect(`/${locale}/dashboard`);
   }
 
-  const { page: pageParam, entity: entityFilter, action: actionFilter } = await searchParams;
+  after(() => purgeAuditLog());
+
+  const { page: pageParam, entity: entityFilter, action: actionFilter, user: userFilter } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10));
   const skip = (page - 1) * PAGE_SIZE;
 
   const where = {
     ...(entityFilter ? { entity: entityFilter } : {}),
     ...(actionFilter ? { action: actionFilter } : {}),
+    ...(userFilter ? { userId: userFilter } : {}),
   };
 
   const [logs, total] = await Promise.all([
@@ -66,14 +72,16 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
-  const entities = await prisma.auditLog.findMany({
-    distinct: ["entity"],
-    select: { entity: true },
-  });
-  const actions = await prisma.auditLog.findMany({
-    distinct: ["action"],
-    select: { action: true },
-  });
+  const [entities, actions, auditUsers] = await Promise.all([
+    prisma.auditLog.findMany({ distinct: ["entity"], select: { entity: true } }),
+    prisma.auditLog.findMany({ distinct: ["action"], select: { action: true } }),
+    prisma.auditLog.findMany({
+      where: { userId: { not: null } },
+      distinct: ["userId"],
+      select: { userId: true, user: { select: { name: true, email: true } } },
+      orderBy: { user: { name: "asc" } },
+    }),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -113,13 +121,25 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
             </option>
           ))}
         </select>
+        <select
+          name="user"
+          defaultValue={userFilter ?? ""}
+          className="h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+        >
+          <option value="">{t("filters.allUsers")}</option>
+          {auditUsers.map((u) => (
+            <option key={u.userId} value={u.userId!}>
+              {u.user?.name ?? u.user?.email ?? u.userId}
+            </option>
+          ))}
+        </select>
         <button
           type="submit"
           className="h-9 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           {t("filters.apply")}
         </button>
-        {(entityFilter || actionFilter) && (
+        {(entityFilter || actionFilter || userFilter) && (
           <a
             href="?"
             className="inline-flex h-9 items-center rounded-md border border-input px-4 text-sm text-muted-foreground hover:bg-accent"
@@ -146,9 +166,9 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
                     <TableHead>{t("columns.when")}</TableHead>
                     <TableHead>{t("columns.action")}</TableHead>
                     <TableHead>{t("columns.entity")}</TableHead>
-                    <TableHead className="hidden md:table-cell">{t("columns.record")}</TableHead>
-                    <TableHead className="hidden md:table-cell">{t("columns.user")}</TableHead>
-                    <TableHead className="hidden lg:table-cell">{t("columns.details")}</TableHead>
+                    <TableHead>{t("columns.record")}</TableHead>
+                    <TableHead>{t("columns.user")}</TableHead>
+                    <TableHead>{t("columns.details")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -169,13 +189,13 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
                           {log.entity}
                         </Badge>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell font-mono text-xs">
+                      <TableCell className="font-mono text-xs">
                         {log.entityLabel ?? log.entityId.slice(0, 8) + "…"}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-sm">
+                      <TableCell className="text-sm">
                         {log.user ? (log.user.name ?? log.user.email) : "—"}
                       </TableCell>
-                      <TableCell className="hidden lg:table-cell text-xs text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground">
                         {log.changes
                           ? (() => {
                               const c = log.changes as Record<string, unknown>;
@@ -202,7 +222,7 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
           <div className="flex gap-2">
             {page > 1 && (
               <a
-                href={`?page=${page - 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}`}
+                href={`?page=${page - 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}`}
                 className="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs hover:bg-accent"
               >
                 {t("pagination.prev")}
@@ -210,7 +230,7 @@ export default async function AuditPage({ params, searchParams }: AuditPageProps
             )}
             {page < totalPages && (
               <a
-                href={`?page=${page + 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}`}
+                href={`?page=${page + 1}${entityFilter ? `&entity=${entityFilter}` : ""}${actionFilter ? `&action=${actionFilter}` : ""}${userFilter ? `&user=${userFilter}` : ""}`}
                 className="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs hover:bg-accent"
               >
                 {t("pagination.next")}

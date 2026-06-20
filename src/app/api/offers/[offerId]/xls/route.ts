@@ -90,7 +90,7 @@ export async function GET(
   XLSX.utils.book_append_sheet(wb, ws, "Ponudba");
   const buffer: Buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
 
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

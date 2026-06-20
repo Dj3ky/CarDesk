@@ -49,7 +49,10 @@ export async function GET(
     const price = Number(item.pricePerUnit);
     const disc = Number(item.discount);
     const vat = Number(item.vatRate);
-    const mpc = item.product ? Number(item.product.price) : "";
+    const catalogPrice = item.product ? Number(item.product.price) : null;
+    const mpc = catalogPrice !== null
+      ? Math.round(catalogPrice * (1 + vat / 100) * 100) / 100
+      : "";
 
     const subtotal = qty * price;
     const baseNet = subtotal - subtotal * (disc / 100);

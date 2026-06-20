@@ -16,6 +16,7 @@ export async function getUser(id: string): Promise<UserListItem | null> {
       role: true,
       isActive: true,
       permissions: true,
+      language: true,
       createdAt: true,
     },
   });

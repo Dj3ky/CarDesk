@@ -12,6 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createLocalizedCreateUserSchema, createLocalizedUpdateUserSchema } from "../schemas/user.schema";
 import { createUser } from "../actions/create-user";
 import { updateUser } from "../actions/update-user";
@@ -28,6 +35,7 @@ export function UserForm({ user }: UserFormProps) {
   const t = useTranslations("users");
   const tc = useTranslations("common");
   const tv = useTranslations("validation");
+  const tLangs = useTranslations("settings.languages");
   const locale = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -48,6 +56,7 @@ export function UserForm({ user }: UserFormProps) {
       role: user?.role ?? "EMPLOYEE",
       isActive: user?.isActive ?? true,
       permissions: user?.permissions ?? DEFAULT_EMPLOYEE_PERMISSIONS,
+      language: (user?.language as "en" | "sl") ?? "en",
     },
   });
 
@@ -55,6 +64,7 @@ export function UserForm({ user }: UserFormProps) {
   const isActive = watch("isActive");
   const role = watch("role");
   const permissions = watch("permissions") as string[];
+  const language = watch("language") as string;
 
   function togglePermission(module: Module) {
     const current = permissions ?? [];
@@ -140,6 +150,22 @@ export function UserForm({ user }: UserFormProps) {
               <option value="EMPLOYEE">{tc("employee")}</option>
               <option value="ADMIN">{tc("admin")}</option>
             </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="language">{t("fields.language")}</Label>
+            <Select
+              value={language}
+              onValueChange={(val) => setValue("language", val as "en" | "sl")}
+            >
+              <SelectTrigger id="language">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">{tLangs("en")}</SelectItem>
+                <SelectItem value="sl">{tLangs("sl")}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-start gap-3 rounded-lg border p-3">

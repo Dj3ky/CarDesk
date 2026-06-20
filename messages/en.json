@@ -664,6 +664,7 @@
       "role": "Role",
       "isActive": "Active account",
       "isActiveHint": "Inactive users cannot log in",
+      "language": "Interface Language",
       "createdAt": "Member since"
     },
     "actions": {

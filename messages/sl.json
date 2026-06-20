@@ -664,6 +664,7 @@
       "role": "Vloga",
       "isActive": "Aktiven račun",
       "isActiveHint": "Neaktivni uporabniki se ne morejo prijaviti",
+      "language": "Jezik vmesnika",
       "createdAt": "Član od"
     },
     "actions": {

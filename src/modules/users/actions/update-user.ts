@@ -18,7 +18,7 @@ export async function updateUser(userId: string, data: unknown): Promise<ActionR
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const { name, email, password, role, isActive, permissions } = parsed.data;
+  const { name, email, password, role, isActive, permissions, language } = parsed.data;
 
   const emailConflict = await prisma.user.findFirst({
     where: { email, id: { not: userId } },
@@ -39,7 +39,7 @@ export async function updateUser(userId: string, data: unknown): Promise<ActionR
   }
 
   const updateData: Record<string, unknown> = {
-    name, email, role, isActive,
+    name, email, role, isActive, language,
     permissions: role === "ADMIN" ? [] : permissions,
   };
   if (password) {

@@ -18,6 +18,7 @@ function createUserSchemaWith(t: TFn) {
     role: z.enum(["ADMIN", "EMPLOYEE"]),
     isActive: z.boolean().default(true),
     permissions: z.array(z.string()).default([]),
+    language: z.enum(["en", "sl"]).default("en"),
   });
 }
 
@@ -34,6 +35,7 @@ function updateUserSchemaWith(t: TFn) {
     role: z.enum(["ADMIN", "EMPLOYEE"]),
     isActive: z.boolean().default(true),
     permissions: z.array(z.string()).default([]),
+    language: z.enum(["en", "sl"]).default("en"),
   });
 }
 

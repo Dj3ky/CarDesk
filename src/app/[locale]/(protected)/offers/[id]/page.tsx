@@ -93,7 +93,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
           </Button>
 
           <Button asChild variant="outline" size="sm">
-            <a href={`/api/offers/${offer.id}/xls`} download>
+            <a href={`/api/offers/${offer.id}/xls?locale=${locale}`} download>
               <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" />
               XLS
             </a>

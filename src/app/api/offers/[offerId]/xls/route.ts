@@ -3,8 +3,18 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import * as XLSX from "xlsx";
 
+const UNIT_LABELS: Record<string, Record<string, string>> = {
+  sl: { pcs: "kos", h: "ura", m: "m", kg: "kg", l: "l", set: "komplet", pair: "par" },
+  en: { pcs: "pcs", h: "h", m: "m", kg: "kg", l: "l", set: "set", pair: "pair" },
+};
+
+function translateUnit(unit: string, locale: string): string {
+  const map = UNIT_LABELS[locale] ?? UNIT_LABELS["sl"];
+  return map[unit] ?? unit;
+}
+
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ offerId: string }> }
 ) {
   const session = await auth();
@@ -13,15 +23,13 @@ export async function GET(
   }
 
   const { offerId } = await params;
+  const locale = req.nextUrl.searchParams.get("locale") ?? "sl";
 
   const offer = await prisma.offer.findUnique({
     where: { id: offerId },
     include: {
       items: {
         orderBy: { position: "asc" },
-        include: {
-          product: { select: { price: true } },
-        },
       },
     },
   });
@@ -49,10 +57,7 @@ export async function GET(
     const price = Number(item.pricePerUnit);
     const disc = Number(item.discount);
     const vat = Number(item.vatRate);
-    const catalogPrice = item.product ? Number(item.product.price) : null;
-    const mpc = catalogPrice !== null
-      ? Math.round(catalogPrice * (1 + vat / 100) * 100) / 100
-      : "";
+    const mpc = Math.round(price * (1 + vat / 100) * 10000) / 10000;
 
     const subtotal = qty * price;
     const baseNet = subtotal - subtotal * (disc / 100);
@@ -63,7 +68,7 @@ export async function GET(
       item.productNumber ?? "",
       item.description,
       qty,
-      item.unit,
+      translateUnit(item.unit, locale),
       price,
       mpc,
       disc,

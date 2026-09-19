@@ -187,7 +187,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
         {step === "customer" && (
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-firstName">
                   {t("firstName")} <span className="text-destructive">*</span>
                 </Label>
@@ -199,7 +199,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   autoFocus
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-lastName">
                   {t("lastName")} <span className="text-destructive">*</span>
                 </Label>
@@ -212,7 +212,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-company">{t("company")}</Label>
                 <Input
                   id="qc-company"
@@ -220,7 +220,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   onChange={(e) => setCompanyName(e.target.value)}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-taxNumber">{t("taxNumber")}</Label>
                 <Input
                   id="qc-taxNumber"
@@ -230,7 +230,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-phone">{t("phone")}</Label>
                 <Input
                   id="qc-phone"
@@ -238,7 +238,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-email">{t("email")}</Label>
                 <Input
                   id="qc-email"
@@ -276,7 +276,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
         {step === "vehicle" && (
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-make">
                   {t("make")} <span className="text-destructive">*</span>
                 </Label>
@@ -287,7 +287,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   autoFocus
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-model">
                   {t("model")} <span className="text-destructive">*</span>
                 </Label>
@@ -299,7 +299,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-year">
                   {t("year")} <span className="text-destructive">*</span>
                 </Label>
@@ -312,7 +312,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   max={new Date().getFullYear() + 1}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-plate">{t("registrationPlate")}</Label>
                 <Input
                   id="qc-plate"
@@ -322,7 +322,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-mileage">{t("mileage")}</Label>
                 <Input
                   id="qc-mileage"
@@ -332,7 +332,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                   onChange={(e) => setMileage(e.target.value)}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="qc-vin">{t("vin")}</Label>
                 <Input
                   id="qc-vin"
@@ -362,7 +362,7 @@ export function QuickCreateDialog({ open, onClose, onCreated, existingCustomer }
                 <AlertCircle className="h-4 w-4 shrink-0" /> {error}
               </div>
             )}
-            <div className="flex items-center justify-between gap-2 pt-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
               {!existingCustomer && (
                 <Button
                   type="button"

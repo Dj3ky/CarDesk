@@ -212,6 +212,7 @@ export function OfferForm({
               <select
                 id="customerId"
                 {...register("customerId")}
+                value={selectedCustomerId}
                 className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="">{t("form.selectCustomer")}</option>
@@ -244,6 +245,7 @@ export function OfferForm({
               <select
                 id="vehicleId"
                 {...register("vehicleId")}
+                value={selectedVehicleId}
                 disabled={!selectedCustomerId}
                 className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
               >

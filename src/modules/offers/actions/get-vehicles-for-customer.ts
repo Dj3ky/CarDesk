@@ -11,7 +11,7 @@ export async function getVehiclesForCustomer(customerId: string): Promise<Vehicl
 
   const vehicles = await prisma.vehicle.findMany({
     where: { customerId, isActive: true },
-    select: { id: true, make: true, model: true, year: true, registrationPlate: true },
+    select: { id: true, make: true, model: true, year: true, registrationPlate: true, mileage: true },
     orderBy: { createdAt: "desc" },
   });
 

@@ -63,7 +63,7 @@ export type OfferListItem = {
   createdAt: Date;
   validUntil: Date | null;
   customer: { firstName: string; lastName: string; companyName: string | null };
-  vehicle: { make: string; model: string; year: number } | null;
+  vehicle: { make: string; model: string; year: number; registrationPlate: string | null } | null;
   grandTotal: number;
   itemCount: number;
 };
@@ -74,6 +74,9 @@ export type CustomerOption = {
   lastName: string;
   companyName: string | null;
   defaultDiscount: number | null;
+  phone?: string | null;
+  /** Lightweight vehicle list used by the customer picker (search by plate). */
+  vehicles?: VehicleOption[];
 };
 
 export type VehicleOption = {
@@ -82,6 +85,7 @@ export type VehicleOption = {
   model: string;
   year: number;
   registrationPlate: string | null;
+  mileage?: number | null;
 };
 
 export type ProductSearchResult = {

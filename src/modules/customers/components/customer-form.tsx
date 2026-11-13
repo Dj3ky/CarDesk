@@ -241,7 +241,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
                 <FormItem>
                   <FormLabel>{t("customers.fields.postalCode")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="1000" />
+                    <Input {...field} inputMode="numeric" autoComplete="postal-code" placeholder="1000" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -355,15 +355,16 @@ export function CustomerForm({ customer }: CustomerFormProps) {
           </CardContent>
         </Card>
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="outline"
+            className="w-full sm:w-auto"
             onClick={() => router.back()}
           >
             {t("common.cancel")}
           </Button>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <Button type="submit" className="w-full sm:w-auto" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isEdit ? t("common.save") : t("customers.create")}
           </Button>

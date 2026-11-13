@@ -70,7 +70,8 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
   }
 
   return (
-    <div className="space-y-5">
+    // pb-20 on phones keeps the last card clear of the floating button
+    <div className="space-y-5 pb-20 sm:pb-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -83,7 +84,7 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
             </p>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="hidden sm:inline-flex">
           <Link href={`${basePath}/new`}>
             <FilePlus2 className="mr-2 h-4 w-4" />
             {t("addNew")}
@@ -91,14 +92,23 @@ export default async function OffersPage({ params, searchParams }: OffersPagePro
         </Button>
       </div>
 
+      {/* Phone: floating "new offer" button */}
+      <Link
+        href={`${basePath}/new`}
+        aria-label={t("addNew")}
+        className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95 sm:hidden"
+      >
+        <FilePlus2 className="h-6 w-6" />
+      </Link>
+
       {/* Toolbar: search + status tabs + group toggle */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1 items-center">
+        <div className="-mx-4 flex items-center gap-1 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           {STATUS_KEYS.map((key) => (
             <Link
               key={key}
               href={statusHref(key)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:py-1 ${
                 status === key
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"

@@ -80,7 +80,7 @@ export async function getOffers({
       where,
       include: {
         customer: { select: { firstName: true, lastName: true, companyName: true } },
-        vehicle: { select: { make: true, model: true, year: true } },
+        vehicle: { select: { make: true, model: true, year: true, registrationPlate: true } },
         items: {
           select: { quantity: true, pricePerUnit: true, vatRate: true, discount: true },
         },

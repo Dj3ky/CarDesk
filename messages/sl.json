@@ -222,7 +222,8 @@
     "admin": "Administrator",
     "employee": "Uslužbenec",
     "groupByCustomer": "Razvrsti po stranki",
-    "ungroup": "Razgrupiraj"
+    "ungroup": "Razgrupiraj",
+    "more": "Več"
   },
   "import": {
     "title": "Uvoz izdelkov",
@@ -438,7 +439,9 @@
       "sessionTimeoutMinutes": "Odjava ob neaktivnosti",
       "sessionTimeoutHint": "Samodejno odjavi uporabnike po določenem obdobju neaktivnosti",
       "auditRetentionDays": "Hramba revizijskega dnevnika",
-      "auditRetentionDaysHint": "Samodejno briši vnose revizijskega dnevnika, starejše od tega. Nastavi na 0 za trajno hranjenje."
+      "auditRetentionDaysHint": "Samodejno briši vnose revizijskega dnevnika, starejše od tega. Nastavi na 0 za trajno hranjenje.",
+      "offerValidityDays": "Privzeta veljavnost ponudbe (dni)",
+      "offerValidityDaysHint": "Nove ponudbe dobijo »velja do« = danes + toliko dni. 0 = pusti prazno."
     },
     "sessionTimeout": {
       "disabled": "Izklopljeno",
@@ -558,7 +561,10 @@
       "lineTotal": "Skupaj",
       "addItem": "Dodaj postavko",
       "searchProduct": "Iskanje izdelka",
-      "noItems": "Ni postavk. Kliknite »Dodaj postavko« za začetek."
+      "noItems": "Ni postavk. Tapnite »Dodaj del« za iskanje po katalogu.",
+      "addPart": "Dodaj del",
+      "addManual": "Prazna vrstica",
+      "count": "{count, plural, one {# postavka} two {# postavki} few {# postavke} other {# postavk}}"
     },
     "productSearch": {
       "title": "Iskanje v katalogu izdelkov",
@@ -567,7 +573,10 @@
       "replacedBy": "Nadomešča ga:",
       "searchSubstitution": "Išči nadomestni del",
       "exVat": "brez DDV",
-      "vatLine": "DDV {rate}%"
+      "vatLine": "DDV {rate}%",
+      "typeToSearch": "Vpišite šifro ali opis dela…",
+      "addedCount": "{count, plural, one {# postavka dodana} two {# postavki dodani} few {# postavke dodane} other {# postavk dodanih}}",
+      "done": "Končano"
     },
     "pricelistPicker": {
       "title": "Pregled cenika",
@@ -591,7 +600,11 @@
       "reject": "Zavrni",
       "complete": "Označi kot zaključeno",
       "revertToDraft": "Vrni v osnutek",
-      "downloadPdf": "Prenesi PDF"
+      "downloadPdf": "Prenesi PDF",
+      "sharePdf": "Deli PDF",
+      "downloadXls": "Prenesi XLS",
+      "duplicate": "Podvoji",
+      "duplicated": "Ponudba podvojena"
     },
     "noOffers": "Ni najdenih ponudb.",
     "addFirst": "Ustvari prvo ponudbo",
@@ -611,7 +624,12 @@
       "hideCatalogNumber": "Skrij kataloško številko v PDF",
       "hideCatalogNumberHint": "Kataloške številke ne bodo prikazane na tiskani ponudbi",
       "created": "Ponudba ustvarjena",
-      "updated": "Ponudba shranjena"
+      "updated": "Ponudba shranjena",
+      "lastMileage": "Zadnje zabeleženo: {km} km",
+      "applyDiscountTitle": "Uporabim popust stranke?",
+      "applyDiscountDesc": "Privzeti popust te stranke je {discount} %. Ga uporabim za vse postavke ({count})?",
+      "applyDiscountKeep": "Ohrani trenutne",
+      "applyDiscountApply": "Uporabi za vse"
     },
     "quickCreate": {
       "newCustomer": "Nova stranka",
@@ -642,6 +660,21 @@
       "viewCustomer": "Ogled profila stranke",
       "validUntil": "Veljavno do",
       "createdBy": "avtor"
+    },
+    "customerPicker": {
+      "title": "Izberite stranko",
+      "placeholder": "Ime, podjetje, telefon ali registrska…",
+      "noResults": "Ni najdenih strank."
+    },
+    "share": {
+      "tapAgain": "PDF je pripravljen — ponovno tapnite Deli.",
+      "failed": "PDF-ja ni bilo mogoče deliti.",
+      "markSentTitle": "Označim kot poslano?",
+      "markSentDesc": "Ste ponudbo {number} poslali stranki? Označite jo kot poslano."
+    },
+    "confirm": {
+      "reject": "Označim ponudbo {number} kot zavrnjeno s strani stranke?",
+      "revertToDraft": "Vrnem ponudbo {number} v osnutek, da jo lahko urejate?"
     }
   },
   "users": {

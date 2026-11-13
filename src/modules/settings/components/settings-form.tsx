@@ -85,6 +85,7 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
       partsCatalogCrossRefs: settings.partsCatalogCrossRefs ?? true,
       sessionTimeoutMinutes: settings.sessionTimeoutMinutes ?? 30,
       auditRetentionDays: settings.auditRetentionDays ?? 0,
+      offerValidityDays: settings.offerValidityDays ?? 30,
     },
   });
 
@@ -425,6 +426,29 @@ export function SettingsForm({ settings, activeTab }: SettingsFormProps) {
                       </FormControl>
                       <FormDescription>
                         {t("settings.fields.workOrderPrefixHint")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="offerValidityDays"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("settings.fields.offerValidityDays")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          max={365}
+                          {...field}
+                          value={field.value as number | string}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t("settings.fields.offerValidityDaysHint")}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

@@ -9,7 +9,19 @@ export async function getCustomersForOffer(): Promise<CustomerOption[]> {
   if (!session?.user?.id) return [];
   const customers = await prisma.customer.findMany({
     where: { isActive: true },
-    select: { id: true, firstName: true, lastName: true, companyName: true, defaultDiscount: true },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      companyName: true,
+      phone: true,
+      defaultDiscount: true,
+      vehicles: {
+        where: { isActive: true },
+        select: { id: true, make: true, model: true, year: true, registrationPlate: true, mileage: true },
+        orderBy: { createdAt: "desc" },
+      },
+    },
     orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
   });
 

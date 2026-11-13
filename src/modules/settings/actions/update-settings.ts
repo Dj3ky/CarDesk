@@ -44,6 +44,7 @@ export async function updateSettings(data: unknown): Promise<ActionResult> {
     partsCatalogCrossRefs: d.partsCatalogCrossRefs,
     sessionTimeoutMinutes: d.sessionTimeoutMinutes,
     auditRetentionDays: d.auditRetentionDays,
+    offerValidityDays: d.offerValidityDays,
   };
 
   await prisma.settings.upsert({

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { MOBILE_FULLSCREEN_DIALOG } from "../lib/mobile-dialog";
 import { searchProductsForOffer } from "../actions/search-products";
 import type { ProductSearchResult } from "../types";
 
@@ -87,7 +89,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent className="sm:max-w-4xl flex flex-col gap-4">
+      <DialogContent className={cn(MOBILE_FULLSCREEN_DIALOG, "gap-4 sm:max-w-4xl")}>
         <DialogHeader>
           <div className="flex items-center gap-3">
             <DialogTitle>{tp("title")}</DialogTitle>
@@ -107,7 +109,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
             placeholder={t("placeholder")}
             value={query}
             onChange={(e) => { exactRef.current = false; setQuery(e.target.value); }}
-            className="pl-9 pr-9"
+            className="h-11 pl-9 pr-9 text-base sm:h-9 sm:text-sm"
             autoFocus
           />
         </div>
@@ -121,17 +123,17 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
         )}
 
         {results.length > 0 && (
-          <div className="divide-y rounded-md border max-h-[400px] overflow-y-auto">
+          <div className="min-h-0 flex-1 divide-y overflow-y-auto rounded-md border sm:max-h-[400px] sm:flex-none">
             {results.map((p) => (
               <div key={p.id}>
-                <div className="flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors">
-                  <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors sm:flex-nowrap">
+                  <div className="min-w-0 basis-full sm:basis-auto sm:flex-1">
                     <p className="font-mono text-xs text-muted-foreground">{p.productNumber}</p>
                     <p className="text-sm font-medium truncate">{p.description}</p>
                     {p.brand && <p className="text-xs text-muted-foreground">{p.brand}</p>}
                   </div>
 
-                  <div className="text-right shrink-0">
+                  <div className="mr-auto shrink-0 sm:mr-0 sm:text-right">
                     {p.adjustedPrice ? (
                       <>
                         <p className="text-sm font-semibold">
@@ -157,7 +159,8 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
                     step="1"
                     value={getQty(p.id)}
                     onChange={(e) => setQty(p.id, e.target.value)}
-                    className="w-16 h-8 text-center text-sm shrink-0"
+                    inputMode="decimal"
+                    className="h-10 w-16 shrink-0 text-center text-base sm:h-8 sm:text-sm"
                     aria-label={tp("qtyLabel")}
                   />
 
@@ -165,7 +168,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
                     type="button"
                     size="sm"
                     variant={justAdded[p.id] ? "secondary" : "default"}
-                    className="shrink-0 sm:w-20"
+                    className="h-10 w-12 shrink-0 sm:h-8 sm:w-20"
                     onClick={() => handleAdd(p)}
                   >
                     {justAdded[p.id] ? (
@@ -197,7 +200,7 @@ export function PricelistPickerDialog({ open, onClose, onAdd }: PricelistPickerD
         )}
 
         <div className="flex justify-end pt-1">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" className="h-11 px-6 sm:h-9" onClick={onClose}>
             {tp("done")}
           </Button>
         </div>

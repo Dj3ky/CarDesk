@@ -222,7 +222,8 @@
     "admin": "Admin",
     "employee": "Employee",
     "groupByCustomer": "Group by customer",
-    "ungroup": "Ungroup"
+    "ungroup": "Ungroup",
+    "more": "More"
   },
   "import": {
     "title": "Import Products",
@@ -438,7 +439,9 @@
       "sessionTimeoutMinutes": "Inactivity Logout",
       "sessionTimeoutHint": "Automatically sign out users after a period of inactivity",
       "auditRetentionDays": "Audit log retention",
-      "auditRetentionDaysHint": "Automatically delete audit entries older than this. Set to 0 to keep forever."
+      "auditRetentionDaysHint": "Automatically delete audit entries older than this. Set to 0 to keep forever.",
+      "offerValidityDays": "Default offer validity (days)",
+      "offerValidityDaysHint": "New offers get \"valid until\" set to today + this many days. 0 = leave empty."
     },
     "sessionTimeout": {
       "disabled": "Disabled",
@@ -558,7 +561,10 @@
       "lineTotal": "Total",
       "addItem": "Add Item",
       "searchProduct": "Search Product",
-      "noItems": "No items yet. Click \"Add Item\" to start."
+      "noItems": "No items yet. Tap \"Add part\" to search the catalog.",
+      "addPart": "Add part",
+      "addManual": "Empty row",
+      "count": "{count, plural, one {# item} other {# items}}"
     },
     "productSearch": {
       "title": "Search Product Catalog",
@@ -567,7 +573,10 @@
       "replacedBy": "Replaced by:",
       "searchSubstitution": "Search substitution",
       "exVat": "ex VAT",
-      "vatLine": "VAT {rate}%"
+      "vatLine": "VAT {rate}%",
+      "typeToSearch": "Type a part number or description…",
+      "addedCount": "{count, plural, one {# item added} other {# items added}}",
+      "done": "Done"
     },
     "pricelistPicker": {
       "title": "Browse Pricelist",
@@ -591,7 +600,11 @@
       "reject": "Reject",
       "complete": "Mark as Completed",
       "revertToDraft": "Revert to Draft",
-      "downloadPdf": "Download PDF"
+      "downloadPdf": "Download PDF",
+      "sharePdf": "Share PDF",
+      "downloadXls": "Download XLS",
+      "duplicate": "Duplicate",
+      "duplicated": "Offer duplicated"
     },
     "noOffers": "No offers found.",
     "addFirst": "Create First Offer",
@@ -611,7 +624,12 @@
       "hideCatalogNumber": "Hide catalog number in PDF",
       "hideCatalogNumberHint": "Product catalog numbers will not appear on the printed offer",
       "created": "Offer created",
-      "updated": "Offer saved"
+      "updated": "Offer saved",
+      "lastMileage": "Last recorded: {km} km",
+      "applyDiscountTitle": "Apply customer discount?",
+      "applyDiscountDesc": "This customer's default discount is {discount}%. Apply it to all {count} items?",
+      "applyDiscountKeep": "Keep current",
+      "applyDiscountApply": "Apply to all"
     },
     "quickCreate": {
       "newCustomer": "New Customer",
@@ -642,6 +660,21 @@
       "viewCustomer": "View customer profile",
       "validUntil": "Valid until",
       "createdBy": "by"
+    },
+    "customerPicker": {
+      "title": "Select customer",
+      "placeholder": "Name, company, phone or plate…",
+      "noResults": "No customers found."
+    },
+    "share": {
+      "tapAgain": "PDF is ready — tap Share again.",
+      "failed": "Could not share the PDF.",
+      "markSentTitle": "Mark as sent?",
+      "markSentDesc": "Did you send {number} to the customer? Mark it as sent."
+    },
+    "confirm": {
+      "reject": "Mark {number} as rejected by the customer?",
+      "revertToDraft": "Move {number} back to draft so it can be edited?"
     }
   },
   "users": {

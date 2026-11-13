@@ -47,6 +47,7 @@ export default async function NewOfferPage({ params, searchParams }: NewOfferPag
         customers={customers}
         defaultVATRate={parseFloat(settings.defaultVATRate)}
         currency={settings.currency}
+        offerValidityDays={settings.offerValidityDays}
         defaultCustomerId={typeof customerId === "string" ? customerId : undefined}
       />
     </div>

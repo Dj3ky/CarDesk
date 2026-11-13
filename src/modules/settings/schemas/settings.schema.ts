@@ -53,6 +53,7 @@ function settingsSchemaWith(t: TFn) {
     partsCatalogCrossRefs: z.boolean().default(true),
     sessionTimeoutMinutes: z.coerce.number().int().min(0).max(480).default(30),
     auditRetentionDays: z.coerce.number().int().min(0).max(3650).default(0),
+    offerValidityDays: z.coerce.number().int().min(0).max(365).default(30),
   });
 }
 

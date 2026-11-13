@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { Pencil, FileDown, FileSpreadsheet } from "lucide-react";
+import { ChevronLeft, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -17,8 +17,7 @@ import {
 } from "@/components/ui/table";
 import { OfferStatusBadge } from "@/modules/offers/components/offer-status-badge";
 import { OfferStatusTimeline } from "@/modules/offers/components/offer-status-timeline";
-import { StatusActions } from "@/modules/offers/components/status-actions";
-import { DeleteOfferButton } from "@/modules/offers/components/delete-offer-button";
+import { OfferActions } from "@/modules/offers/components/offer-actions";
 import { getOffer } from "@/modules/offers/actions/get-offer";
 import { calcItem, calcTotals, formatCurrency } from "@/modules/offers/lib/calculations";
 
@@ -41,6 +40,10 @@ function formatDate(d: Date | string | null) {
   return new Date(d).toLocaleDateString("sl-SI");
 }
 
+function formatQty(q: string | number) {
+  return Number(q).toFixed(2).replace(/\.00$/, "");
+}
+
 export default async function OfferDetailPage({ params }: OfferDetailPageProps) {
   const { locale, id } = await params;
   const [offer, session, t, tUnits] = await Promise.all([
@@ -57,14 +60,23 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
   const customerName = offer.customer.companyName
     ? offer.customer.companyName
     : `${offer.customer.firstName} ${offer.customer.lastName}`;
+  const unitLabel = (u: string) => (tUnits.has(u) ? tUnits(u as never) : u);
 
   return (
-    <div className="max-w-6xl space-y-6">
+    // pb-24 on phones leaves room for the fixed action bar
+    <div className="max-w-6xl space-y-6 pb-24 md:pb-0">
+      <Button variant="ghost" size="sm" asChild className="-ml-2">
+        <Link href={`/${locale}/offers`}>
+          <ChevronLeft className="mr-1 h-4 w-4" />
+          {t("title")}
+        </Link>
+      </Button>
+
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight font-mono">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-mono text-2xl font-bold tracking-tight">
               {offer.offerNumber}
             </h1>
             <OfferStatusBadge status={offer.status} />
@@ -78,46 +90,18 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               ? ` · ${t("detail.createdBy")} ${offer.createdBy.name ?? "—"}`
               : ""}
           </p>
+          <p className="text-lg font-semibold md:hidden">
+            {formatCurrency(totals.grandTotal, offer.currency)}
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Button asChild variant="outline" size="sm">
-            <a
-              href={`/api/offers/${offer.id}/pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FileDown className="mr-1.5 h-3.5 w-3.5" />
-              {t("actions.downloadPdf")}
-            </a>
-          </Button>
-
-          <Button asChild variant="outline" size="sm">
-            <a href={`/api/offers/${offer.id}/xls?locale=${locale}`} download>
-              <FileSpreadsheet className="mr-1.5 h-3.5 w-3.5" />
-              XLS
-            </a>
-          </Button>
-
-          {offer.status === "DRAFT" && (
-            <>
-              <Button asChild variant="outline" size="sm">
-                <Link href={`/${locale}/offers/${offer.id}/edit`}>
-                  <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-              {isAdmin && (
-                <DeleteOfferButton
-                  offerId={offer.id}
-                  offerNumber={offer.offerNumber}
-                  locale={locale}
-                />
-              )}
-            </>
-          )}
-
-          <StatusActions offerId={offer.id} status={offer.status} />
-        </div>
+        <OfferActions
+          offerId={offer.id}
+          offerNumber={offer.offerNumber}
+          status={offer.status}
+          locale={locale}
+          isAdmin={isAdmin}
+        />
       </div>
 
       <Separator />
@@ -160,13 +144,27 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                 {[offer.customer.postalCode, offer.customer.city].filter(Boolean).join(" ")}
               </p>
             )}
-            {offer.customer.email && (
-              <p className="text-muted-foreground">{offer.customer.email}</p>
+            {(offer.customer.phone || offer.customer.email) && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {offer.customer.phone && (
+                  <Button asChild variant="outline" size="sm" className="h-10 sm:h-8">
+                    <a href={`tel:${offer.customer.phone.replace(/[^\d+]/g, "")}`}>
+                      <Phone className="mr-1.5 h-3.5 w-3.5" />
+                      {offer.customer.phone}
+                    </a>
+                  </Button>
+                )}
+                {offer.customer.email && (
+                  <Button asChild variant="outline" size="sm" className="h-10 max-w-full sm:h-8">
+                    <a href={`mailto:${offer.customer.email}?subject=${encodeURIComponent(offer.offerNumber)}`}>
+                      <Mail className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">{offer.customer.email}</span>
+                    </a>
+                  </Button>
+                )}
+              </div>
             )}
-            {offer.customer.phone && (
-              <p className="text-muted-foreground">{offer.customer.phone}</p>
-            )}
-            <div className="pt-1">
+            <div className="pt-2">
               <Button asChild variant="link" size="sm" className="h-auto p-0 text-xs">
                 <Link href={`/${locale}/customers/${offer.customerId}`}>
                   {t("detail.viewCustomer")} →
@@ -190,17 +188,17 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                 </p>
                 {offer.vehicle.registrationPlate && (
                   <p className="text-muted-foreground">
-                    Reg: {offer.vehicle.registrationPlate}
+                    Reg: <span className="font-mono">{offer.vehicle.registrationPlate}</span>
                   </p>
                 )}
                 {offer.vehicle.vin && (
-                  <p className="font-mono text-xs text-muted-foreground">
+                  <p className="break-all font-mono text-xs text-muted-foreground">
                     VIN: {offer.vehicle.vin}
                   </p>
                 )}
                 {offer.mileage != null && (
                   <p className="text-muted-foreground">
-                    {t("fields.mileage")}: {offer.mileage.toLocaleString()} km
+                    {t("fields.mileage")}: {offer.mileage.toLocaleString("sl-SI")} km
                   </p>
                 )}
               </div>
@@ -217,11 +215,40 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
           <CardTitle className="text-base">{t("items.title")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Phone: compact list */}
+          <ul className="divide-y border-t md:hidden">
+            {offer.items.map((item) => {
+              const calc = calcItem(item);
+              const disc = Number(item.discount);
+              return (
+                <li key={item.id} className="flex items-start justify-between gap-3 px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{item.description}</p>
+                    {item.productNumber && (
+                      <p className="font-mono text-xs text-muted-foreground">{item.productNumber}</p>
+                    )}
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {formatQty(item.quantity)} {unitLabel(item.unit)} ×{" "}
+                      {formatCurrency(Number(item.pricePerUnit), offer.currency)}
+                      {disc > 0 && <span className="text-emerald-600"> −{disc}%</span>}
+                      {" · "}
+                      {t("items.vatRate")} {item.vatRate}%
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-sm font-semibold tabular-nums">
+                    {formatCurrency(calc.lineTotal, offer.currency)}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Desktop: full table */}
+          <div className="hidden overflow-x-auto md:block">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-6 w-8">#</TableHead>
+                  <TableHead className="w-8 pl-6">#</TableHead>
                   <TableHead className="w-[140px]">{t("items.productNumber")}</TableHead>
                   <TableHead>{t("items.description")}</TableHead>
                   <TableHead className="text-right">{t("items.quantity")}</TableHead>
@@ -229,7 +256,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                   <TableHead className="text-right">{t("items.pricePerUnit")}</TableHead>
                   <TableHead className="text-right">{t("items.vatRate")}</TableHead>
                   <TableHead className="text-right">{t("items.discount")}</TableHead>
-                  <TableHead className="text-right pr-6">{t("items.lineTotal")}</TableHead>
+                  <TableHead className="pr-6 text-right">{t("items.lineTotal")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -242,11 +269,9 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                         {item.productNumber ?? "—"}
                       </TableCell>
                       <TableCell>{item.description}</TableCell>
-                      <TableCell className="text-right">
-                        {Number(item.quantity).toFixed(2).replace(/\.00$/, "")}
-                      </TableCell>
+                      <TableCell className="text-right">{formatQty(item.quantity)}</TableCell>
                       <TableCell className="text-center text-muted-foreground">
-                        {tUnits.has(item.unit) ? tUnits(item.unit as never) : item.unit}
+                        {unitLabel(item.unit)}
                       </TableCell>
                       <TableCell className="text-right">
                         {formatCurrency(Number(item.pricePerUnit), offer.currency)}
@@ -257,7 +282,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                       <TableCell className="text-right text-muted-foreground">
                         {Number(item.discount) > 0 ? `${item.discount}%` : "—"}
                       </TableCell>
-                      <TableCell className="text-right font-medium pr-6">
+                      <TableCell className="pr-6 text-right font-medium">
                         {formatCurrency(calc.lineTotal, offer.currency)}
                       </TableCell>
                     </TableRow>
@@ -268,8 +293,8 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
           </div>
 
           {/* Totals */}
-          <div className="flex justify-end border-t p-6">
-            <div className="w-56 space-y-1.5 text-sm">
+          <div className="flex justify-end border-t p-4 md:p-6">
+            <div className="w-full space-y-1.5 text-sm sm:w-56">
               <div className="flex justify-between text-muted-foreground">
                 <span>{t("totals.subtotal")}</span>
                 <span className="font-medium text-foreground">
@@ -289,7 +314,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                 </div>
               ))}
               <Separator className="my-1" />
-              <div className="flex justify-between font-semibold text-base">
+              <div className="flex justify-between text-base font-semibold">
                 <span>{t("totals.grandTotal")}</span>
                 <span>{formatCurrency(totals.grandTotal, offer.currency)}</span>
               </div>
@@ -305,7 +330,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             <CardTitle className="text-base">{t("fields.notes")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{offer.notes}</p>
+            <p className="whitespace-pre-wrap text-sm text-muted-foreground">{offer.notes}</p>
           </CardContent>
         </Card>
       )}

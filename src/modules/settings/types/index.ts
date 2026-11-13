@@ -18,6 +18,7 @@ export type SettingsData = {
   partsCatalogCrossRefs: boolean;
   sessionTimeoutMinutes: number;
   auditRetentionDays: number;
+  offerValidityDays: number;
   backupSchedule: string;
   backupScheduleHour: number;
   backupRetentionDays: number;

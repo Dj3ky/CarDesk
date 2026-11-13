@@ -55,10 +55,67 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
     );
   }
 
-  let lastCustomerKey = "";
 
   return (
-    <div className="rounded-lg border overflow-hidden">
+    <>
+    {/* ── Phone: tappable cards ── */}
+    <div className="space-y-2 md:hidden">
+      {offers.map((offer, i) => {
+        const customerKey = customerLabel(offer.customer);
+        const showGroupHeader = groupByCustomer && (i === 0 || customerLabel(offers[i - 1].customer) !== customerKey);
+        const isCollapsed = groupByCustomer && collapsed.has(customerKey);
+
+        return (
+          <Fragment key={offer.id}>
+            {showGroupHeader && (
+              <button
+                type="button"
+                onClick={() => toggleGroup(customerKey)}
+                className="flex w-full items-center gap-2 px-1 pt-2 text-left text-sm font-semibold"
+              >
+                {isCollapsed
+                  ? <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                {customerKey}
+              </button>
+            )}
+            {!isCollapsed && (
+              <Link
+                href={`/${locale}/offers/${offer.id}`}
+                className="block rounded-lg border bg-card p-3 transition-colors active:bg-muted/60"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-sm font-medium text-primary">{offer.offerNumber}</span>
+                  <OfferStatusBadge status={offer.status} />
+                </div>
+                {!groupByCustomer && (
+                  <p className="mt-1.5 truncate text-sm font-medium">{customerKey}</p>
+                )}
+                {offer.vehicle && (
+                  <p className="truncate text-sm text-muted-foreground">
+                    {offer.vehicle.registrationPlate && (
+                      <span className="mr-1.5 font-mono text-foreground">{offer.vehicle.registrationPlate}</span>
+                    )}
+                    {offer.vehicle.make} {offer.vehicle.model}
+                  </p>
+                )}
+                <div className="mt-1.5 flex items-end justify-between gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {formatDate(offer.createdAt)} · {t("items.count", { count: offer.itemCount })}
+                  </span>
+                  <span className="text-base font-semibold tabular-nums">
+                    {formatCurrency(offer.grandTotal, offer.currency)}
+                  </span>
+                </div>
+              </Link>
+            )}
+          </Fragment>
+        );
+      })}
+    </div>
+
+    {/* ── Desktop: table ── */}
+    <div className="hidden overflow-hidden rounded-lg border md:block">
       <Table>
         <TableHeader>
           <TableRow>
@@ -73,10 +130,9 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
           </TableRow>
         </TableHeader>
         <TableBody>
-          {offers.map((offer) => {
+          {offers.map((offer, i) => {
             const customerKey = customerLabel(offer.customer);
-            const showGroupHeader = groupByCustomer && customerKey !== lastCustomerKey;
-            if (groupByCustomer) lastCustomerKey = customerKey;
+            const showGroupHeader = groupByCustomer && (i === 0 || customerLabel(offers[i - 1].customer) !== customerKey);
 
             const isCollapsed = groupByCustomer && collapsed.has(customerKey);
             const colSpan = groupByCustomer ? 7 : 8;
@@ -117,7 +173,7 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
                     )}
                     <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                       {offer.vehicle
-                        ? `${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
+                        ? `${offer.vehicle.registrationPlate ? `${offer.vehicle.registrationPlate} · ` : ""}${offer.vehicle.make} ${offer.vehicle.model} (${offer.vehicle.year})`
                         : "—"}
                     </TableCell>
                     <TableCell className="hidden sm:table-cell text-sm">{formatDate(offer.createdAt)}</TableCell>
@@ -151,5 +207,6 @@ export function OfferTable({ offers, locale, groupByCustomer }: OfferTableProps)
         </TableBody>
       </Table>
     </div>
+    </>
   );
 }

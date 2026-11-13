@@ -52,6 +52,15 @@ export async function CustomerTable({ customers, locale }: CustomerTableProps) {
                 >
                   {customer.lastName}, {customer.firstName}
                 </Link>
+                {(customer.mobile || customer.phone) && (
+                  <a
+                    href={`tel:${(customer.mobile || customer.phone)!.replace(/[^\d+]/g, "")}`}
+                    className="mt-1 flex items-center gap-1 text-sm text-muted-foreground md:hidden"
+                  >
+                    <Phone className="h-3 w-3" />
+                    {customer.mobile || customer.phone}
+                  </a>
+                )}
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 <div className="space-y-0.5 text-sm">

@@ -322,6 +322,7 @@ model Settings {
   partsCatalogCrossRefs   Boolean  @default(true)
   sessionTimeoutMinutes Int      @default(30)
   auditRetentionDays    Int      @default(0)
+  offerValidityDays     Int      @default(30)
   backupSchedule        String   @default("disabled")
   backupScheduleHour    Int      @default(2)
   backupRetentionDays   Int      @default(30)

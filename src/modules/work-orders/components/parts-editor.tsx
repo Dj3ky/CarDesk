@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import type { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, PackageSearch, Library } from "lucide-react";
+import { PenLine, Trash2, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { calcItem, formatCurrency } from "../lib/calculations";
-import { searchProductsForOffer } from "@/modules/offers/actions/search-products";
 import { ProductSearchDialog } from "@/modules/offers/components/product-search-dialog";
-import { PricelistPickerDialog } from "@/modules/offers/components/pricelist-picker-dialog";
 import type { ProductSearchResult } from "@/modules/offers/types";
 import type { WorkOrderFormValues } from "../schemas/work-order.schema";
 
@@ -28,12 +26,8 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
   const tc = useTranslations("common");
   const tUnits = useTranslations("products.units");
   const { fields, append, remove } = useFieldArray({ control: form.control, name: "items" });
-  const { register, watch, setValue, formState: { errors } } = form;
+  const { register, watch, formState: { errors } } = form;
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchRowIndex, setSearchRowIndex] = useState<number | null>(null);
-  const [pricelistOpen, setPricelistOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_isPending, startSearchTransition] = useTransition();
 
   const items = watch("items") ?? [];
 
@@ -41,25 +35,7 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
     append({ description: "", quantity: 1, unit: "pcs", pricePerUnit: 0, vatRate: defaultVATRate, discount: 0 });
   }
 
-  function openSearch(index: number) {
-    setSearchRowIndex(index);
-    setSearchOpen(true);
-  }
-
-  function handleProductSelect(product: ProductSearchResult) {
-    if (searchRowIndex === null) return;
-    const i = searchRowIndex;
-    setValue(`items.${i}.productId`, product.id);
-    setValue(`items.${i}.productNumber`, product.productNumber);
-    setValue(`items.${i}.description`, product.description);
-    setValue(`items.${i}.pricePerUnit`, parseFloat(product.adjustedPrice ?? product.price));
-    setValue(`items.${i}.unit`, product.unit);
-    setValue(`items.${i}.vatRate`, parseFloat(product.vatRate));
-    setSearchOpen(false);
-    setSearchRowIndex(null);
-  }
-
-  function handlePricelistAdd(product: ProductSearchResult, quantity: number) {
+  function appendProduct(product: ProductSearchResult, quantity: number) {
     append({
       productId: product.id,
       productNumber: product.productNumber,
@@ -83,7 +59,7 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b text-xs text-muted-foreground">
-                <th className="py-2 pl-1 pr-2 w-8" />
+                <th className="py-2 pl-1 pr-2 w-8 text-center font-medium">#</th>
                 <th className="py-2 px-2 text-left font-medium w-[140px]">{t("parts.partNumber")}</th>
                 <th className="py-2 px-2 text-left font-medium min-w-[200px]">{t("parts.description")}</th>
                 <th className="py-2 px-2 text-right font-medium w-20">{t("parts.qty")}</th>
@@ -102,15 +78,8 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
 
                 return (
                   <tr key={field.id} className="border-b hover:bg-muted/30">
-                    <td className="py-1.5 pl-1 pr-2 text-center align-middle">
-                      <button
-                        type="button"
-                        title={t("parts.searchTitle")}
-                        onClick={() => openSearch(index)}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        <PackageSearch className="h-4 w-4" />
-                      </button>
+                    <td className="py-1.5 pl-1 pr-2 text-center align-middle text-xs text-muted-foreground">
+                      {index + 1}
                     </td>
                     <td className="py-1.5 px-2 align-middle">
                       <Input
@@ -191,27 +160,21 @@ export function PartsEditor({ form, currency = "EUR", defaultVATRate = 22 }: Par
         </div>
       )}
 
-      <div className="flex items-center gap-2 pt-1">
-        <Button type="button" variant="outline" size="sm" onClick={addPart}>
-          <Plus className="mr-1.5 h-4 w-4" />
-          {t("parts.addPart")}
-        </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => setPricelistOpen(true)}>
+      <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center">
+        <Button type="button" size="sm" className="h-11 sm:h-8" onClick={() => setSearchOpen(true)}>
           <Library className="mr-1.5 h-4 w-4" />
           {t("parts.browseButton")}
+        </Button>
+        <Button type="button" variant="outline" size="sm" className="h-10 sm:h-8" onClick={addPart}>
+          <PenLine className="mr-1.5 h-4 w-4" />
+          {t("parts.addPart")}
         </Button>
       </div>
 
       <ProductSearchDialog
         open={searchOpen}
-        onClose={() => { setSearchOpen(false); setSearchRowIndex(null); }}
-        onSelect={handleProductSelect}
-      />
-
-      <PricelistPickerDialog
-        open={pricelistOpen}
-        onClose={() => setPricelistOpen(false)}
-        onAdd={handlePricelistAdd}
+        onClose={() => setSearchOpen(false)}
+        onAdd={appendProduct}
       />
     </div>
   );

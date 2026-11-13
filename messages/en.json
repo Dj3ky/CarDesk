@@ -560,14 +560,13 @@
       "discount": "Disc %",
       "lineTotal": "Total",
       "addItem": "Add Item",
-      "searchProduct": "Search Product",
-      "noItems": "No items yet. Tap \"Add part\" to search the catalog.",
-      "addPart": "Add part",
+      "noItems": "No items yet. Tap \"Add from pricelist\" to add parts.",
+      "addPart": "Add from pricelist",
       "addManual": "Empty row",
       "count": "{count, plural, one {# item} other {# items}}"
     },
     "productSearch": {
-      "title": "Search Product Catalog",
+      "title": "Add from pricelist",
       "placeholder": "Product number or description…",
       "noResults": "No products found.",
       "replacedBy": "Replaced by:",
@@ -576,17 +575,10 @@
       "vatLine": "VAT {rate}%",
       "typeToSearch": "Type a part number or description…",
       "addedCount": "{count, plural, one {# item added} other {# items added}}",
-      "done": "Done"
-    },
-    "pricelistPicker": {
-      "title": "Browse Pricelist",
-      "startTyping": "Start typing to search the product catalog…",
-      "addedCount": "{count, plural, one {# item added} other {# items added}}",
+      "done": "Done",
       "add": "Add",
       "added": "Added",
-      "done": "Done",
-      "qtyLabel": "Quantity",
-      "browseButton": "Select from Pricelist"
+      "qtyLabel": "Quantity"
     },
     "totals": {
       "subtotal": "Subtotal (ex VAT)",
@@ -802,7 +794,7 @@
     },
     "parts": {
       "title": "Parts / Materials",
-      "addPart": "Add Part",
+      "addPart": "Empty row",
       "noParts": "No parts added yet.",
       "partNumber": "Part #",
       "description": "Description",
@@ -810,11 +802,7 @@
       "unit": "Unit",
       "price": "Price",
       "vatRate": "VAT %",
-      "searchTitle": "Search Products",
-      "searchPlaceholder": "Search by part number or description...",
-      "searching": "Searching...",
-      "noResults": "No products found.",
-      "browseButton": "Select from Pricelist"
+      "browseButton": "Add from pricelist"
     },
     "labor": {
       "title": "Labor",

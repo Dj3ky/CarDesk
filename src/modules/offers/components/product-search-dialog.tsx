@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, ArrowRight, Check, Plus } from "lucide-react";
+import { Search, Loader2, ArrowRight, Check, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,20 +19,12 @@ import type { ProductSearchResult } from "../types";
 interface ProductSearchDialogProps {
   open: boolean;
   onClose: () => void;
-  onSelect: (product: ProductSearchResult) => void;
-  /**
-   * When true the dialog stays open after a product is picked so several parts
-   * can be added in a row. Default: close after the first pick.
-   */
-  keepOpen?: boolean;
+  /** Called for every "Add" tap; the dialog stays open so several parts can be added. */
+  onAdd: (product: ProductSearchResult, quantity: number) => void;
 }
 
-export function ProductSearchDialog({
-  open,
-  onClose,
-  onSelect,
-  keepOpen = false,
-}: ProductSearchDialogProps) {
+/** "Add from pricelist": search the catalog and add parts with a quantity. */
+export function ProductSearchDialog({ open, onClose, onAdd }: ProductSearchDialogProps) {
   const t = useTranslations("offers.productSearch");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductSearchResult[]>([]);
@@ -40,6 +32,7 @@ export function ProductSearchDialog({
   const [isPending, startTransition] = useTransition();
   const [addedCount, setAddedCount] = useState(0);
   const [justAdded, setJustAdded] = useState<Record<string, boolean>>({});
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const exactRef = useRef(false);
 
   function reset() {
@@ -48,7 +41,13 @@ export function ProductSearchDialog({
     setSearched(false);
     setAddedCount(0);
     setJustAdded({});
+    setQuantities({});
     exactRef.current = false;
+  }
+
+  function close() {
+    onClose();
+    reset();
   }
 
   // Search as you type (debounced). Exact substitution lookups run immediately.
@@ -77,28 +76,24 @@ export function ProductSearchDialog({
     setQuery(q);
   }
 
-  function handleSelect(product: ProductSearchResult) {
-    onSelect(product);
-    if (keepOpen) {
-      setAddedCount((c) => c + 1);
-      setJustAdded((prev) => ({ ...prev, [product.id]: true }));
-      setTimeout(() => setJustAdded((prev) => ({ ...prev, [product.id]: false })), 1500);
-      return;
-    }
-    onClose();
-    reset();
+  function getQty(id: string) {
+    return quantities[id] ?? 1;
+  }
+
+  function setQty(id: string, value: number) {
+    if (!Number.isFinite(value) || value <= 0) return;
+    setQuantities((prev) => ({ ...prev, [id]: Math.round(value * 1000) / 1000 }));
+  }
+
+  function handleAdd(product: ProductSearchResult) {
+    onAdd(product, getQty(product.id));
+    setAddedCount((c) => c + 1);
+    setJustAdded((prev) => ({ ...prev, [product.id]: true }));
+    setTimeout(() => setJustAdded((prev) => ({ ...prev, [product.id]: false })), 1500);
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        if (!v) {
-          onClose();
-          reset();
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={(v) => { if (!v) close(); }}>
       <DialogContent className={cn(MOBILE_FULLSCREEN_DIALOG, "sm:max-w-lg")}>
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
@@ -133,52 +128,83 @@ export function ProductSearchDialog({
             <div className="divide-y rounded-md border">
               {shownResults.map((p) => (
                 <div key={p.id} className="divide-y">
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(p)}
-                    className="w-full px-4 py-3 text-left transition-colors hover:bg-accent active:bg-accent"
-                  >
+                  <div className="px-4 py-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="font-mono text-xs text-muted-foreground">{p.productNumber}</p>
                         <p className="text-sm font-medium line-clamp-2">{p.description}</p>
                         {p.brand && <p className="text-xs text-muted-foreground">{p.brand}</p>}
                       </div>
-                      <div className="flex shrink-0 items-start gap-2">
-                        <div className="text-right">
-                          {p.adjustedPrice ? (
-                            <>
-                              <p className="text-sm font-semibold">
-                                {parseFloat(p.adjustedPrice).toFixed(2)}{" "}
-                                <span className="text-xs font-normal text-muted-foreground">{t("exVat")}</span>
-                              </p>
-                              <p className="text-xs text-muted-foreground line-through">
-                                {parseFloat(p.price).toFixed(2)}
-                              </p>
-                            </>
-                          ) : (
+                      <div className="shrink-0 text-right">
+                        {p.adjustedPrice ? (
+                          <>
                             <p className="text-sm font-semibold">
-                              {parseFloat(p.price).toFixed(2)}{" "}
+                              {parseFloat(p.adjustedPrice).toFixed(2)}{" "}
                               <span className="text-xs font-normal text-muted-foreground">{t("exVat")}</span>
                             </p>
-                          )}
-                          <p className="text-xs text-muted-foreground">{t("vatLine", { rate: p.vatRate })}</p>
-                        </div>
-                        {keepOpen && (
-                          <span
-                            className={cn(
-                              "mt-0.5 flex h-7 w-7 items-center justify-center rounded-full border transition-colors",
-                              justAdded[p.id]
-                                ? "border-emerald-600 bg-emerald-600 text-white"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {justAdded[p.id] ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </span>
+                            <p className="text-xs text-muted-foreground line-through">
+                              {parseFloat(p.price).toFixed(2)}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-sm font-semibold">
+                            {parseFloat(p.price).toFixed(2)}{" "}
+                            <span className="text-xs font-normal text-muted-foreground">{t("exVat")}</span>
+                          </p>
                         )}
+                        <p className="text-xs text-muted-foreground">{t("vatLine", { rate: p.vatRate })}</p>
                       </div>
                     </div>
-                  </button>
+
+                    {/* Quantity stepper + add */}
+                    <div className="mt-2 flex items-center justify-end gap-2">
+                      <div className="flex items-center rounded-md border">
+                        <button
+                          type="button"
+                          aria-label="−"
+                          onClick={() => setQty(p.id, getQty(p.id) - 1)}
+                          disabled={getQty(p.id) <= 1}
+                          className="flex h-10 w-10 items-center justify-center text-muted-foreground disabled:opacity-40 sm:h-8 sm:w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </button>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min="0"
+                          step="any"
+                          aria-label={t("qtyLabel")}
+                          value={getQty(p.id)}
+                          onChange={(e) => setQty(p.id, parseFloat(e.target.value))}
+                          className="h-10 w-12 border-x bg-transparent text-center text-base focus:outline-none sm:h-8 sm:text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <button
+                          type="button"
+                          aria-label="+"
+                          onClick={() => setQty(p.id, getQty(p.id) + 1)}
+                          className="flex h-10 w-10 items-center justify-center text-muted-foreground sm:h-8 sm:w-8"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <Button
+                        type="button"
+                        variant={justAdded[p.id] ? "secondary" : "default"}
+                        className={cn(
+                          "h-10 min-w-24 sm:h-8",
+                          justAdded[p.id] && "text-emerald-700 dark:text-emerald-400"
+                        )}
+                        onClick={() => handleAdd(p)}
+                      >
+                        {justAdded[p.id] ? (
+                          <><Check className="mr-1 h-4 w-4" />{t("added")}</>
+                        ) : (
+                          <><Plus className="mr-1 h-4 w-4" />{t("add")}</>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
                   {p.substitutionPart && (
                     <div className="flex items-center justify-between gap-2 bg-amber-50 px-4 py-2 dark:bg-amber-950">
                       <p className="text-xs text-amber-700 dark:text-amber-300">
@@ -200,23 +226,14 @@ export function ProductSearchDialog({
           )}
         </div>
 
-        {keepOpen && (
-          <div className="flex items-center justify-between gap-3 border-t pt-3">
-            <span className="text-sm text-muted-foreground">
-              {addedCount > 0 ? t("addedCount", { count: addedCount }) : ""}
-            </span>
-            <Button
-              type="button"
-              className="h-11 px-6 sm:h-9"
-              onClick={() => {
-                onClose();
-                reset();
-              }}
-            >
-              {t("done")}
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-3 border-t pt-3">
+          <span className="text-sm text-muted-foreground">
+            {addedCount > 0 ? t("addedCount", { count: addedCount }) : ""}
+          </span>
+          <Button type="button" className="h-11 px-6 sm:h-9" onClick={close}>
+            {t("done")}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

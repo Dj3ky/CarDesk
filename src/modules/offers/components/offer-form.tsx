@@ -367,7 +367,6 @@ export function OfferForm({
           <LineItemsEditor
             control={control}
             register={register}
-            setValue={setValue}
             errors={errors}
             isSubmitted={isSubmitted}
             defaultVATRate={defaultVATRate}

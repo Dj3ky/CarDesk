@@ -560,14 +560,13 @@
       "discount": "Pop. %",
       "lineTotal": "Skupaj",
       "addItem": "Dodaj postavko",
-      "searchProduct": "Iskanje izdelka",
-      "noItems": "Ni postavk. Tapnite »Dodaj del« za iskanje po katalogu.",
-      "addPart": "Dodaj del",
+      "noItems": "Ni postavk. Tapnite »Dodaj iz cenika« za dodajanje delov.",
+      "addPart": "Dodaj iz cenika",
       "addManual": "Prazna vrstica",
       "count": "{count, plural, one {# postavka} two {# postavki} few {# postavke} other {# postavk}}"
     },
     "productSearch": {
-      "title": "Iskanje v katalogu izdelkov",
+      "title": "Dodaj iz cenika",
       "placeholder": "Šifra ali opis izdelka…",
       "noResults": "Ni najdenih izdelkov.",
       "replacedBy": "Nadomešča ga:",
@@ -576,17 +575,10 @@
       "vatLine": "DDV {rate}%",
       "typeToSearch": "Vpišite šifro ali opis dela…",
       "addedCount": "{count, plural, one {# postavka dodana} two {# postavki dodani} few {# postavke dodane} other {# postavk dodanih}}",
-      "done": "Končano"
-    },
-    "pricelistPicker": {
-      "title": "Pregled cenika",
-      "startTyping": "Začnite tipkati za iskanje po katalogu…",
-      "addedCount": "{count, plural, one {# postavka dodana} other {# postavke dodane}}",
+      "done": "Končano",
       "add": "Dodaj",
       "added": "Dodano",
-      "done": "Zapri",
-      "qtyLabel": "Količina",
-      "browseButton": "Izberi iz cenika"
+      "qtyLabel": "Količina"
     },
     "totals": {
       "subtotal": "Skupaj (brez DDV)",
@@ -802,7 +794,7 @@
     },
     "parts": {
       "title": "Deli / Material",
-      "addPart": "Dodaj del",
+      "addPart": "Prazna vrstica",
       "noParts": "Ni dodanih delov.",
       "partNumber": "Šifra",
       "description": "Opis",
@@ -810,11 +802,7 @@
       "unit": "Enota",
       "price": "Cena",
       "vatRate": "DDV %",
-      "searchTitle": "Iskanje izdelkov",
-      "searchPlaceholder": "Iskanje po šifri ali opisu...",
-      "searching": "Iščem...",
-      "noResults": "Ni najdenih izdelkov.",
-      "browseButton": "Izberi iz cenika"
+      "browseButton": "Dodaj iz cenika"
     },
     "labor": {
       "title": "Delo",

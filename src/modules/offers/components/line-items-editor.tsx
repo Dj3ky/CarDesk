@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import type { Control, UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
+import type { Control, UseFormRegister, FieldErrors } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Trash2, PackageSearch, Library, Search, PenLine } from "lucide-react";
+import { Trash2, Library, PenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { ProductSearchDialog } from "./product-search-dialog";
-import { PricelistPickerDialog } from "./pricelist-picker-dialog";
 import { calcItem, calcTotals, formatCurrency } from "../lib/calculations";
 import { UNITS } from "../schemas/offer.schema";
 import type { OfferFormValues } from "../schemas/offer.schema";
@@ -24,7 +23,6 @@ const selectCls =
 interface LineItemsEditorProps {
   control: Control<OfferFormValues>;
   register: UseFormRegister<OfferFormValues>;
-  setValue: UseFormSetValue<OfferFormValues>;
   errors: FieldErrors<OfferFormValues>;
   isSubmitted: boolean;
   defaultVATRate: number;
@@ -35,7 +33,6 @@ interface LineItemsEditorProps {
 export function LineItemsEditor({
   control,
   register,
-  setValue,
   errors,
   isSubmitted,
   defaultVATRate,
@@ -49,9 +46,6 @@ export function LineItemsEditor({
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const items = useWatch({ control, name: "items" }) ?? [];
   const [searchOpen, setSearchOpen] = useState(false);
-  /** null = "add part" mode (append, stay open); number = replace that row. */
-  const [searchRowIndex, setSearchRowIndex] = useState<number | null>(null);
-  const [pricelistOpen, setPricelistOpen] = useState(false);
 
   function addEmptyItem() {
     append({
@@ -76,25 +70,6 @@ export function LineItemsEditor({
       vatRate: parseFloat(product.vatRate),
       discount: defaultDiscount,
     });
-  }
-
-  function openSearch(index: number | null) {
-    setSearchRowIndex(index);
-    setSearchOpen(true);
-  }
-
-  function handleProductSelect(product: ProductSearchResult) {
-    if (searchRowIndex === null) {
-      appendProduct(product);
-      return;
-    }
-    const i = searchRowIndex;
-    setValue(`items.${i}.productId`, product.id, { shouldDirty: true });
-    setValue(`items.${i}.productNumber`, product.productNumber, { shouldDirty: true });
-    setValue(`items.${i}.description`, product.description, { shouldDirty: true });
-    setValue(`items.${i}.pricePerUnit`, parseFloat(product.adjustedPrice ?? product.price), { shouldDirty: true });
-    setValue(`items.${i}.vatRate`, parseFloat(product.vatRate), { shouldDirty: true });
-    setValue(`items.${i}.unit`, product.unit, { shouldDirty: true });
   }
 
   const totals = calcTotals(items);
@@ -127,16 +102,6 @@ export function LineItemsEditor({
                     placeholder={t("items.productNumber")}
                     className="h-9 min-w-0 flex-1 font-mono text-sm"
                   />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    className="h-9 w-9 shrink-0"
-                    title={t("items.searchProduct")}
-                    onClick={() => openSearch(index)}
-                  >
-                    <PackageSearch className="h-4 w-4" />
-                  </Button>
                   <Button
                     type="button"
                     variant="ghost"
@@ -239,7 +204,7 @@ export function LineItemsEditor({
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b text-xs text-muted-foreground">
-                <th className="w-8 py-2 pl-1 pr-2 text-left font-medium">#</th>
+                <th className="w-8 py-2 pl-1 pr-2 text-center font-medium">#</th>
                 <th className="w-[140px] px-2 py-2 text-left font-medium">{t("items.productNumber")}</th>
                 <th className="min-w-[220px] px-2 py-2 text-left font-medium">{t("items.description")}</th>
                 <th className="w-20 px-2 py-2 text-right font-medium">{t("items.quantity")}</th>
@@ -258,17 +223,8 @@ export function LineItemsEditor({
 
                 return (
                   <tr key={field.id} className="border-b hover:bg-muted/30">
-                    <td className="py-1.5 pl-1 pr-2 text-center align-middle">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        title={t("items.searchProduct")}
-                        onClick={() => openSearch(index)}
-                        className="h-8 w-8 text-muted-foreground hover:text-primary"
-                      >
-                        <PackageSearch className="h-4 w-4" />
-                      </Button>
+                    <td className="py-1.5 pl-1 pr-2 text-center align-middle text-xs text-muted-foreground">
+                      {index + 1}
                     </td>
                     <td className="px-2 py-1.5 align-middle">
                       <Input
@@ -356,29 +312,19 @@ export function LineItemsEditor({
       )}
 
       <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-start sm:justify-between">
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <Button
             type="button"
-            className="col-span-2 h-11 sm:h-8"
+            className="h-11 sm:h-8"
             size="sm"
-            onClick={() => openSearch(null)}
+            onClick={() => setSearchOpen(true)}
           >
-            <Search className="mr-1.5 h-4 w-4" />
+            <Library className="mr-1.5 h-4 w-4" />
             {t("items.addPart")}
           </Button>
           <Button type="button" variant="outline" size="sm" className="h-10 sm:h-8" onClick={addEmptyItem}>
             <PenLine className="mr-1.5 h-4 w-4" />
             {t("items.addManual")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-10 sm:h-8"
-            onClick={() => setPricelistOpen(true)}
-          >
-            <Library className="mr-1.5 h-4 w-4" />
-            {t("pricelistPicker.browseButton")}
           </Button>
         </div>
 
@@ -412,18 +358,8 @@ export function LineItemsEditor({
 
       <ProductSearchDialog
         open={searchOpen}
-        keepOpen={searchRowIndex === null}
-        onClose={() => {
-          setSearchOpen(false);
-          setSearchRowIndex(null);
-        }}
-        onSelect={handleProductSelect}
-      />
-
-      <PricelistPickerDialog
-        open={pricelistOpen}
-        onClose={() => setPricelistOpen(false)}
-        onAdd={(product, quantity) => appendProduct(product, quantity)}
+        onClose={() => setSearchOpen(false)}
+        onAdd={appendProduct}
       />
     </div>
   );

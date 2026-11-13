@@ -1,10 +1,11 @@
-"use server";
-
+import { cache } from "react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { OfferDetail, OfferItemData, OfferStatus } from "../types";
 
-export async function getOffer(id: string): Promise<OfferDetail | null> {
+// Wrapped in React cache() so generateMetadata and the page share one DB
+// query per request instead of running it twice.
+export const getOffer = cache(async function getOffer(id: string): Promise<OfferDetail | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
   const offer = await prisma.offer.findUnique({
@@ -75,4 +76,4 @@ export async function getOffer(id: string): Promise<OfferDetail | null> {
     createdBy: offer.createdBy,
     items,
   };
-}
+});

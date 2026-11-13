@@ -4,11 +4,28 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const defaultRuntimeCaching = require("next-pwa/cache");
+
 const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+  runtimeCaching: [
+    // App Router navigations / prefetches (RSC payloads) must always go
+    // straight to the network. The default next-pwa rule routes them through
+    // a NetworkFirst cache (10s timeout, cache writes on every request), which
+    // makes back-and-forth navigation stall and can serve stale RSC payloads.
+    {
+      urlPattern: ({ request, url }: { request: Request; url: URL }) =>
+        request.headers.get("RSC") === "1" ||
+        url.searchParams.has("_rsc") ||
+        request.mode === "navigate",
+      handler: "NetworkOnly",
+    },
+    ...defaultRuntimeCaching,
+  ],
 });
 
 const securityHeaders = [

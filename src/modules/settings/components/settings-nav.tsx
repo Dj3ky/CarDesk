@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Building2, DollarSign, FileText, Settings2, Database, GitPullRequest, TrendingUp, Plug } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,15 +28,24 @@ export function SettingsNav({ activeTab }: SettingsNavProps) {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("settings.tabs");
+  const [isPending, startTransition] = useTransition();
+  const [pendingTab, setPendingTab] = useState<SettingsTab | null>(null);
+  // Highlight the clicked tab immediately; fall back to the server value once
+  // the navigation has finished.
+  const shownTab = isPending && pendingTab ? pendingTab : activeTab;
 
   function setTab(tab: SettingsTab) {
+    if (tab === activeTab) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", tab);
-    router.replace(`${pathname}?${params.toString()}`);
+    setPendingTab(tab);
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`);
+    });
   }
 
   return (
-    <nav className="flex flex-row gap-1 overflow-x-auto pb-1 sm:flex-col sm:w-40 sm:shrink-0 sm:overflow-visible sm:pb-0">
+    <nav aria-busy={isPending} className="flex flex-row gap-1 overflow-x-auto pb-1 sm:flex-col sm:w-40 sm:shrink-0 sm:overflow-visible sm:pb-0">
       {TABS.map(({ key, Icon }) => (
         <button
           key={key}
@@ -43,14 +53,14 @@ export function SettingsNav({ activeTab }: SettingsNavProps) {
           onClick={() => setTab(key)}
           className={cn(
             "group flex items-center gap-2 rounded-md py-2 px-3 text-sm font-medium transition-all text-left shrink-0 sm:w-full sm:pr-3 sm:border-l-2 sm:pl-[10px] sm:gap-2.5 border-b-2 sm:border-b-0",
-            activeTab === key
+            shownTab === key
               ? "border-primary bg-accent text-foreground"
               : "border-transparent text-muted-foreground hover:bg-accent hover:text-foreground"
           )}
         >
           <Icon className={cn(
             "h-4 w-4 shrink-0 transition-colors",
-            activeTab === key
+            shownTab === key
               ? "text-primary"
               : "text-muted-foreground/50 group-hover:text-muted-foreground"
           )} />
